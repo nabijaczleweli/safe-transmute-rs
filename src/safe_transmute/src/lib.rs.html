@@ -111,9 +111,6 @@
 <span id="67">67</span>
 <span id="68">68</span>
 <span id="69">69</span>
-<span id="70">70</span>
-<span id="71">71</span>
-<span id="72">72</span>
 </pre><pre class='rust '>
 <span class='doccomment'>//! This crate contains checked implementations of `transmute()`.</span>
 <span class='doccomment'>//!</span>
@@ -124,9 +121,6 @@
 <span class='doccomment'>//! for example, is not unsafe in and of itself, but dereferencing it certainly *is*,</span>
 <span class='doccomment'>//! but they don&#39;t do that (see [here](https://github.com/nabijaczleweli/safe-transmute-rs/issues/1)</span>
 <span class='doccomment'>//! for extended discussion).</span>
-<span class='doccomment'>//!</span>
-<span class='doccomment'>//! In short: those functions aren&#39;t unsafe but what you can do with them is</span>
-<span class='doccomment'>//! (and that&#39;s true for virtually everything, ever).</span>
 <span class='doccomment'>//!</span>
 <span class='doccomment'>//! # Examples</span>
 <span class='doccomment'>//!</span>
@@ -166,7 +160,7 @@
 <span class='doccomment'>/// // Little-endian</span>
 <span class='doccomment'>/// assert_eq!(guarded_transmute::&lt;u32&gt;(&amp;[0x00, 0x00, 0x00, 0x01]), 0x01000000);</span>
 <span class='doccomment'>/// ```</span>
-<span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>guarded_transmute</span><span class='op'>&lt;</span><span class='ident'>T</span>: <span class='ident'>Copy</span><span class='op'>&gt;</span>(<span class='ident'>bytes</span>: <span class='kw-2'>&amp;</span>[<span class='ident'>u8</span>]) <span class='op'>-&gt;</span> <span class='ident'>T</span> {
+<span class='kw'>pub</span> <span class='kw'>unsafe</span> <span class='kw'>fn</span> <span class='ident'>guarded_transmute</span><span class='op'>&lt;</span><span class='ident'>T</span>: <span class='ident'>Copy</span><span class='op'>&gt;</span>(<span class='ident'>bytes</span>: <span class='kw-2'>&amp;</span>[<span class='ident'>u8</span>]) <span class='op'>-&gt;</span> <span class='ident'>T</span> {
     <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>bytes</span>.<span class='ident'>len</span>() <span class='op'>&gt;=</span> <span class='ident'>align_of</span>::<span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span>(), <span class='string'>&quot;Not enough bytes to fill type&quot;</span>);
     <span class='kw'>unsafe</span> { <span class='ident'>slice</span>::<span class='ident'>from_raw_parts</span>(<span class='ident'>bytes</span>.<span class='ident'>as_ptr</span>() <span class='kw'>as</span> <span class='op'>*</span><span class='kw'>const</span> <span class='ident'>T</span>, <span class='number'>1</span>)[<span class='number'>0</span>] }
 }
@@ -183,7 +177,7 @@
 <span class='doccomment'>/// // Little-endian</span>
 <span class='doccomment'>/// assert_eq!(guarded_transmute_many::&lt;u16&gt;(&amp;[0x00, 0x01, 0x00, 0x02]), &amp;[0x0100, 0x0200]);</span>
 <span class='doccomment'>/// ```</span>
-<span class='kw'>pub</span> <span class='kw'>fn</span> <span class='ident'>guarded_transmute_many</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span>(<span class='ident'>bytes</span>: <span class='kw-2'>&amp;</span>[<span class='ident'>u8</span>]) <span class='op'>-&gt;</span> <span class='kw-2'>&amp;</span>[<span class='ident'>T</span>] {
+<span class='kw'>pub</span> <span class='kw'>unsafe</span> <span class='kw'>fn</span> <span class='ident'>guarded_transmute_many</span><span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span>(<span class='ident'>bytes</span>: <span class='kw-2'>&amp;</span>[<span class='ident'>u8</span>]) <span class='op'>-&gt;</span> <span class='kw-2'>&amp;</span>[<span class='ident'>T</span>] {
     <span class='macro'>assert</span><span class='macro'>!</span>(<span class='ident'>bytes</span>.<span class='ident'>len</span>() <span class='op'>&gt;=</span> <span class='ident'>align_of</span>::<span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span>(), <span class='string'>&quot;Not enough bytes to fill type&quot;</span>);
     <span class='kw'>unsafe</span> { <span class='ident'>slice</span>::<span class='ident'>from_raw_parts</span>(<span class='ident'>bytes</span>.<span class='ident'>as_ptr</span>() <span class='kw'>as</span> <span class='op'>*</span><span class='kw'>const</span> <span class='ident'>T</span>, (<span class='ident'>bytes</span>.<span class='ident'>len</span>() <span class='op'>-</span> (<span class='ident'>bytes</span>.<span class='ident'>len</span>() <span class='op'>%</span> <span class='ident'>align_of</span>::<span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span>())) <span class='op'>/</span> <span class='ident'>align_of</span>::<span class='op'>&lt;</span><span class='ident'>T</span><span class='op'>&gt;</span>()) }
 }
