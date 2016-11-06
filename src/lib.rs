@@ -14,19 +14,23 @@
 //!
 //! ```
 //! # use safe_transmute::guarded_transmute_many;
+//! # unsafe {
 //! assert_eq!(guarded_transmute_many::<u16>(&[0x00, 0x01,
 //!                                            0x12, 0x34,
 //!                                            // Spare byte, unused
 //!                                            0x00]),
 //!            &[0x0100, 0x3412]);
+//! # }
 //! ```
 //!
 //! View bytes as an `f64`:
 //!
 //! ```
 //! # use safe_transmute::guarded_transmute;
+//! # unsafe {
 //! assert_eq!(guarded_transmute::<f64>(&[0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]),
 //!            0.0);
+//! # }
 //! ```
 
 
@@ -44,11 +48,13 @@ use std::slice;
 /// ```
 /// # use safe_transmute::guarded_transmute;
 /// // Little-endian
+/// # unsafe {
 /// assert_eq!(guarded_transmute::<u32>(&[0x00, 0x00, 0x00, 0x01]), 0x01000000);
+/// # }
 /// ```
 pub unsafe fn guarded_transmute<T: Copy>(bytes: &[u8]) -> T {
     assert!(bytes.len() >= align_of::<T>(), "Not enough bytes to fill type");
-    unsafe { slice::from_raw_parts(bytes.as_ptr() as *const T, 1)[0] }
+    slice::from_raw_parts(bytes.as_ptr() as *const T, 1)[0]
 }
 
 /// View a byte slice as a slice of an arbitrary type.
@@ -61,9 +67,11 @@ pub unsafe fn guarded_transmute<T: Copy>(bytes: &[u8]) -> T {
 /// ```
 /// # use safe_transmute::guarded_transmute_many;
 /// // Little-endian
+/// # unsafe {
 /// assert_eq!(guarded_transmute_many::<u16>(&[0x00, 0x01, 0x00, 0x02]), &[0x0100, 0x0200]);
+/// # }
 /// ```
 pub unsafe fn guarded_transmute_many<T>(bytes: &[u8]) -> &[T] {
     assert!(bytes.len() >= align_of::<T>(), "Not enough bytes to fill type");
-    unsafe { slice::from_raw_parts(bytes.as_ptr() as *const T, (bytes.len() - (bytes.len() % align_of::<T>())) / align_of::<T>()) }
+    slice::from_raw_parts(bytes.as_ptr() as *const T, (bytes.len() - (bytes.len() % align_of::<T>())) / align_of::<T>())
 }
