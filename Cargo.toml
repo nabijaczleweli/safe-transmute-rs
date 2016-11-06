@@ -1,0 +1,12 @@
+[package]
+name = "safe-transmute-rs"
+description = "A safeguarded transmute() for Rust"
+documentation = "https://cdn.rawgit.com/nabijaczleweli/safe-transmute-rs/doc/safe_transmute/index.html"
+repository = "https://github.com/nabijaczleweli/safe-transmute-rs"
+readme = "README.md"
+keywords = ["safe", "transmute", "checked"]
+license = "MIT"
+# Remember to also update in appveyor.yml
+version = "0.1.0"
+authors = ["nabijaczleweli <nabijaczleweli@gmail.com>"]
+exclude = ["*.enc"]
