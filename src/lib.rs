@@ -1,10 +1,34 @@
+//! This crate contains checked implementations of `transmute()`.
+//!
+//! # Examples
+//!
+//! View bytes as a series of `u16`s:
+//!
+//! ```
+//! # use safe_transmute::guarded_transmute_many;
+//! assert_eq!(guarded_transmute_many::<u16>(&[0x00, 0x01,
+//!                                            0x12, 0x34,
+//!                                            // Spare byte, unused
+//!                                            0x00]),
+//!            &[0x0100, 0x3412]);
+//! ```
+//!
+//! View bytes as an `f64`:
+//!
+//! ```
+//! # use safe_transmute::guarded_transmute;
+//! assert_eq!(guarded_transmute::<f64>(&[0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]),
+//!            0.0);
+//! ```
+
+
 use std::mem::align_of;
 use std::slice;
 
 
 /// Transmute a byte slice into a single instance of a `Copy`able type
 ///
-/// The byte slice muts have at least enough bytes to fill a single instance of a type,
+/// The byte slice must have at least enough bytes to fill a single instance of a type,
 /// extraneous data is ignored.
 ///
 /// # Examples
@@ -21,7 +45,7 @@ pub fn guarded_transmute<T: Copy>(bytes: &[u8]) -> T {
 
 /// View a byte slice as a slice of an arbitrary type.
 ///
-/// The byte slice mut have at least enough bytes to fill a single instance of a type,
+/// The byte slice must have at least enough bytes to fill a single instance of a type,
 /// extraneous data is ignored.
 ///
 /// # Examples
