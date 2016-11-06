@@ -1,5 +1,16 @@
 //! This crate contains checked implementations of `transmute()`.
 //!
+//! The functions in this crate are not inherently safe, but just guarded against common simple mistakes
+//! (like trying to create an 8-byte type from 7 bytes).
+//!
+//! Those functions are exactly as safe as the data passed to them - creating a null pointer,
+//! for example, is not unsafe in and of itself, but dereferencing it certainly *is*,
+//! but they don't do that (see [here](https://github.com/nabijaczleweli/safe-transmute-rs/issues/1)
+//! for extended discussion).
+//!
+//! In short: those functions aren't unsafe but what you can do with them is
+//! (and that's true for virtually everything, ever).
+//!
 //! # Examples
 //!
 //! View bytes as a series of `u16`s:
