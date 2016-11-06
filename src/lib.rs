@@ -55,7 +55,7 @@ pub fn guarded_transmute<T: Copy>(bytes: &[u8]) -> T {
 /// // Little-endian
 /// assert_eq!(guarded_transmute_many::<u16>(&[0x00, 0x01, 0x00, 0x02]), &[0x0100, 0x0200]);
 /// ```
-pub fn guarded_transmute_many<'t, T>(bytes: &'t [u8]) -> &'t [T] {
+pub fn guarded_transmute_many<T>(bytes: &[u8]) -> &[T] {
     assert!(bytes.len() >= align_of::<T>(), "Not enough bytes to fill type");
     unsafe { slice::from_raw_parts(bytes.as_ptr() as *const T, (bytes.len() - (bytes.len() % align_of::<T>())) / align_of::<T>()) }
 }
