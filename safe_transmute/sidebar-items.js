@@ -1,0 +1,1 @@
+initSidebarItems({"fn":[["guarded_transmute","Transmute a byte slice into a single instance of a `Copy`able type"],["guarded_transmute_many","View a byte slice as a slice of an arbitrary type."]]});
