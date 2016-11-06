@@ -8,9 +8,6 @@
 //! but they don't do that (see [here](https://github.com/nabijaczleweli/safe-transmute-rs/issues/1)
 //! for extended discussion).
 //!
-//! In short: those functions aren't unsafe but what you can do with them is
-//! (and that's true for virtually everything, ever).
-//!
 //! # Examples
 //!
 //! View bytes as a series of `u16`s:
@@ -49,7 +46,7 @@ use std::slice;
 /// // Little-endian
 /// assert_eq!(guarded_transmute::<u32>(&[0x00, 0x00, 0x00, 0x01]), 0x01000000);
 /// ```
-pub fn guarded_transmute<T: Copy>(bytes: &[u8]) -> T {
+pub unsafe fn guarded_transmute<T: Copy>(bytes: &[u8]) -> T {
     assert!(bytes.len() >= align_of::<T>(), "Not enough bytes to fill type");
     unsafe { slice::from_raw_parts(bytes.as_ptr() as *const T, 1)[0] }
 }
@@ -66,7 +63,7 @@ pub fn guarded_transmute<T: Copy>(bytes: &[u8]) -> T {
 /// // Little-endian
 /// assert_eq!(guarded_transmute_many::<u16>(&[0x00, 0x01, 0x00, 0x02]), &[0x0100, 0x0200]);
 /// ```
-pub fn guarded_transmute_many<T>(bytes: &[u8]) -> &[T] {
+pub unsafe fn guarded_transmute_many<T>(bytes: &[u8]) -> &[T] {
     assert!(bytes.len() >= align_of::<T>(), "Not enough bytes to fill type");
     unsafe { slice::from_raw_parts(bytes.as_ptr() as *const T, (bytes.len() - (bytes.len() % align_of::<T>())) / align_of::<T>()) }
 }
