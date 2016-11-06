@@ -4,13 +4,13 @@ cache: cargo
 
 matrix:
   include:
-    - env: LANGUAGE=Rust DEPLOY=false
+    - env: LANGUAGE=Rust
       language: rust
       rust: stable
-    - env: LANGUAGE=Rust DEPLOY=false
+    - env: LANGUAGE=Rust
       language: rust
       rust: beta
-    - env: LANGUAGE=Rust DEPLOY=false CLIPPY=true
+    - env: LANGUAGE=Rust CLIPPY=true
       language: rust
       rust: nightly
     - env: LANGUAGE=Rust-doc DEPLOY=true
