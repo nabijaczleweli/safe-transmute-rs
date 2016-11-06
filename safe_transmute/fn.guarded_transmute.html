@@ -47,10 +47,10 @@
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a id='src-6' class='srclink' href='../src/safe_transmute/src/lib.rs.html#17-20' title='goto source code'>[src]</a></span></h1>
+               </span><a id='src-6' class='srclink' href='../src/safe_transmute/src/lib.rs.html#41-44' title='goto source code'>[src]</a></span></h1>
 <pre class='rust fn'>pub fn guarded_transmute&lt;T:&nbsp;<a class='trait' href='https://doc.rust-lang.org/nightly/core/marker/trait.Copy.html' title='core::marker::Copy'>Copy</a>&gt;(bytes: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.slice.html'>&amp;[</a><a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u8.html'>u8</a><a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.slice.html'>]</a>) -&gt; T</pre><div class='docblock'><p>Transmute a byte slice into a single instance of a <code>Copy</code>able type</p>
 
-<p>The byte slice muts have at least enough bytes to fill a single instance of a type,
+<p>The byte slice must have at least enough bytes to fill a single instance of a type,
 extraneous data is ignored.</p>
 
 <h1 id='examples' class='section-header'><a href='#examples'>Examples</a></h1>

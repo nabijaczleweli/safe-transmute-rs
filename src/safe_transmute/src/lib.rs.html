@@ -79,14 +79,62 @@
 <span id="35">35</span>
 <span id="36">36</span>
 <span id="37">37</span>
+<span id="38">38</span>
+<span id="39">39</span>
+<span id="40">40</span>
+<span id="41">41</span>
+<span id="42">42</span>
+<span id="43">43</span>
+<span id="44">44</span>
+<span id="45">45</span>
+<span id="46">46</span>
+<span id="47">47</span>
+<span id="48">48</span>
+<span id="49">49</span>
+<span id="50">50</span>
+<span id="51">51</span>
+<span id="52">52</span>
+<span id="53">53</span>
+<span id="54">54</span>
+<span id="55">55</span>
+<span id="56">56</span>
+<span id="57">57</span>
+<span id="58">58</span>
+<span id="59">59</span>
+<span id="60">60</span>
+<span id="61">61</span>
 </pre><pre class='rust '>
+<span class='doccomment'>//! This crate contains checked implementations of `transmute()`.</span>
+<span class='doccomment'>//!</span>
+<span class='doccomment'>//! # Examples</span>
+<span class='doccomment'>//!</span>
+<span class='doccomment'>//! View bytes as a series of `u16`s:</span>
+<span class='doccomment'>//!</span>
+<span class='doccomment'>//! ```</span>
+<span class='doccomment'>//! # use safe_transmute::guarded_transmute_many;</span>
+<span class='doccomment'>//! assert_eq!(guarded_transmute_many::&lt;u16&gt;(&amp;[0x00, 0x01,</span>
+<span class='doccomment'>//!                                            0x12, 0x34,</span>
+<span class='doccomment'>//!                                            // Spare byte, unused</span>
+<span class='doccomment'>//!                                            0x00]),</span>
+<span class='doccomment'>//!            &amp;[0x0100, 0x3412]);</span>
+<span class='doccomment'>//! ```</span>
+<span class='doccomment'>//!</span>
+<span class='doccomment'>//! View bytes as an `f64`:</span>
+<span class='doccomment'>//!</span>
+<span class='doccomment'>//! ```</span>
+<span class='doccomment'>//! # use safe_transmute::guarded_transmute;</span>
+<span class='doccomment'>//! assert_eq!(guarded_transmute::&lt;f64&gt;(&amp;[0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]),</span>
+<span class='doccomment'>//!            0.0);</span>
+<span class='doccomment'>//! ```</span>
+
+
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>mem</span>::<span class='ident'>align_of</span>;
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>slice</span>;
 
 
 <span class='doccomment'>/// Transmute a byte slice into a single instance of a `Copy`able type</span>
 <span class='doccomment'>///</span>
-<span class='doccomment'>/// The byte slice muts have at least enough bytes to fill a single instance of a type,</span>
+<span class='doccomment'>/// The byte slice must have at least enough bytes to fill a single instance of a type,</span>
 <span class='doccomment'>/// extraneous data is ignored.</span>
 <span class='doccomment'>///</span>
 <span class='doccomment'>/// # Examples</span>
@@ -103,7 +151,7 @@
 
 <span class='doccomment'>/// View a byte slice as a slice of an arbitrary type.</span>
 <span class='doccomment'>///</span>
-<span class='doccomment'>/// The byte slice mut have at least enough bytes to fill a single instance of a type,</span>
+<span class='doccomment'>/// The byte slice must have at least enough bytes to fill a single instance of a type,</span>
 <span class='doccomment'>/// extraneous data is ignored.</span>
 <span class='doccomment'>///</span>
 <span class='doccomment'>/// # Examples</span>

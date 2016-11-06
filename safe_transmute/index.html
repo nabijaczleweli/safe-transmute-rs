@@ -47,8 +47,25 @@
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a id='src-0' class='srclink' href='../src/safe_transmute/src/lib.rs.html#1-37' title='goto source code'>[src]</a></span></h1>
-<h2 id='functions' class='section-header'><a href="#functions">Functions</a></h2>
+               </span><a id='src-0' class='srclink' href='../src/safe_transmute/src/lib.rs.html#1-61' title='goto source code'>[src]</a></span></h1>
+<div class='docblock'><p>This crate contains checked implementations of <code>transmute()</code>.</p>
+
+<h1 id='examples' class='section-header'><a href='#examples'>Examples</a></h1>
+<p>View bytes as a series of <code>u16</code>s:</p>
+
+<pre class='rust rust-example-rendered'>
+<span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>guarded_transmute_many</span>::<span class='op'>&lt;</span><span class='ident'>u16</span><span class='op'>&gt;</span>(<span class='kw-2'>&amp;</span>[<span class='number'>0x00</span>, <span class='number'>0x01</span>,
+                                           <span class='number'>0x12</span>, <span class='number'>0x34</span>,
+                                           <span class='comment'>// Spare byte, unused</span>
+                                           <span class='number'>0x00</span>]),
+           <span class='kw-2'>&amp;</span>[<span class='number'>0x0100</span>, <span class='number'>0x3412</span>]);</pre>
+
+<p>View bytes as an <code>f64</code>:</p>
+
+<pre class='rust rust-example-rendered'>
+<span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>guarded_transmute</span>::<span class='op'>&lt;</span><span class='ident'>f64</span><span class='op'>&gt;</span>(<span class='kw-2'>&amp;</span>[<span class='number'>0x00</span>, <span class='number'>0x00</span>, <span class='number'>0x00</span>, <span class='number'>0x00</span>, <span class='number'>0x00</span>, <span class='number'>0x00</span>, <span class='number'>0x00</span>, <span class='number'>0x00</span>]),
+           <span class='number'>0.0</span>);</pre>
+</div><h2 id='functions' class='section-header'><a href="#functions">Functions</a></h2>
 <table>
                        <tr class=' module-item'>
                            <td><a class='fn' href='fn.guarded_transmute.html'
