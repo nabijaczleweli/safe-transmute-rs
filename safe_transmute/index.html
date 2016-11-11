@@ -47,7 +47,7 @@
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a id='src-0' class='srclink' href='../src/safe_transmute/src/lib.rs.html#1-125' title='goto source code'>[src]</a></span></h1>
+               </span><a id='src-0' class='srclink' href='../src/safe_transmute/src/lib.rs.html#1-149' title='goto source code'>[src]</a></span></h1>
 <div class='docblock'><p>This crate contains checked implementations of <code>transmute()</code>.</p>
 
 <p>The functions in this crate are not inherently safe, but just guarded against common simple mistakes
@@ -65,22 +65,38 @@ for extended discussion).</p>
 <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>guarded_transmute_many</span>::<span class='op'>&lt;</span><span class='ident'>u16</span><span class='op'>&gt;</span>(<span class='kw-2'>&amp;</span>[<span class='number'>0x00</span>, <span class='number'>0x01</span>,
                                            <span class='number'>0x12</span>, <span class='number'>0x34</span>,
                                            <span class='comment'>// Spare byte, unused</span>
-                                           <span class='number'>0x00</span>]),
+                                           <span class='number'>0x00</span>]).<span class='ident'>unwrap</span>(),
            <span class='kw-2'>&amp;</span>[<span class='number'>0x0100</span>, <span class='number'>0x3412</span>]);<a class='test-arrow' target='_blank' href=''>Run</a></pre>
 
 <p>View all bytes as a series of <code>u16</code>s:</p>
 
 <pre class='rust rust-example-rendered'>
 <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>guarded_transmute_many_pedantic</span>::<span class='op'>&lt;</span><span class='ident'>u16</span><span class='op'>&gt;</span>(<span class='kw-2'>&amp;</span>[<span class='number'>0x00</span>, <span class='number'>0x01</span>,
-                                                    <span class='number'>0x12</span>, <span class='number'>0x34</span>]),
+                                                    <span class='number'>0x12</span>, <span class='number'>0x34</span>]).<span class='ident'>unwrap</span>(),
            <span class='kw-2'>&amp;</span>[<span class='number'>0x0100</span>, <span class='number'>0x3412</span>]);<a class='test-arrow' target='_blank' href=''>Run</a></pre>
 
 <p>View bytes as an <code>f64</code>:</p>
 
 <pre class='rust rust-example-rendered'>
-<span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>guarded_transmute</span>::<span class='op'>&lt;</span><span class='ident'>f64</span><span class='op'>&gt;</span>(<span class='kw-2'>&amp;</span>[<span class='number'>0x00</span>, <span class='number'>0x00</span>, <span class='number'>0x00</span>, <span class='number'>0x00</span>, <span class='number'>0x00</span>, <span class='number'>0x00</span>, <span class='number'>0x00</span>, <span class='number'>0x00</span>]),
+<span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>guarded_transmute</span>::<span class='op'>&lt;</span><span class='ident'>f64</span><span class='op'>&gt;</span>(<span class='kw-2'>&amp;</span>[<span class='number'>0x00</span>, <span class='number'>0x00</span>, <span class='number'>0x00</span>, <span class='number'>0x00</span>, <span class='number'>0x00</span>, <span class='number'>0x00</span>, <span class='number'>0x00</span>, <span class='number'>0x00</span>]).<span class='ident'>unwrap</span>(),
            <span class='number'>0.0</span>);<a class='test-arrow' target='_blank' href=''>Run</a></pre>
-</div><h2 id='functions' class='section-header'><a href="#functions">Functions</a></h2>
+</div><h2 id='structs' class='section-header'><a href="#structs">Structs</a></h2>
+<table>
+                       <tr class=' module-item'>
+                           <td><a class='struct' href='struct.Error.html'
+                                  title='safe_transmute::Error'>Error</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr></table><h2 id='enums' class='section-header'><a href="#enums">Enums</a></h2>
+<table>
+                       <tr class=' module-item'>
+                           <td><a class='enum' href='enum.ErrorReason.html'
+                                  title='safe_transmute::ErrorReason'>ErrorReason</a></td>
+                           <td class='docblock-short'>
+                                
+                           </td>
+                       </tr></table><h2 id='functions' class='section-header'><a href="#functions">Functions</a></h2>
 <table>
                        <tr class=' module-item'>
                            <td><a class='fn' href='fn.guarded_transmute.html'
