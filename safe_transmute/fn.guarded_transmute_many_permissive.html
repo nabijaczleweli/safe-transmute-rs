@@ -4,10 +4,10 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="generator" content="rustdoc">
-    <meta name="description" content="API documentation for the Rust `guarded_transmute` fn in crate `safe_transmute`.">
-    <meta name="keywords" content="rust, rustlang, rust-lang, guarded_transmute">
+    <meta name="description" content="API documentation for the Rust `guarded_transmute_many_permissive` fn in crate `safe_transmute`.">
+    <meta name="keywords" content="rust, rustlang, rust-lang, guarded_transmute_many_permissive">
 
-    <title>safe_transmute::guarded_transmute - Rust</title>
+    <title>safe_transmute::guarded_transmute_many_permissive - Rust</title>
 
     <link rel="stylesheet" type="text/css" href="../rustdoc.css">
     <link rel="stylesheet" type="text/css" href="../main.css">
@@ -28,7 +28,7 @@
 
     <nav class="sidebar">
         
-        <p class='location'><a href='index.html'>safe_transmute</a></p><script>window.sidebarCurrent = {name: 'guarded_transmute', ty: 'fn', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+        <p class='location'><a href='index.html'>safe_transmute</a></p><script>window.sidebarCurrent = {name: 'guarded_transmute_many_permissive', ty: 'fn', relpath: ''};</script><script defer src="sidebar-items.js"></script>
     </nav>
 
     <nav class="sub">
@@ -43,12 +43,12 @@
     </nav>
 
     <section id='main' class="content fn">
-<h1 class='fqn'><span class='in-band'>Function <a href='index.html'>safe_transmute</a>::<wbr><a class='fn' href=''>guarded_transmute</a></span><span class='out-of-band'><span id='render-detail'>
+<h1 class='fqn'><span class='in-band'>Function <a href='index.html'>safe_transmute</a>::<wbr><a class='fn' href=''>guarded_transmute_many_permissive</a></span><span class='out-of-band'><span id='render-detail'>
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a id='src-6' class='srclink' href='../src/safe_transmute/src/lib.rs.html#66-69' title='goto source code'>[src]</a></span></h1>
-<pre class='rust fn'>pub unsafe fn guarded_transmute&lt;T:&nbsp;<a class='trait' href='https://doc.rust-lang.org/nightly/core/marker/trait.Copy.html' title='core::marker::Copy'>Copy</a>&gt;(bytes: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.slice.html'>&amp;[</a><a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u8.html'>u8</a><a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.slice.html'>]</a>) -&gt; T</pre><div class='docblock'><p>Transmute a byte slice into a single instance of a <code>Copy</code>able type</p>
+               </span><a id='src-14' class='srclink' href='../src/safe_transmute/src/lib.rs.html#104-106' title='goto source code'>[src]</a></span></h1>
+<pre class='rust fn'>pub unsafe fn guarded_transmute_many_permissive&lt;T&gt;(bytes: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.slice.html'>&amp;[</a><a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u8.html'>u8</a><a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.slice.html'>]</a>) -&gt; <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.slice.html'>&amp;[</a>T<a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.slice.html'>]</a></pre><div class='docblock'><p>View a byte slice as a slice of an arbitrary type.</p>
 
 <p>The byte slice must have at least enough bytes to fill a single instance of a type,
 extraneous data is ignored.</p>
@@ -56,7 +56,7 @@ extraneous data is ignored.</p>
 <h1 id='examples' class='section-header'><a href='#examples'>Examples</a></h1>
 <pre class='rust rust-example-rendered'>
 <span class='comment'>// Little-endian</span>
-<span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>guarded_transmute</span>::<span class='op'>&lt;</span><span class='ident'>u32</span><span class='op'>&gt;</span>(<span class='kw-2'>&amp;</span>[<span class='number'>0x00</span>, <span class='number'>0x00</span>, <span class='number'>0x00</span>, <span class='number'>0x01</span>]), <span class='number'>0x01000000</span>);<a class='test-arrow' target='_blank' href=''>Run</a></pre>
+<span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>guarded_transmute_many_permissive</span>::<span class='op'>&lt;</span><span class='ident'>u16</span><span class='op'>&gt;</span>(<span class='kw-2'>&amp;</span>[<span class='number'>0x00</span>]), <span class='kw-2'>&amp;</span>[]);<a class='test-arrow' target='_blank' href=''>Run</a></pre>
 </div></section>
     <section id='search' class="content hidden"></section>
 
