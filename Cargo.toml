@@ -7,7 +7,7 @@ readme = "README.md"
 keywords = ["safe", "transmute", "checked"]
 license = "MIT"
 # Remember to also update in appveyor.yml
-version = "0.2.0"
+version = "0.3.0"
 authors = ["nabijaczleweli <nabijaczleweli@gmail.com>",
            "Eduardo Pinho <enet4mikeenet@gmail.com>"]
 exclude = ["*.enc"]
