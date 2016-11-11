@@ -76,22 +76,70 @@
 <span id="32">32</span>
 <span id="33">33</span>
 <span id="34">34</span>
+<span id="35">35</span>
+<span id="36">36</span>
+<span id="37">37</span>
+<span id="38">38</span>
+<span id="39">39</span>
+<span id="40">40</span>
+<span id="41">41</span>
+<span id="42">42</span>
+<span id="43">43</span>
+<span id="44">44</span>
+<span id="45">45</span>
+<span id="46">46</span>
+<span id="47">47</span>
+<span id="48">48</span>
+<span id="49">49</span>
+<span id="50">50</span>
+<span id="51">51</span>
+<span id="52">52</span>
+<span id="53">53</span>
+<span id="54">54</span>
+<span id="55">55</span>
+<span id="56">56</span>
+<span id="57">57</span>
+<span id="58">58</span>
 </pre><pre class='rust '>
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>error</span>::<span class='ident'>Error</span> <span class='kw'>as</span> <span class='ident'>StdError</span>;
 <span class='kw'>use</span> <span class='ident'>std</span>::<span class='ident'>fmt</span>;
 
 
+<span class='doccomment'>/// A transmutation error.</span>
+<span class='doccomment'>///</span>
+<span class='doccomment'>/// # Examples</span>
+<span class='doccomment'>///</span>
+<span class='doccomment'>/// ```</span>
+<span class='doccomment'>/// # use safe_transmute::{ErrorReason, Error, guarded_transmute};</span>
+<span class='doccomment'>/// # unsafe {</span>
+<span class='doccomment'>/// assert_eq!(guarded_transmute::&lt;u16&gt;(&amp;[0x00]),</span>
+<span class='doccomment'>///            Err(Error {</span>
+<span class='doccomment'>///                required: 16 / 8,</span>
+<span class='doccomment'>///                actual: 1,</span>
+<span class='doccomment'>///                reason: ErrorReason::NotEnoughBytes,</span>
+<span class='doccomment'>///            }));</span>
+<span class='doccomment'>/// # }</span>
+<span class='doccomment'>/// ```</span>
 <span class='attribute'>#[<span class='ident'>derive</span>(<span class='ident'>Clone</span>, <span class='ident'>Copy</span>, <span class='ident'>Debug</span>, <span class='ident'>PartialEq</span>, <span class='ident'>Eq</span>, <span class='ident'>Hash</span>)]</span>
 <span class='kw'>pub</span> <span class='kw'>struct</span> <span class='ident'>Error</span> {
+    <span class='doccomment'>/// The required amount of bytes for transmutation.</span>
     <span class='kw'>pub</span> <span class='ident'>required</span>: <span class='ident'>usize</span>,
+    <span class='doccomment'>/// The actual amount of bytes.</span>
     <span class='kw'>pub</span> <span class='ident'>actual</span>: <span class='ident'>usize</span>,
+    <span class='doccomment'>/// Why this `required`/`actual`/`T` combo is an error.</span>
     <span class='kw'>pub</span> <span class='ident'>reason</span>: <span class='ident'>ErrorReason</span>,
 }
 
+<span class='doccomment'>/// How the type&#39;s size compares to the received byte count and the transmutation function&#39;s characteristic.</span>
 <span class='attribute'>#[<span class='ident'>derive</span>(<span class='ident'>Clone</span>, <span class='ident'>Copy</span>, <span class='ident'>Debug</span>, <span class='ident'>PartialEq</span>, <span class='ident'>Eq</span>, <span class='ident'>Hash</span>)]</span>
 <span class='kw'>pub</span> <span class='kw'>enum</span> <span class='ident'>ErrorReason</span> {
+    <span class='doccomment'>/// Too few bytes to fill even one instance of a type.</span>
     <span class='ident'>NotEnoughBytes</span>,
+    <span class='doccomment'>/// Too many bytes to fill a type.</span>
+    <span class='doccomment'>///</span>
+    <span class='doccomment'>/// Currently unused.</span>
     <span class='ident'>TooManyBytes</span>,
+    <span class='doccomment'>/// The byte amount received is not the same as the type&#39;s size.</span>
     <span class='ident'>InexactByteCount</span>,
 }
 
