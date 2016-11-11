@@ -79,6 +79,31 @@ pub unsafe fn guarded_transmute<T: Copy>(bytes: &[u8]) -> Result<T, Error> {
     }
 }
 
+/// Transmute a byte slice into a single instance of a `Copy`able type
+///
+/// The byte slice must have exactly enough bytes to fill a single instance of a type.
+///
+/// # Examples
+///
+/// ```
+/// # use safe_transmute::guarded_transmute_pedantic;
+/// // Little-endian
+/// # unsafe {
+/// assert_eq!(guarded_transmute_pedantic::<u16>(&[0x0F, 0x0E]).unwrap(), 0x0E0F);
+/// # }
+/// ```
+pub unsafe fn guarded_transmute_pedantic<T: Copy>(bytes: &[u8]) -> Result<T, Error> {
+    if bytes.len() != align_of::<T>() {
+        Err(Error {
+            required: align_of::<T>(),
+            actual: bytes.len(),
+            reason: ErrorReason::InexactByteCount,
+        })
+    } else {
+        Ok(slice::from_raw_parts(bytes.as_ptr() as *const T, 1)[0])
+    }
+}
+
 /// View a byte slice as a slice of an arbitrary type.
 ///
 /// The byte slice must have at least enough bytes to fill a single instance of a type,
@@ -137,7 +162,13 @@ pub unsafe fn guarded_transmute_many_permissive<T>(bytes: &[u8]) -> &[T] {
 /// # }
 /// ```
 pub unsafe fn guarded_transmute_many_pedantic<T>(bytes: &[u8]) -> Result<&[T], Error> {
-    if bytes.len() % align_of::<T>() != 0 {
+    if bytes.len() < align_of::<T>() {
+        Err(Error {
+            required: align_of::<T>(),
+            actual: bytes.len(),
+            reason: ErrorReason::NotEnoughBytes,
+        })
+    } else if bytes.len() % align_of::<T>() != 0 {
         Err(Error {
             required: align_of::<T>(),
             actual: bytes.len(),
