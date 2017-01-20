@@ -66,20 +66,20 @@ for extended discussion).</p>
                                            <span class='number'>0x12</span>, <span class='number'>0x34</span>,
                                            <span class='comment'>// Spare byte, unused</span>
                                            <span class='number'>0x00</span>]).<span class='ident'>unwrap</span>(),
-           <span class='kw-2'>&amp;</span>[<span class='number'>0x0100</span>, <span class='number'>0x3412</span>]);<a class='test-arrow' target='_blank' href=''>Run</a></pre>
+           <span class='kw-2'>&amp;</span>[<span class='number'>0x0100</span>, <span class='number'>0x3412</span>]);</pre>
 
 <p>View all bytes as a series of <code>u16</code>s:</p>
 
 <pre class='rust rust-example-rendered'>
 <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>guarded_transmute_many_pedantic</span>::<span class='op'>&lt;</span><span class='ident'>u16</span><span class='op'>&gt;</span>(<span class='kw-2'>&amp;</span>[<span class='number'>0x00</span>, <span class='number'>0x01</span>,
                                                     <span class='number'>0x12</span>, <span class='number'>0x34</span>]).<span class='ident'>unwrap</span>(),
-           <span class='kw-2'>&amp;</span>[<span class='number'>0x0100</span>, <span class='number'>0x3412</span>]);<a class='test-arrow' target='_blank' href=''>Run</a></pre>
+           <span class='kw-2'>&amp;</span>[<span class='number'>0x0100</span>, <span class='number'>0x3412</span>]);</pre>
 
 <p>View bytes as an <code>f64</code>:</p>
 
 <pre class='rust rust-example-rendered'>
 <span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>guarded_transmute</span>::<span class='op'>&lt;</span><span class='ident'>f64</span><span class='op'>&gt;</span>(<span class='kw-2'>&amp;</span>[<span class='number'>0x00</span>, <span class='number'>0x00</span>, <span class='number'>0x00</span>, <span class='number'>0x00</span>, <span class='number'>0x00</span>, <span class='number'>0x00</span>, <span class='number'>0x00</span>, <span class='number'>0x00</span>]).<span class='ident'>unwrap</span>(),
-           <span class='number'>0.0</span>);<a class='test-arrow' target='_blank' href=''>Run</a></pre>
+           <span class='number'>0.0</span>);</pre>
 </div><h2 id='structs' class='section-header'><a href="#structs">Structs</a></h2>
 <table>
                        <tr class=' module-item'>
@@ -188,11 +188,9 @@ for extended discussion).</p>
     <script>
         window.rootPath = "../";
         window.currentCrate = "safe_transmute";
-        window.playgroundUrl = "";
     </script>
     <script src="../jquery.js"></script>
     <script src="../main.js"></script>
-    
     <script defer src="../search-index.js"></script>
 </body>
 </html>

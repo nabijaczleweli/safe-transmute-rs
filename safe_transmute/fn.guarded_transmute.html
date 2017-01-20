@@ -47,8 +47,8 @@
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a id='src-96' class='srclink' href='../src/safe_transmute/src/lib.rs.html#70-80' title='goto source code'>[src]</a></span></h1>
-<pre class='rust fn'>pub unsafe fn guarded_transmute&lt;T:&nbsp;<a class='trait' href='https://doc.rust-lang.org/nightly/core/marker/trait.Copy.html' title='core::marker::Copy'>Copy</a>&gt;(bytes: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.slice.html'>&amp;[</a><a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u8.html'>u8</a><a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.slice.html'>]</a>) -&gt; <a class='enum' href='https://doc.rust-lang.org/nightly/core/result/enum.Result.html' title='core::result::Result'>Result</a>&lt;T,&nbsp;<a class='struct' href='../safe_transmute/struct.Error.html' title='safe_transmute::Error'>Error</a>&gt;</pre><div class='docblock'><p>Transmute a byte slice into a single instance of a <code>Copy</code>able type</p>
+               </span><a id='src-17' class='srclink' href='../src/safe_transmute/src/lib.rs.html#70-80' title='goto source code'>[src]</a></span></h1>
+<pre class='rust fn'>pub unsafe fn guarded_transmute&lt;T:&nbsp;<a class='trait' href='https://doc.rust-lang.org/nightly/core/marker/trait.Copy.html' title='core::marker::Copy'>Copy</a>&gt;(bytes: <a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.slice.html'>&amp;[</a><a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.u8.html'>u8</a><a class='primitive' href='https://doc.rust-lang.org/nightly/std/primitive.slice.html'>]</a>) -&gt; <a class='enum' href='https://doc.rust-lang.org/nightly/core/result/enum.Result.html' title='core::result::Result'>Result</a>&lt;T, <a class='struct' href='../safe_transmute/struct.Error.html' title='safe_transmute::Error'>Error</a>&gt;</pre><div class='docblock'><p>Transmute a byte slice into a single instance of a <code>Copy</code>able type</p>
 
 <p>The byte slice must have at least enough bytes to fill a single instance of a type,
 extraneous data is ignored.</p>
@@ -56,7 +56,7 @@ extraneous data is ignored.</p>
 <h1 id='examples' class='section-header'><a href='#examples'>Examples</a></h1>
 <pre class='rust rust-example-rendered'>
 <span class='comment'>// Little-endian</span>
-<span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>guarded_transmute</span>::<span class='op'>&lt;</span><span class='ident'>u32</span><span class='op'>&gt;</span>(<span class='kw-2'>&amp;</span>[<span class='number'>0x00</span>, <span class='number'>0x00</span>, <span class='number'>0x00</span>, <span class='number'>0x01</span>]).<span class='ident'>unwrap</span>(), <span class='number'>0x01000000</span>);<a class='test-arrow' target='_blank' href=''>Run</a></pre>
+<span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>guarded_transmute</span>::<span class='op'>&lt;</span><span class='ident'>u32</span><span class='op'>&gt;</span>(<span class='kw-2'>&amp;</span>[<span class='number'>0x00</span>, <span class='number'>0x00</span>, <span class='number'>0x00</span>, <span class='number'>0x01</span>]).<span class='ident'>unwrap</span>(), <span class='number'>0x01000000</span>);</pre>
 </div></section>
     <section id='search' class="content hidden"></section>
 
@@ -113,11 +113,9 @@ extraneous data is ignored.</p>
     <script>
         window.rootPath = "../";
         window.currentCrate = "safe_transmute";
-        window.playgroundUrl = "";
     </script>
     <script src="../jquery.js"></script>
     <script src="../main.js"></script>
-    
     <script defer src="../search-index.js"></script>
 </body>
 </html>
