@@ -178,3 +178,93 @@ pub unsafe fn guarded_transmute_many_pedantic<T>(bytes: &[u8]) -> Result<&[T], E
         Ok(slice::from_raw_parts(bytes.as_ptr() as *const T, bytes.len() / align_of::<T>()))
     }
 }
+
+/// Trasform a byte vector into a vector of an arbitrary type.
+///
+/// The resulting vec will reuse the allocated byte buffer when possible, and 
+/// should have at least enough bytes to fill a single instance of a type.
+/// Extraneous data is ignored.
+///
+/// # Examples
+///
+/// ```
+/// # use safe_transmute::guarded_transmute_vec;
+/// // Little-endian
+/// # unsafe {
+/// assert_eq!(guarded_transmute_vec::<u16>(vec![0x00, 0x01, 0x00, 0x02]), Ok(vec![0x0100, 0x0200]));
+/// assert_eq!(guarded_transmute_vec::<u32>(vec![0x04, 0x00, 0x00, 0x00, 0xED]), Ok(vec![4]));
+/// assert!(guarded_transmute_vec::<i16>(vec![0xED]).is_err());
+/// # }
+/// ```
+pub unsafe fn guarded_transmute_vec<T>(bytes: Vec<u8>) -> Result<Vec<T>, Error> {
+    if bytes.len() < align_of::<T>() {
+        Err(Error {
+            required: align_of::<T>(),
+            actual: bytes.len(),
+            reason: ErrorReason::NotEnoughBytes,
+        })
+    } else {
+        Ok(guarded_transmute_vec_permissive(bytes))
+    }
+}
+
+/// Trasform a byte vector into a vector of an arbitrary type.
+///
+/// The vector's allocated byte buffer will be reused when possible, and 
+/// have as many instances of a type as will fit, rounded down.
+/// Extraneous data is ignored.
+///
+/// # Examples
+///
+/// ```
+/// # use safe_transmute::guarded_transmute_vec_permissive;
+/// // Little-endian
+/// # unsafe {
+/// assert_eq!(guarded_transmute_vec_permissive::<u16>(vec![0x00, 0x01, 0x00, 0x02]), vec![0x0100, 0x0200]);
+/// assert_eq!(guarded_transmute_vec_permissive::<u32>(vec![0x04, 0x00, 0x00, 0x00, 0xED]), vec![4]);
+/// assert_eq!(guarded_transmute_vec_permissive::<u16>(vec![0xED]), vec![]);
+/// # }
+/// ```
+pub unsafe fn guarded_transmute_vec_permissive<T>(mut bytes: Vec<u8>) -> Vec<T> {
+    let ptr = bytes.as_mut_ptr();
+    let capacity = bytes.capacity() / align_of::<T>();
+    let len = bytes.len() / align_of::<T>();
+    ::std::mem::forget(bytes);
+    Vec::from_raw_parts(ptr as *mut T, capacity, len)
+}
+
+
+/// Trasform a byte vector into a vector of an arbitrary type.
+///
+/// The vector's allocated byte buffer will be reused when possible, and
+/// should not have extraneous data.
+///
+/// # Examples
+///
+/// ```
+/// # use safe_transmute::guarded_transmute_vec_pedantic;
+/// // Little-endian
+/// # unsafe {
+/// assert_eq!(guarded_transmute_vec_pedantic::<u16>(vec![0x00, 0x01, 0x00, 0x02]).unwrap(), vec![0x0100, 0x0200]);
+/// assert!(guarded_transmute_vec_pedantic::<u32>(vec![0x04, 0x00, 0x00, 0x00, 0xED]).is_err());
+/// # }
+/// ```
+pub unsafe fn guarded_transmute_vec_pedantic<T>(bytes: Vec<u8>) -> Result<Vec<T>, Error> {
+    let a = align_of::<T>();
+    let len = bytes.len();
+    if len < a {
+        Err(Error {
+            required: a,
+            actual: len,
+            reason: ErrorReason::NotEnoughBytes,
+        })
+    } else if len % a != 0 {
+        Err(Error {
+            required: a,
+            actual: len,
+            reason: ErrorReason::InexactByteCount,
+        })
+    } else {
+        Ok(guarded_transmute_vec_permissive(bytes))
+    }
+}
