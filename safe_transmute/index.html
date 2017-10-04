@@ -9,6 +9,7 @@
 
     <title>safe_transmute - Rust</title>
 
+    <link rel="stylesheet" type="text/css" href="../normalize.css">
     <link rel="stylesheet" type="text/css" href="../rustdoc.css">
     <link rel="stylesheet" type="text/css" href="../main.css">
     
@@ -16,7 +17,7 @@
     
     
 </head>
-<body class="rustdoc">
+<body class="rustdoc mod">
     <!--[if lte IE 8]>
     <div class="warning">
         This old browser is unsupported and will most likely display funky
@@ -28,7 +29,7 @@
 
     <nav class="sidebar">
         
-        <p class='location'></p><script>window.sidebarCurrent = {name: 'safe_transmute', ty: 'mod', relpath: '../'};</script>
+        <p class='location'>Crate safe_transmute</p><div class="block items"><ul><li><a href="#structs">Structs</a></li><li><a href="#enums">Enums</a></li><li><a href="#functions">Functions</a></li></ul></div><p class='location'></p><script>window.sidebarCurrent = {name: 'safe_transmute', ty: 'mod', relpath: '../'};</script>
     </nav>
 
     <nav class="sub">
@@ -42,12 +43,12 @@
         </form>
     </nav>
 
-    <section id='main' class="content mod">
-<h1 class='fqn'><span class='in-band'>Crate <a class='mod' href=''>safe_transmute</a></span><span class='out-of-band'><span id='render-detail'>
+    <section id='main' class="content">
+<h1 class='fqn'><span class='in-band'>Crate <a class="mod" href=''>safe_transmute</a></span><span class='out-of-band'><span id='render-detail'>
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a id='src-0' class='srclink' href='../src/safe_transmute/src/lib.rs.html#1-180' title='goto source code'>[src]</a></span></h1>
+               </span><a class='srclink' href='../src/safe_transmute/lib.rs.html#1-270' title='goto source code'>[src]</a></span></h1>
 <div class='docblock'><p>This crate contains checked implementations of <code>transmute()</code>.</p>
 
 <p>The functions in this crate are not inherently safe, but just guarded against common simple mistakes
@@ -61,76 +62,97 @@ for extended discussion).</p>
 <h1 id='examples' class='section-header'><a href='#examples'>Examples</a></h1>
 <p>View bytes as a series of <code>u16</code>s:</p>
 
-<pre class='rust rust-example-rendered'>
-<span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>guarded_transmute_many</span>::<span class='op'>&lt;</span><span class='ident'>u16</span><span class='op'>&gt;</span>(<span class='kw-2'>&amp;</span>[<span class='number'>0x00</span>, <span class='number'>0x01</span>,
-                                           <span class='number'>0x12</span>, <span class='number'>0x34</span>,
-                                           <span class='comment'>// Spare byte, unused</span>
-                                           <span class='number'>0x00</span>]).<span class='ident'>unwrap</span>(),
-           <span class='kw-2'>&amp;</span>[<span class='number'>0x0100</span>, <span class='number'>0x3412</span>]);</pre>
+<pre class="rust rust-example-rendered">
+<span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">guarded_transmute_many</span>::<span class="op">&lt;</span><span class="ident">u16</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span>[<span class="number">0x00</span>, <span class="number">0x01</span>,
+                                           <span class="number">0x12</span>, <span class="number">0x34</span>,
+                                           <span class="comment">// Spare byte, unused</span>
+                                           <span class="number">0x00</span>]).<span class="ident">unwrap</span>(),
+           <span class="kw-2">&amp;</span>[<span class="number">0x0100</span>, <span class="number">0x3412</span>]);</pre>
 
 <p>View all bytes as a series of <code>u16</code>s:</p>
 
-<pre class='rust rust-example-rendered'>
-<span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>guarded_transmute_many_pedantic</span>::<span class='op'>&lt;</span><span class='ident'>u16</span><span class='op'>&gt;</span>(<span class='kw-2'>&amp;</span>[<span class='number'>0x00</span>, <span class='number'>0x01</span>,
-                                                    <span class='number'>0x12</span>, <span class='number'>0x34</span>]).<span class='ident'>unwrap</span>(),
-           <span class='kw-2'>&amp;</span>[<span class='number'>0x0100</span>, <span class='number'>0x3412</span>]);</pre>
+<pre class="rust rust-example-rendered">
+<span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">guarded_transmute_many_pedantic</span>::<span class="op">&lt;</span><span class="ident">u16</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span>[<span class="number">0x00</span>, <span class="number">0x01</span>,
+                                                    <span class="number">0x12</span>, <span class="number">0x34</span>]).<span class="ident">unwrap</span>(),
+           <span class="kw-2">&amp;</span>[<span class="number">0x0100</span>, <span class="number">0x3412</span>]);</pre>
 
 <p>View bytes as an <code>f64</code>:</p>
 
-<pre class='rust rust-example-rendered'>
-<span class='macro'>assert_eq</span><span class='macro'>!</span>(<span class='ident'>guarded_transmute</span>::<span class='op'>&lt;</span><span class='ident'>f64</span><span class='op'>&gt;</span>(<span class='kw-2'>&amp;</span>[<span class='number'>0x00</span>, <span class='number'>0x00</span>, <span class='number'>0x00</span>, <span class='number'>0x00</span>, <span class='number'>0x00</span>, <span class='number'>0x00</span>, <span class='number'>0x00</span>, <span class='number'>0x00</span>]).<span class='ident'>unwrap</span>(),
-           <span class='number'>0.0</span>);</pre>
+<pre class="rust rust-example-rendered">
+<span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">guarded_transmute</span>::<span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span>[<span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span>]).<span class="ident">unwrap</span>(),
+           <span class="number">0.0</span>);</pre>
 </div><h2 id='structs' class='section-header'><a href="#structs">Structs</a></h2>
 <table>
                        <tr class=' module-item'>
-                           <td><a class='struct' href='struct.Error.html'
-                                  title='safe_transmute::Error'>Error</a></td>
+                           <td><a class="struct" href="struct.Error.html"
+                                  title='struct safe_transmute::Error'>Error</a></td>
                            <td class='docblock-short'>
                                 <p>A transmutation error.</p>
                            </td>
                        </tr></table><h2 id='enums' class='section-header'><a href="#enums">Enums</a></h2>
 <table>
                        <tr class=' module-item'>
-                           <td><a class='enum' href='enum.ErrorReason.html'
-                                  title='safe_transmute::ErrorReason'>ErrorReason</a></td>
+                           <td><a class="enum" href="enum.ErrorReason.html"
+                                  title='enum safe_transmute::ErrorReason'>ErrorReason</a></td>
                            <td class='docblock-short'>
                                 <p>How the type&#39;s size compares to the received byte count and the transmutation function&#39;s characteristic.</p>
                            </td>
                        </tr></table><h2 id='functions' class='section-header'><a href="#functions">Functions</a></h2>
 <table>
                        <tr class=' module-item'>
-                           <td><a class='fn' href='fn.guarded_transmute.html'
-                                  title='safe_transmute::guarded_transmute'>guarded_transmute</a></td>
+                           <td><a class="fn" href="fn.guarded_transmute.html"
+                                  title='fn safe_transmute::guarded_transmute'>guarded_transmute</a><a title='unsafe function' href='#'><sup>⚠</sup></a></td>
                            <td class='docblock-short'>
                                 <p>Transmute a byte slice into a single instance of a <code>Copy</code>able type</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
-                           <td><a class='fn' href='fn.guarded_transmute_many.html'
-                                  title='safe_transmute::guarded_transmute_many'>guarded_transmute_many</a></td>
+                           <td><a class="fn" href="fn.guarded_transmute_many.html"
+                                  title='fn safe_transmute::guarded_transmute_many'>guarded_transmute_many</a><a title='unsafe function' href='#'><sup>⚠</sup></a></td>
                            <td class='docblock-short'>
                                 <p>View a byte slice as a slice of an arbitrary type.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
-                           <td><a class='fn' href='fn.guarded_transmute_many_pedantic.html'
-                                  title='safe_transmute::guarded_transmute_many_pedantic'>guarded_transmute_many_pedantic</a></td>
+                           <td><a class="fn" href="fn.guarded_transmute_many_pedantic.html"
+                                  title='fn safe_transmute::guarded_transmute_many_pedantic'>guarded_transmute_many_pedantic</a><a title='unsafe function' href='#'><sup>⚠</sup></a></td>
                            <td class='docblock-short'>
                                 <p>View a byte slice as a slice of an arbitrary type.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
-                           <td><a class='fn' href='fn.guarded_transmute_many_permissive.html'
-                                  title='safe_transmute::guarded_transmute_many_permissive'>guarded_transmute_many_permissive</a></td>
+                           <td><a class="fn" href="fn.guarded_transmute_many_permissive.html"
+                                  title='fn safe_transmute::guarded_transmute_many_permissive'>guarded_transmute_many_permissive</a><a title='unsafe function' href='#'><sup>⚠</sup></a></td>
                            <td class='docblock-short'>
                                 <p>View a byte slice as a slice of an arbitrary type.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
-                           <td><a class='fn' href='fn.guarded_transmute_pedantic.html'
-                                  title='safe_transmute::guarded_transmute_pedantic'>guarded_transmute_pedantic</a></td>
+                           <td><a class="fn" href="fn.guarded_transmute_pedantic.html"
+                                  title='fn safe_transmute::guarded_transmute_pedantic'>guarded_transmute_pedantic</a><a title='unsafe function' href='#'><sup>⚠</sup></a></td>
                            <td class='docblock-short'>
                                 <p>Transmute a byte slice into a single instance of a <code>Copy</code>able type</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="fn" href="fn.guarded_transmute_vec.html"
+                                  title='fn safe_transmute::guarded_transmute_vec'>guarded_transmute_vec</a><a title='unsafe function' href='#'><sup>⚠</sup></a></td>
+                           <td class='docblock-short'>
+                                <p>Trasform a byte vector into a vector of an arbitrary type.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="fn" href="fn.guarded_transmute_vec_pedantic.html"
+                                  title='fn safe_transmute::guarded_transmute_vec_pedantic'>guarded_transmute_vec_pedantic</a><a title='unsafe function' href='#'><sup>⚠</sup></a></td>
+                           <td class='docblock-short'>
+                                <p>Trasform a byte vector into a vector of an arbitrary type.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="fn" href="fn.guarded_transmute_vec_permissive.html"
+                                  title='fn safe_transmute::guarded_transmute_vec_permissive'>guarded_transmute_vec_permissive</a><a title='unsafe function' href='#'><sup>⚠</sup></a></td>
+                           <td class='docblock-short'>
+                                <p>Trasform a byte vector into a vector of an arbitrary type.</p>
                            </td>
                        </tr></table></section>
     <section id='search' class="content hidden"></section>
@@ -189,7 +211,6 @@ for extended discussion).</p>
         window.rootPath = "../";
         window.currentCrate = "safe_transmute";
     </script>
-    <script src="../jquery.js"></script>
     <script src="../main.js"></script>
     <script defer src="../search-index.js"></script>
 </body>
