@@ -521,6 +521,13 @@
 <span id="476">476</span>
 <span id="477">477</span>
 <span id="478">478</span>
+<span id="479">479</span>
+<span id="480">480</span>
+<span id="481">481</span>
+<span id="482">482</span>
+<span id="483">483</span>
+<span id="484">484</span>
+<span id="485">485</span>
 </pre><pre class="rust ">
 <span class="doccomment">//! This crate contains checked implementations of `transmute()`.</span>
 <span class="doccomment">//!</span>
@@ -633,7 +640,7 @@
 <span class="kw">mod</span> <span class="ident">error</span>;
 
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">slice</span>;
-<span class="kw">use</span> <span class="ident">std</span>::<span class="ident">mem</span>::<span class="ident">align_of</span>;
+<span class="kw">use</span> <span class="ident">std</span>::<span class="ident">mem</span>::{<span class="ident">align_of</span>, <span class="ident">forget</span>};
 
 <span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span>::<span class="ident">error</span>::{<span class="ident">ErrorReason</span>, <span class="ident">Error</span>};
 
@@ -758,9 +765,10 @@
 <span class="doccomment">/// // Little-endian</span>
 <span class="doccomment">/// # unsafe {</span>
 <span class="doccomment">/// # /*</span>
-<span class="doccomment">/// assert_eq!(guarded_transmute_many::&lt;u16&gt;(&amp;[0x00, 0x01, 0x00, 0x02]).unwrap(), &amp;[0x0100, 0x0200]);</span>
+<span class="doccomment">/// assert_eq!(guarded_transmute_many::&lt;u16&gt;(&amp;[0x00, 0x01, 0x00, 0x02]).unwrap(),</span>
 <span class="doccomment">/// # */</span>
-<span class="doccomment">/// # assert_eq!(guarded_transmute_many::&lt;u16&gt;(&amp;[0x00, 0x01, 0x00, 0x02].le_to_native::&lt;u16&gt;()).unwrap(), &amp;[0x0100, 0x0200]);</span>
+<span class="doccomment">/// # assert_eq!(guarded_transmute_many::&lt;u16&gt;(&amp;[0x00, 0x01, 0x00, 0x02].le_to_native::&lt;u16&gt;()).unwrap(),</span>
+<span class="doccomment">///            &amp;[0x0100, 0x0200]);</span>
 <span class="doccomment">/// # }</span>
 <span class="doccomment">/// ```</span>
 <span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">guarded_transmute_many</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(<span class="ident">bytes</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>]) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="kw-2">&amp;</span>[<span class="ident">T</span>], <span class="ident">Error</span><span class="op">&gt;</span> {
@@ -820,10 +828,10 @@
 <span class="doccomment">/// // Little-endian</span>
 <span class="doccomment">/// # unsafe {</span>
 <span class="doccomment">/// # /*</span>
-<span class="doccomment">/// assert_eq!(guarded_transmute_many_pedantic::&lt;u16&gt;(&amp;[0x0F, 0x0E, 0x0A, 0x0B]).unwrap(), &amp;[0x0E0F, 0x0B0A]);</span>
+<span class="doccomment">/// assert_eq!(guarded_transmute_many_pedantic::&lt;u16&gt;(&amp;[0x0F, 0x0E, 0x0A, 0x0B]).unwrap(),</span>
 <span class="doccomment">/// # */</span>
 <span class="doccomment">/// # assert_eq!(guarded_transmute_many_pedantic::&lt;u16&gt;(&amp;[0x0F, 0x0E, 0x0A, 0x0B].le_to_native::&lt;u16&gt;()).unwrap(),</span>
-<span class="doccomment">/// #            &amp;[0x0E0F, 0x0B0A]);</span>
+<span class="doccomment">///            &amp;[0x0E0F, 0x0B0A]);</span>
 <span class="doccomment">/// # }</span>
 <span class="doccomment">/// ```</span>
 <span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">guarded_transmute_many_pedantic</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(<span class="ident">bytes</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>]) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="kw-2">&amp;</span>[<span class="ident">T</span>], <span class="ident">Error</span><span class="op">&gt;</span> {
@@ -874,11 +882,15 @@
 <span class="doccomment">/// // Little-endian</span>
 <span class="doccomment">/// # unsafe {</span>
 <span class="doccomment">/// # /*</span>
-<span class="doccomment">/// assert_eq!(guarded_transmute_vec::&lt;u16&gt;(vec![0x00, 0x01, 0x00, 0x02]), Ok(vec![0x0100, 0x0200]));</span>
-<span class="doccomment">/// assert_eq!(guarded_transmute_vec::&lt;u32&gt;(vec![0x04, 0x00, 0x00, 0x00, 0xED]), Ok(vec![0x00000004]));</span>
+<span class="doccomment">/// assert_eq!(guarded_transmute_vec::&lt;u16&gt;(vec![0x00, 0x01, 0x00, 0x02]).unwrap(),</span>
 <span class="doccomment">/// # */</span>
-<span class="doccomment">/// # assert_eq!(guarded_transmute_vec::&lt;u16&gt;(vec![0x00, 0x01, 0x00, 0x02].le_to_native::&lt;u16&gt;()), Ok(vec![0x0100, 0x0200]));</span>
-<span class="doccomment">/// # assert_eq!(guarded_transmute_vec::&lt;u32&gt;(vec![0x04, 0x00, 0x00, 0x00, 0xED].le_to_native::&lt;u32&gt;()), Ok(vec![0x00000004]));</span>
+<span class="doccomment">/// # assert_eq!(guarded_transmute_vec::&lt;u16&gt;(vec![0x00, 0x01, 0x00, 0x02].le_to_native::&lt;u16&gt;()).unwrap(),</span>
+<span class="doccomment">///            vec![0x0100, 0x0200]);</span>
+<span class="doccomment">/// # /*</span>
+<span class="doccomment">/// assert_eq!(guarded_transmute_vec::&lt;u32&gt;(vec![0x04, 0x00, 0x00, 0x00, 0xED]).unwrap(),</span>
+<span class="doccomment">/// # */</span>
+<span class="doccomment">/// # assert_eq!(guarded_transmute_vec::&lt;u32&gt;(vec![0x04, 0x00, 0x00, 0x00, 0xED].le_to_native::&lt;u32&gt;()).unwrap(),</span>
+<span class="doccomment">///            vec![0x00000004]);</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// assert!(guarded_transmute_vec::&lt;i16&gt;(vec![0xED]).is_err());</span>
 <span class="doccomment">/// # }</span>
@@ -925,13 +937,15 @@
 <span class="doccomment">/// // Little-endian</span>
 <span class="doccomment">/// # unsafe {</span>
 <span class="doccomment">/// # /*</span>
-<span class="doccomment">/// assert_eq!(guarded_transmute_vec_permissive::&lt;u16&gt;(vec![0x00, 0x01, 0x00, 0x02]), vec![0x0100, 0x0200]);</span>
-<span class="doccomment">/// assert_eq!(guarded_transmute_vec_permissive::&lt;u32&gt;(vec![0x04, 0x00, 0x00, 0x00, 0xED]), vec![0x00000004]);</span>
+<span class="doccomment">/// assert_eq!(guarded_transmute_vec_permissive::&lt;u16&gt;(vec![0x00, 0x01, 0x00, 0x02]),</span>
 <span class="doccomment">/// # */</span>
 <span class="doccomment">/// # assert_eq!(guarded_transmute_vec_permissive::&lt;u16&gt;(vec![0x00, 0x01, 0x00, 0x02].le_to_native::&lt;u16&gt;()),</span>
-<span class="doccomment">/// #            vec![0x0100, 0x0200]);</span>
+<span class="doccomment">///            vec![0x0100, 0x0200]);</span>
+<span class="doccomment">/// # /*</span>
+<span class="doccomment">/// assert_eq!(guarded_transmute_vec_permissive::&lt;u32&gt;(vec![0x04, 0x00, 0x00, 0x00, 0xED]),</span>
+<span class="doccomment">/// # */</span>
 <span class="doccomment">/// # assert_eq!(guarded_transmute_vec_permissive::&lt;u32&gt;(vec![0x04, 0x00, 0x00, 0x00, 0xED].le_to_native::&lt;u32&gt;()),</span>
-<span class="doccomment">/// #            vec![0x00000004]);</span>
+<span class="doccomment">///            vec![0x00000004]);</span>
 <span class="doccomment">/// assert_eq!(guarded_transmute_vec_permissive::&lt;u16&gt;(vec![0xED]), vec![]);</span>
 <span class="doccomment">/// # }</span>
 <span class="doccomment">/// ```</span>
@@ -939,7 +953,7 @@
     <span class="kw">let</span> <span class="ident">ptr</span> <span class="op">=</span> <span class="ident">bytes</span>.<span class="ident">as_mut_ptr</span>();
     <span class="kw">let</span> <span class="ident">capacity</span> <span class="op">=</span> <span class="ident">bytes</span>.<span class="ident">capacity</span>() <span class="op">/</span> <span class="ident">align_of</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>();
     <span class="kw">let</span> <span class="ident">len</span> <span class="op">=</span> <span class="ident">bytes</span>.<span class="ident">len</span>() <span class="op">/</span> <span class="ident">align_of</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>();
-    ::<span class="ident">std</span>::<span class="ident">mem</span>::<span class="ident">forget</span>(<span class="ident">bytes</span>);
+    <span class="ident">forget</span>(<span class="ident">bytes</span>);
     <span class="ident">Vec</span>::<span class="ident">from_raw_parts</span>(<span class="ident">ptr</span> <span class="kw">as</span> <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">T</span>, <span class="ident">capacity</span>, <span class="ident">len</span>)
 }
 
@@ -973,10 +987,10 @@
 <span class="doccomment">/// // Little-endian</span>
 <span class="doccomment">/// # unsafe {</span>
 <span class="doccomment">/// # /*</span>
-<span class="doccomment">/// assert_eq!(guarded_transmute_vec_pedantic::&lt;u16&gt;(vec![0x00, 0x01, 0x00, 0x02]).unwrap(), vec![0x0100, 0x0200]);</span>
+<span class="doccomment">/// assert_eq!(guarded_transmute_vec_pedantic::&lt;u16&gt;(vec![0x00, 0x01, 0x00, 0x02]).unwrap(),</span>
 <span class="doccomment">/// # */</span>
 <span class="doccomment">/// # assert_eq!(guarded_transmute_vec_pedantic::&lt;u16&gt;(vec![0x00, 0x01, 0x00, 0x02].le_to_native::&lt;u16&gt;()).unwrap(),</span>
-<span class="doccomment">/// #            vec![0x0100, 0x0200]);</span>
+<span class="doccomment">///            vec![0x0100, 0x0200]);</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// assert!(guarded_transmute_vec_pedantic::&lt;u32&gt;(vec![0x04, 0x00, 0x00, 0x00, 0xED]).is_err());</span>
 <span class="doccomment">/// # }</span>
