@@ -109,7 +109,7 @@
 mod error;
 
 use std::slice;
-use std::mem::align_of;
+use std::mem::{align_of, forget};
 
 pub use self::error::{ErrorReason, Error};
 
@@ -234,9 +234,10 @@ pub unsafe fn guarded_transmute_pedantic<T: Copy>(bytes: &[u8]) -> Result<T, Err
 /// // Little-endian
 /// # unsafe {
 /// # /*
-/// assert_eq!(guarded_transmute_many::<u16>(&[0x00, 0x01, 0x00, 0x02]).unwrap(), &[0x0100, 0x0200]);
+/// assert_eq!(guarded_transmute_many::<u16>(&[0x00, 0x01, 0x00, 0x02]).unwrap(),
 /// # */
-/// # assert_eq!(guarded_transmute_many::<u16>(&[0x00, 0x01, 0x00, 0x02].le_to_native::<u16>()).unwrap(), &[0x0100, 0x0200]);
+/// # assert_eq!(guarded_transmute_many::<u16>(&[0x00, 0x01, 0x00, 0x02].le_to_native::<u16>()).unwrap(),
+///            &[0x0100, 0x0200]);
 /// # }
 /// ```
 pub unsafe fn guarded_transmute_many<T>(bytes: &[u8]) -> Result<&[T], Error> {
@@ -296,10 +297,10 @@ pub unsafe fn guarded_transmute_many_permissive<T>(bytes: &[u8]) -> &[T] {
 /// // Little-endian
 /// # unsafe {
 /// # /*
-/// assert_eq!(guarded_transmute_many_pedantic::<u16>(&[0x0F, 0x0E, 0x0A, 0x0B]).unwrap(), &[0x0E0F, 0x0B0A]);
+/// assert_eq!(guarded_transmute_many_pedantic::<u16>(&[0x0F, 0x0E, 0x0A, 0x0B]).unwrap(),
 /// # */
 /// # assert_eq!(guarded_transmute_many_pedantic::<u16>(&[0x0F, 0x0E, 0x0A, 0x0B].le_to_native::<u16>()).unwrap(),
-/// #            &[0x0E0F, 0x0B0A]);
+///            &[0x0E0F, 0x0B0A]);
 /// # }
 /// ```
 pub unsafe fn guarded_transmute_many_pedantic<T>(bytes: &[u8]) -> Result<&[T], Error> {
@@ -350,11 +351,15 @@ pub unsafe fn guarded_transmute_many_pedantic<T>(bytes: &[u8]) -> Result<&[T], E
 /// // Little-endian
 /// # unsafe {
 /// # /*
-/// assert_eq!(guarded_transmute_vec::<u16>(vec![0x00, 0x01, 0x00, 0x02]), Ok(vec![0x0100, 0x0200]));
-/// assert_eq!(guarded_transmute_vec::<u32>(vec![0x04, 0x00, 0x00, 0x00, 0xED]), Ok(vec![0x00000004]));
+/// assert_eq!(guarded_transmute_vec::<u16>(vec![0x00, 0x01, 0x00, 0x02]).unwrap(),
 /// # */
-/// # assert_eq!(guarded_transmute_vec::<u16>(vec![0x00, 0x01, 0x00, 0x02].le_to_native::<u16>()), Ok(vec![0x0100, 0x0200]));
-/// # assert_eq!(guarded_transmute_vec::<u32>(vec![0x04, 0x00, 0x00, 0x00, 0xED].le_to_native::<u32>()), Ok(vec![0x00000004]));
+/// # assert_eq!(guarded_transmute_vec::<u16>(vec![0x00, 0x01, 0x00, 0x02].le_to_native::<u16>()).unwrap(),
+///            vec![0x0100, 0x0200]);
+/// # /*
+/// assert_eq!(guarded_transmute_vec::<u32>(vec![0x04, 0x00, 0x00, 0x00, 0xED]).unwrap(),
+/// # */
+/// # assert_eq!(guarded_transmute_vec::<u32>(vec![0x04, 0x00, 0x00, 0x00, 0xED].le_to_native::<u32>()).unwrap(),
+///            vec![0x00000004]);
 ///
 /// assert!(guarded_transmute_vec::<i16>(vec![0xED]).is_err());
 /// # }
@@ -401,13 +406,15 @@ pub unsafe fn guarded_transmute_vec<T>(bytes: Vec<u8>) -> Result<Vec<T>, Error> 
 /// // Little-endian
 /// # unsafe {
 /// # /*
-/// assert_eq!(guarded_transmute_vec_permissive::<u16>(vec![0x00, 0x01, 0x00, 0x02]), vec![0x0100, 0x0200]);
-/// assert_eq!(guarded_transmute_vec_permissive::<u32>(vec![0x04, 0x00, 0x00, 0x00, 0xED]), vec![0x00000004]);
+/// assert_eq!(guarded_transmute_vec_permissive::<u16>(vec![0x00, 0x01, 0x00, 0x02]),
 /// # */
 /// # assert_eq!(guarded_transmute_vec_permissive::<u16>(vec![0x00, 0x01, 0x00, 0x02].le_to_native::<u16>()),
-/// #            vec![0x0100, 0x0200]);
+///            vec![0x0100, 0x0200]);
+/// # /*
+/// assert_eq!(guarded_transmute_vec_permissive::<u32>(vec![0x04, 0x00, 0x00, 0x00, 0xED]),
+/// # */
 /// # assert_eq!(guarded_transmute_vec_permissive::<u32>(vec![0x04, 0x00, 0x00, 0x00, 0xED].le_to_native::<u32>()),
-/// #            vec![0x00000004]);
+///            vec![0x00000004]);
 /// assert_eq!(guarded_transmute_vec_permissive::<u16>(vec![0xED]), vec![]);
 /// # }
 /// ```
@@ -415,7 +422,7 @@ pub unsafe fn guarded_transmute_vec_permissive<T>(mut bytes: Vec<u8>) -> Vec<T> 
     let ptr = bytes.as_mut_ptr();
     let capacity = bytes.capacity() / align_of::<T>();
     let len = bytes.len() / align_of::<T>();
-    ::std::mem::forget(bytes);
+    forget(bytes);
     Vec::from_raw_parts(ptr as *mut T, capacity, len)
 }
 
@@ -449,10 +456,10 @@ pub unsafe fn guarded_transmute_vec_permissive<T>(mut bytes: Vec<u8>) -> Vec<T> 
 /// // Little-endian
 /// # unsafe {
 /// # /*
-/// assert_eq!(guarded_transmute_vec_pedantic::<u16>(vec![0x00, 0x01, 0x00, 0x02]).unwrap(), vec![0x0100, 0x0200]);
+/// assert_eq!(guarded_transmute_vec_pedantic::<u16>(vec![0x00, 0x01, 0x00, 0x02]).unwrap(),
 /// # */
 /// # assert_eq!(guarded_transmute_vec_pedantic::<u16>(vec![0x00, 0x01, 0x00, 0x02].le_to_native::<u16>()).unwrap(),
-/// #            vec![0x0100, 0x0200]);
+///            vec![0x0100, 0x0200]);
 ///
 /// assert!(guarded_transmute_vec_pedantic::<u32>(vec![0x04, 0x00, 0x00, 0x00, 0xED]).is_err());
 /// # }
