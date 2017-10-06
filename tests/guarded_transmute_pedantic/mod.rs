@@ -1,4 +1,5 @@
 use safe_transmute::{ErrorReason, Error, guarded_transmute_pedantic};
+use self::super::LeToNative;
 
 
 #[test]
@@ -22,7 +23,7 @@ fn too_short() {
 #[test]
 fn just_enough() {
     unsafe {
-        assert_eq!(guarded_transmute_pedantic::<u32>(&[0x00, 0x00, 0x00, 0x01]), Ok(0x01000000));
+        assert_eq!(guarded_transmute_pedantic::<u32>(&[0x00, 0x00, 0x00, 0x01].le_to_native::<u32>()), Ok(0x01000000));
     }
 }
 

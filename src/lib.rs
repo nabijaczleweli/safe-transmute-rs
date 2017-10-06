@@ -14,11 +14,31 @@
 //!
 //! ```
 //! # use safe_transmute::guarded_transmute_many;
+//! # trait LeToNative { fn le_to_native<T: Sized>(self) -> Self; }
+//! # impl<'a> LeToNative for &'a mut [u8] {
+//! #     #[cfg(target_endian = "little")]
+//! #     fn le_to_native<T: Sized>(self) -> Self { self }
+//! #     #[cfg(target_endian = "big")]
+//! #     fn le_to_native<T: Sized>(mut self) -> Self {
+//! #         use std::mem::size_of;
+//! #         for elem in self.chunks_mut(size_of::<T>()) { elem.reverse(); }
+//! #         self
+//! #     }
+//! # }
+//! # impl LeToNative for [u8; 5] {
+//! #     #[cfg(target_endian = "little")]
+//! #     fn le_to_native<T: Sized>(self) -> Self { self }
+//! #     #[cfg(target_endian = "big")]
+//! #     fn le_to_native<T: Sized>(mut self) -> Self { (&mut self[..]).le_to_native::<T>(); self }
+//! # }
 //! # unsafe {
 //! assert_eq!(guarded_transmute_many::<u16>(&[0x00, 0x01,
 //!                                            0x12, 0x34,
 //!                                            // Spare byte, unused
+//! # /*
 //!                                            0x00]).unwrap(),
+//! # */
+//! #                                          0x00].le_to_native::<u16>()).unwrap(),
 //!            &[0x0100, 0x3412]);
 //! # }
 //! ```
@@ -27,9 +47,29 @@
 //!
 //! ```
 //! # use safe_transmute::guarded_transmute_many_pedantic;
+//! # trait LeToNative { fn le_to_native<T: Sized>(self) -> Self; }
+//! # impl<'a> LeToNative for &'a mut [u8] {
+//! #     #[cfg(target_endian = "little")]
+//! #     fn le_to_native<T: Sized>(self) -> Self { self }
+//! #     #[cfg(target_endian = "big")]
+//! #     fn le_to_native<T: Sized>(mut self) -> Self {
+//! #         use std::mem::size_of;
+//! #         for elem in self.chunks_mut(size_of::<T>()) { elem.reverse(); }
+//! #         self
+//! #     }
+//! # }
+//! # impl LeToNative for [u8; 4] {
+//! #     #[cfg(target_endian = "little")]
+//! #     fn le_to_native<T: Sized>(self) -> Self { self }
+//! #     #[cfg(target_endian = "big")]
+//! #     fn le_to_native<T: Sized>(mut self) -> Self { (&mut self[..]).le_to_native::<T>(); self }
+//! # }
 //! # unsafe {
 //! assert_eq!(guarded_transmute_many_pedantic::<u16>(&[0x00, 0x01,
+//! # /*
 //!                                                     0x12, 0x34]).unwrap(),
+//! # */
+//! #                                                   0x12, 0x34].le_to_native::<u16>()).unwrap(),
 //!            &[0x0100, 0x3412]);
 //! # }
 //! ```
@@ -38,9 +78,30 @@
 //!
 //! ```
 //! # use safe_transmute::guarded_transmute;
+//! # trait LeToNative { fn le_to_native<T: Sized>(self) -> Self; }
+//! # impl<'a> LeToNative for &'a mut [u8] {
+//! #     #[cfg(target_endian = "little")]
+//! #     fn le_to_native<T: Sized>(self) -> Self { self }
+//! #     #[cfg(target_endian = "big")]
+//! #     fn le_to_native<T: Sized>(mut self) -> Self {
+//! #         use std::mem::size_of;
+//! #         for elem in self.chunks_mut(size_of::<T>()) { elem.reverse(); }
+//! #         self
+//! #     }
+//! # }
+//! # impl LeToNative for [u8; 8] {
+//! #     #[cfg(target_endian = "little")]
+//! #     fn le_to_native<T: Sized>(self) -> Self { self }
+//! #     #[cfg(target_endian = "big")]
+//! #     fn le_to_native<T: Sized>(mut self) -> Self { (&mut self[..]).le_to_native::<T>(); self }
+//! # }
 //! # unsafe {
-//! assert_eq!(guarded_transmute::<f64>(&[0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]).unwrap(),
-//!            0.0);
+//! assert_eq!(guarded_transmute::<f64>(&[0x00, 0x00, 0x00, 0x00,
+//! # /*
+//!                                       0x00, 0x00, 0x00, 0x40]).unwrap(),
+//! # */
+//! #                                     0x00, 0x00, 0x00, 0x40].le_to_native::<f64>()).unwrap(),
+//!            2.0);
 //! # }
 //! ```
 
@@ -181,7 +242,7 @@ pub unsafe fn guarded_transmute_many_pedantic<T>(bytes: &[u8]) -> Result<&[T], E
 
 /// Trasform a byte vector into a vector of an arbitrary type.
 ///
-/// The resulting vec will reuse the allocated byte buffer when possible, and 
+/// The resulting vec will reuse the allocated byte buffer when possible, and
 /// should have at least enough bytes to fill a single instance of a type.
 /// Extraneous data is ignored.
 ///
@@ -210,7 +271,7 @@ pub unsafe fn guarded_transmute_vec<T>(bytes: Vec<u8>) -> Result<Vec<T>, Error> 
 
 /// Trasform a byte vector into a vector of an arbitrary type.
 ///
-/// The vector's allocated byte buffer will be reused when possible, and 
+/// The vector's allocated byte buffer will be reused when possible, and
 /// have as many instances of a type as will fit, rounded down.
 /// Extraneous data is ignored.
 ///

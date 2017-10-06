@@ -1,4 +1,5 @@
 use safe_transmute::{ErrorReason, Error, guarded_transmute_many};
+use self::super::LeToNative;
 
 
 #[test]
@@ -22,8 +23,9 @@ fn too_short() {
 #[test]
 fn just_enough() {
     unsafe {
-        assert_eq!(guarded_transmute_many::<u16>(&[0x00, 0x01]), Ok([0x0100u16].into_iter().as_slice()));
-        assert_eq!(guarded_transmute_many::<u16>(&[0x00, 0x01, 0x00, 0x02]),
+        assert_eq!(guarded_transmute_many::<u16>(&[0x00, 0x01].le_to_native::<u16>()),
+                   Ok([0x0100u16].into_iter().as_slice()));
+        assert_eq!(guarded_transmute_many::<u16>(&[0x00, 0x01, 0x00, 0x02].le_to_native::<u16>()),
                    Ok([0x0100u16, 0x0200u16].into_iter().as_slice()));
     }
 }
@@ -31,10 +33,11 @@ fn just_enough() {
 #[test]
 fn too_much() {
     unsafe {
-        assert_eq!(guarded_transmute_many::<u16>(&[0x00, 0x01, 0x00]), Ok([0x0100u16].into_iter().as_slice()));
-        assert_eq!(guarded_transmute_many::<u16>(&[0x00, 0x01, 0x00, 0x02, 0x00]),
+        assert_eq!(guarded_transmute_many::<u16>(&[0x00, 0x01, 0x00].le_to_native::<u16>()),
+                   Ok([0x0100u16].into_iter().as_slice()));
+        assert_eq!(guarded_transmute_many::<u16>(&[0x00, 0x01, 0x00, 0x02, 0x00].le_to_native::<u16>()),
                    Ok([0x0100u16, 0x0200u16].into_iter().as_slice()));
-        assert_eq!(guarded_transmute_many::<u16>(&[0x00, 0x01, 0x00, 0x02, 0x00, 0x03, 0x00]),
+        assert_eq!(guarded_transmute_many::<u16>(&[0x00, 0x01, 0x00, 0x02, 0x00, 0x03, 0x00].le_to_native::<u16>()),
                    Ok([0x0100u16, 0x0200u16, 0x0300u16].into_iter().as_slice()));
     }
 }
