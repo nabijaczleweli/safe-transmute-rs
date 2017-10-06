@@ -48,7 +48,7 @@
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a class='srclink' href='../src/safe_transmute/lib.rs.html#313-331' title='goto source code'>[src]</a></span></h1>
+               </span><a class='srclink' href='../src/safe_transmute/lib.rs.html#460-478' title='goto source code'>[src]</a></span></h1>
 <pre class='rust fn'>pub unsafe fn guarded_transmute_vec_pedantic&lt;T&gt;(<br>&nbsp;&nbsp;&nbsp;&nbsp;bytes: <a class="struct" href="https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html" title="struct alloc::vec::Vec">Vec</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u8.html">u8</a>&gt;<br>) -&gt; <a class="enum" href="https://doc.rust-lang.org/nightly/core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;<a class="struct" href="https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html" title="struct alloc::vec::Vec">Vec</a>&lt;T&gt;, <a class="struct" href="../safe_transmute/struct.Error.html" title="struct safe_transmute::Error">Error</a>&gt;</pre><div class='docblock'><p>Trasform a byte vector into a vector of an arbitrary type.</p>
 
 <p>The vector&#39;s allocated byte buffer will be reused when possible, and
@@ -58,6 +58,7 @@ should not have extraneous data.</p>
 <pre class="rust rust-example-rendered">
 <span class="comment">// Little-endian</span>
 <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">guarded_transmute_vec_pedantic</span>::<span class="op">&lt;</span><span class="ident">u16</span><span class="op">&gt;</span>(<span class="macro">vec</span><span class="macro">!</span>[<span class="number">0x00</span>, <span class="number">0x01</span>, <span class="number">0x00</span>, <span class="number">0x02</span>]).<span class="ident">unwrap</span>(), <span class="macro">vec</span><span class="macro">!</span>[<span class="number">0x0100</span>, <span class="number">0x0200</span>]);
+
 <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">guarded_transmute_vec_pedantic</span>::<span class="op">&lt;</span><span class="ident">u32</span><span class="op">&gt;</span>(<span class="macro">vec</span><span class="macro">!</span>[<span class="number">0x04</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0xED</span>]).<span class="ident">is_err</span>());</pre>
 </div></section>
     <section id='search' class="content hidden"></section>

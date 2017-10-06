@@ -374,6 +374,153 @@
 <span id="329">329</span>
 <span id="330">330</span>
 <span id="331">331</span>
+<span id="332">332</span>
+<span id="333">333</span>
+<span id="334">334</span>
+<span id="335">335</span>
+<span id="336">336</span>
+<span id="337">337</span>
+<span id="338">338</span>
+<span id="339">339</span>
+<span id="340">340</span>
+<span id="341">341</span>
+<span id="342">342</span>
+<span id="343">343</span>
+<span id="344">344</span>
+<span id="345">345</span>
+<span id="346">346</span>
+<span id="347">347</span>
+<span id="348">348</span>
+<span id="349">349</span>
+<span id="350">350</span>
+<span id="351">351</span>
+<span id="352">352</span>
+<span id="353">353</span>
+<span id="354">354</span>
+<span id="355">355</span>
+<span id="356">356</span>
+<span id="357">357</span>
+<span id="358">358</span>
+<span id="359">359</span>
+<span id="360">360</span>
+<span id="361">361</span>
+<span id="362">362</span>
+<span id="363">363</span>
+<span id="364">364</span>
+<span id="365">365</span>
+<span id="366">366</span>
+<span id="367">367</span>
+<span id="368">368</span>
+<span id="369">369</span>
+<span id="370">370</span>
+<span id="371">371</span>
+<span id="372">372</span>
+<span id="373">373</span>
+<span id="374">374</span>
+<span id="375">375</span>
+<span id="376">376</span>
+<span id="377">377</span>
+<span id="378">378</span>
+<span id="379">379</span>
+<span id="380">380</span>
+<span id="381">381</span>
+<span id="382">382</span>
+<span id="383">383</span>
+<span id="384">384</span>
+<span id="385">385</span>
+<span id="386">386</span>
+<span id="387">387</span>
+<span id="388">388</span>
+<span id="389">389</span>
+<span id="390">390</span>
+<span id="391">391</span>
+<span id="392">392</span>
+<span id="393">393</span>
+<span id="394">394</span>
+<span id="395">395</span>
+<span id="396">396</span>
+<span id="397">397</span>
+<span id="398">398</span>
+<span id="399">399</span>
+<span id="400">400</span>
+<span id="401">401</span>
+<span id="402">402</span>
+<span id="403">403</span>
+<span id="404">404</span>
+<span id="405">405</span>
+<span id="406">406</span>
+<span id="407">407</span>
+<span id="408">408</span>
+<span id="409">409</span>
+<span id="410">410</span>
+<span id="411">411</span>
+<span id="412">412</span>
+<span id="413">413</span>
+<span id="414">414</span>
+<span id="415">415</span>
+<span id="416">416</span>
+<span id="417">417</span>
+<span id="418">418</span>
+<span id="419">419</span>
+<span id="420">420</span>
+<span id="421">421</span>
+<span id="422">422</span>
+<span id="423">423</span>
+<span id="424">424</span>
+<span id="425">425</span>
+<span id="426">426</span>
+<span id="427">427</span>
+<span id="428">428</span>
+<span id="429">429</span>
+<span id="430">430</span>
+<span id="431">431</span>
+<span id="432">432</span>
+<span id="433">433</span>
+<span id="434">434</span>
+<span id="435">435</span>
+<span id="436">436</span>
+<span id="437">437</span>
+<span id="438">438</span>
+<span id="439">439</span>
+<span id="440">440</span>
+<span id="441">441</span>
+<span id="442">442</span>
+<span id="443">443</span>
+<span id="444">444</span>
+<span id="445">445</span>
+<span id="446">446</span>
+<span id="447">447</span>
+<span id="448">448</span>
+<span id="449">449</span>
+<span id="450">450</span>
+<span id="451">451</span>
+<span id="452">452</span>
+<span id="453">453</span>
+<span id="454">454</span>
+<span id="455">455</span>
+<span id="456">456</span>
+<span id="457">457</span>
+<span id="458">458</span>
+<span id="459">459</span>
+<span id="460">460</span>
+<span id="461">461</span>
+<span id="462">462</span>
+<span id="463">463</span>
+<span id="464">464</span>
+<span id="465">465</span>
+<span id="466">466</span>
+<span id="467">467</span>
+<span id="468">468</span>
+<span id="469">469</span>
+<span id="470">470</span>
+<span id="471">471</span>
+<span id="472">472</span>
+<span id="473">473</span>
+<span id="474">474</span>
+<span id="475">475</span>
+<span id="476">476</span>
+<span id="477">477</span>
+<span id="478">478</span>
 </pre><pre class="rust ">
 <span class="doccomment">//! This crate contains checked implementations of `transmute()`.</span>
 <span class="doccomment">//!</span>
@@ -500,9 +647,29 @@
 <span class="doccomment">///</span>
 <span class="doccomment">/// ```</span>
 <span class="doccomment">/// # use safe_transmute::guarded_transmute;</span>
+<span class="doccomment">/// # trait LeToNative { fn le_to_native&lt;T: Sized&gt;(self) -&gt; Self; }</span>
+<span class="doccomment">/// # impl&lt;&#39;a&gt; LeToNative for &amp;&#39;a mut [u8] {</span>
+<span class="doccomment">/// #     #[cfg(target_endian = &quot;little&quot;)]</span>
+<span class="doccomment">/// #     fn le_to_native&lt;T: Sized&gt;(self) -&gt; Self { self }</span>
+<span class="doccomment">/// #     #[cfg(target_endian = &quot;big&quot;)]</span>
+<span class="doccomment">/// #     fn le_to_native&lt;T: Sized&gt;(mut self) -&gt; Self {</span>
+<span class="doccomment">/// #         use std::mem::size_of;</span>
+<span class="doccomment">/// #         for elem in self.chunks_mut(size_of::&lt;T&gt;()) { elem.reverse(); }</span>
+<span class="doccomment">/// #         self</span>
+<span class="doccomment">/// #     }</span>
+<span class="doccomment">/// # }</span>
+<span class="doccomment">/// # impl LeToNative for [u8; 4] {</span>
+<span class="doccomment">/// #     #[cfg(target_endian = &quot;little&quot;)]</span>
+<span class="doccomment">/// #     fn le_to_native&lt;T: Sized&gt;(self) -&gt; Self { self }</span>
+<span class="doccomment">/// #     #[cfg(target_endian = &quot;big&quot;)]</span>
+<span class="doccomment">/// #     fn le_to_native&lt;T: Sized&gt;(mut self) -&gt; Self { (&amp;mut self[..]).le_to_native::&lt;T&gt;(); self }</span>
+<span class="doccomment">/// # }</span>
 <span class="doccomment">/// // Little-endian</span>
 <span class="doccomment">/// # unsafe {</span>
+<span class="doccomment">/// # /*</span>
 <span class="doccomment">/// assert_eq!(guarded_transmute::&lt;u32&gt;(&amp;[0x00, 0x00, 0x00, 0x01]).unwrap(), 0x01000000);</span>
+<span class="doccomment">/// # */</span>
+<span class="doccomment">/// # assert_eq!(guarded_transmute::&lt;u32&gt;(&amp;[0x00, 0x00, 0x00, 0x01].le_to_native::&lt;u32&gt;()).unwrap(), 0x01000000);</span>
 <span class="doccomment">/// # }</span>
 <span class="doccomment">/// ```</span>
 <span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">guarded_transmute</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">Copy</span><span class="op">&gt;</span>(<span class="ident">bytes</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>]) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">Error</span><span class="op">&gt;</span> {
@@ -525,9 +692,29 @@
 <span class="doccomment">///</span>
 <span class="doccomment">/// ```</span>
 <span class="doccomment">/// # use safe_transmute::guarded_transmute_pedantic;</span>
+<span class="doccomment">/// # trait LeToNative { fn le_to_native&lt;T: Sized&gt;(self) -&gt; Self; }</span>
+<span class="doccomment">/// # impl&lt;&#39;a&gt; LeToNative for &amp;&#39;a mut [u8] {</span>
+<span class="doccomment">/// #     #[cfg(target_endian = &quot;little&quot;)]</span>
+<span class="doccomment">/// #     fn le_to_native&lt;T: Sized&gt;(self) -&gt; Self { self }</span>
+<span class="doccomment">/// #     #[cfg(target_endian = &quot;big&quot;)]</span>
+<span class="doccomment">/// #     fn le_to_native&lt;T: Sized&gt;(mut self) -&gt; Self {</span>
+<span class="doccomment">/// #         use std::mem::size_of;</span>
+<span class="doccomment">/// #         for elem in self.chunks_mut(size_of::&lt;T&gt;()) { elem.reverse(); }</span>
+<span class="doccomment">/// #         self</span>
+<span class="doccomment">/// #     }</span>
+<span class="doccomment">/// # }</span>
+<span class="doccomment">/// # impl LeToNative for [u8; 2] {</span>
+<span class="doccomment">/// #     #[cfg(target_endian = &quot;little&quot;)]</span>
+<span class="doccomment">/// #     fn le_to_native&lt;T: Sized&gt;(self) -&gt; Self { self }</span>
+<span class="doccomment">/// #     #[cfg(target_endian = &quot;big&quot;)]</span>
+<span class="doccomment">/// #     fn le_to_native&lt;T: Sized&gt;(mut self) -&gt; Self { (&amp;mut self[..]).le_to_native::&lt;T&gt;(); self }</span>
+<span class="doccomment">/// # }</span>
 <span class="doccomment">/// // Little-endian</span>
 <span class="doccomment">/// # unsafe {</span>
+<span class="doccomment">/// # /*</span>
 <span class="doccomment">/// assert_eq!(guarded_transmute_pedantic::&lt;u16&gt;(&amp;[0x0F, 0x0E]).unwrap(), 0x0E0F);</span>
+<span class="doccomment">/// # */</span>
+<span class="doccomment">/// # assert_eq!(guarded_transmute_pedantic::&lt;u16&gt;(&amp;[0x0F, 0x0E].le_to_native::&lt;u16&gt;()).unwrap(), 0x0E0F);</span>
 <span class="doccomment">/// # }</span>
 <span class="doccomment">/// ```</span>
 <span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">guarded_transmute_pedantic</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">Copy</span><span class="op">&gt;</span>(<span class="ident">bytes</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>]) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">Error</span><span class="op">&gt;</span> {
@@ -551,9 +738,29 @@
 <span class="doccomment">///</span>
 <span class="doccomment">/// ```</span>
 <span class="doccomment">/// # use safe_transmute::guarded_transmute_many;</span>
+<span class="doccomment">/// # trait LeToNative { fn le_to_native&lt;T: Sized&gt;(self) -&gt; Self; }</span>
+<span class="doccomment">/// # impl&lt;&#39;a&gt; LeToNative for &amp;&#39;a mut [u8] {</span>
+<span class="doccomment">/// #     #[cfg(target_endian = &quot;little&quot;)]</span>
+<span class="doccomment">/// #     fn le_to_native&lt;T: Sized&gt;(self) -&gt; Self { self }</span>
+<span class="doccomment">/// #     #[cfg(target_endian = &quot;big&quot;)]</span>
+<span class="doccomment">/// #     fn le_to_native&lt;T: Sized&gt;(mut self) -&gt; Self {</span>
+<span class="doccomment">/// #         use std::mem::size_of;</span>
+<span class="doccomment">/// #         for elem in self.chunks_mut(size_of::&lt;T&gt;()) { elem.reverse(); }</span>
+<span class="doccomment">/// #         self</span>
+<span class="doccomment">/// #     }</span>
+<span class="doccomment">/// # }</span>
+<span class="doccomment">/// # impl LeToNative for [u8; 4] {</span>
+<span class="doccomment">/// #     #[cfg(target_endian = &quot;little&quot;)]</span>
+<span class="doccomment">/// #     fn le_to_native&lt;T: Sized&gt;(self) -&gt; Self { self }</span>
+<span class="doccomment">/// #     #[cfg(target_endian = &quot;big&quot;)]</span>
+<span class="doccomment">/// #     fn le_to_native&lt;T: Sized&gt;(mut self) -&gt; Self { (&amp;mut self[..]).le_to_native::&lt;T&gt;(); self }</span>
+<span class="doccomment">/// # }</span>
 <span class="doccomment">/// // Little-endian</span>
 <span class="doccomment">/// # unsafe {</span>
+<span class="doccomment">/// # /*</span>
 <span class="doccomment">/// assert_eq!(guarded_transmute_many::&lt;u16&gt;(&amp;[0x00, 0x01, 0x00, 0x02]).unwrap(), &amp;[0x0100, 0x0200]);</span>
+<span class="doccomment">/// # */</span>
+<span class="doccomment">/// # assert_eq!(guarded_transmute_many::&lt;u16&gt;(&amp;[0x00, 0x01, 0x00, 0x02].le_to_native::&lt;u16&gt;()).unwrap(), &amp;[0x0100, 0x0200]);</span>
 <span class="doccomment">/// # }</span>
 <span class="doccomment">/// ```</span>
 <span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">guarded_transmute_many</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(<span class="ident">bytes</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>]) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="kw-2">&amp;</span>[<span class="ident">T</span>], <span class="ident">Error</span><span class="op">&gt;</span> {
@@ -576,7 +783,6 @@
 <span class="doccomment">///</span>
 <span class="doccomment">/// ```</span>
 <span class="doccomment">/// # use safe_transmute::guarded_transmute_many_permissive;</span>
-<span class="doccomment">/// // Little-endian</span>
 <span class="doccomment">/// # unsafe {</span>
 <span class="doccomment">/// assert_eq!(guarded_transmute_many_permissive::&lt;u16&gt;(&amp;[0x00]), &amp;[]);</span>
 <span class="doccomment">/// # }</span>
@@ -594,9 +800,30 @@
 <span class="doccomment">///</span>
 <span class="doccomment">/// ```</span>
 <span class="doccomment">/// # use safe_transmute::guarded_transmute_many_pedantic;</span>
+<span class="doccomment">/// # trait LeToNative { fn le_to_native&lt;T: Sized&gt;(self) -&gt; Self; }</span>
+<span class="doccomment">/// # impl&lt;&#39;a&gt; LeToNative for &amp;&#39;a mut [u8] {</span>
+<span class="doccomment">/// #     #[cfg(target_endian = &quot;little&quot;)]</span>
+<span class="doccomment">/// #     fn le_to_native&lt;T: Sized&gt;(self) -&gt; Self { self }</span>
+<span class="doccomment">/// #     #[cfg(target_endian = &quot;big&quot;)]</span>
+<span class="doccomment">/// #     fn le_to_native&lt;T: Sized&gt;(mut self) -&gt; Self {</span>
+<span class="doccomment">/// #         use std::mem::size_of;</span>
+<span class="doccomment">/// #         for elem in self.chunks_mut(size_of::&lt;T&gt;()) { elem.reverse(); }</span>
+<span class="doccomment">/// #         self</span>
+<span class="doccomment">/// #     }</span>
+<span class="doccomment">/// # }</span>
+<span class="doccomment">/// # impl LeToNative for [u8; 4] {</span>
+<span class="doccomment">/// #     #[cfg(target_endian = &quot;little&quot;)]</span>
+<span class="doccomment">/// #     fn le_to_native&lt;T: Sized&gt;(self) -&gt; Self { self }</span>
+<span class="doccomment">/// #     #[cfg(target_endian = &quot;big&quot;)]</span>
+<span class="doccomment">/// #     fn le_to_native&lt;T: Sized&gt;(mut self) -&gt; Self { (&amp;mut self[..]).le_to_native::&lt;T&gt;(); self }</span>
+<span class="doccomment">/// # }</span>
 <span class="doccomment">/// // Little-endian</span>
 <span class="doccomment">/// # unsafe {</span>
+<span class="doccomment">/// # /*</span>
 <span class="doccomment">/// assert_eq!(guarded_transmute_many_pedantic::&lt;u16&gt;(&amp;[0x0F, 0x0E, 0x0A, 0x0B]).unwrap(), &amp;[0x0E0F, 0x0B0A]);</span>
+<span class="doccomment">/// # */</span>
+<span class="doccomment">/// # assert_eq!(guarded_transmute_many_pedantic::&lt;u16&gt;(&amp;[0x0F, 0x0E, 0x0A, 0x0B].le_to_native::&lt;u16&gt;()).unwrap(),</span>
+<span class="doccomment">/// #            &amp;[0x0E0F, 0x0B0A]);</span>
 <span class="doccomment">/// # }</span>
 <span class="doccomment">/// ```</span>
 <span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">guarded_transmute_many_pedantic</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(<span class="ident">bytes</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>]) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="kw-2">&amp;</span>[<span class="ident">T</span>], <span class="ident">Error</span><span class="op">&gt;</span> {
@@ -627,10 +854,32 @@
 <span class="doccomment">///</span>
 <span class="doccomment">/// ```</span>
 <span class="doccomment">/// # use safe_transmute::guarded_transmute_vec;</span>
+<span class="doccomment">/// # trait LeToNative { fn le_to_native&lt;T: Sized&gt;(self) -&gt; Self; }</span>
+<span class="doccomment">/// # impl&lt;&#39;a&gt; LeToNative for &amp;&#39;a mut [u8] {</span>
+<span class="doccomment">/// #     #[cfg(target_endian = &quot;little&quot;)]</span>
+<span class="doccomment">/// #     fn le_to_native&lt;T: Sized&gt;(self) -&gt; Self { self }</span>
+<span class="doccomment">/// #     #[cfg(target_endian = &quot;big&quot;)]</span>
+<span class="doccomment">/// #     fn le_to_native&lt;T: Sized&gt;(mut self) -&gt; Self {</span>
+<span class="doccomment">/// #         use std::mem::size_of;</span>
+<span class="doccomment">/// #         for elem in self.chunks_mut(size_of::&lt;T&gt;()) { elem.reverse(); }</span>
+<span class="doccomment">/// #         self</span>
+<span class="doccomment">/// #     }</span>
+<span class="doccomment">/// # }</span>
+<span class="doccomment">/// # impl LeToNative for Vec&lt;u8&gt; {</span>
+<span class="doccomment">/// #     #[cfg(target_endian = &quot;little&quot;)]</span>
+<span class="doccomment">/// #     fn le_to_native&lt;T: Sized&gt;(self) -&gt; Self { self }</span>
+<span class="doccomment">/// #     #[cfg(target_endian = &quot;big&quot;)]</span>
+<span class="doccomment">/// #     fn le_to_native&lt;T: Sized&gt;(mut self) -&gt; Self { (&amp;mut self[..]).le_to_native::&lt;T&gt;(); self }</span>
+<span class="doccomment">/// # }</span>
 <span class="doccomment">/// // Little-endian</span>
 <span class="doccomment">/// # unsafe {</span>
+<span class="doccomment">/// # /*</span>
 <span class="doccomment">/// assert_eq!(guarded_transmute_vec::&lt;u16&gt;(vec![0x00, 0x01, 0x00, 0x02]), Ok(vec![0x0100, 0x0200]));</span>
-<span class="doccomment">/// assert_eq!(guarded_transmute_vec::&lt;u32&gt;(vec![0x04, 0x00, 0x00, 0x00, 0xED]), Ok(vec![4]));</span>
+<span class="doccomment">/// assert_eq!(guarded_transmute_vec::&lt;u32&gt;(vec![0x04, 0x00, 0x00, 0x00, 0xED]), Ok(vec![0x00000004]));</span>
+<span class="doccomment">/// # */</span>
+<span class="doccomment">/// # assert_eq!(guarded_transmute_vec::&lt;u16&gt;(vec![0x00, 0x01, 0x00, 0x02].le_to_native::&lt;u16&gt;()), Ok(vec![0x0100, 0x0200]));</span>
+<span class="doccomment">/// # assert_eq!(guarded_transmute_vec::&lt;u32&gt;(vec![0x04, 0x00, 0x00, 0x00, 0xED].le_to_native::&lt;u32&gt;()), Ok(vec![0x00000004]));</span>
+<span class="doccomment">///</span>
 <span class="doccomment">/// assert!(guarded_transmute_vec::&lt;i16&gt;(vec![0xED]).is_err());</span>
 <span class="doccomment">/// # }</span>
 <span class="doccomment">/// ```</span>
@@ -656,10 +905,33 @@
 <span class="doccomment">///</span>
 <span class="doccomment">/// ```</span>
 <span class="doccomment">/// # use safe_transmute::guarded_transmute_vec_permissive;</span>
+<span class="doccomment">/// # trait LeToNative { fn le_to_native&lt;T: Sized&gt;(self) -&gt; Self; }</span>
+<span class="doccomment">/// # impl&lt;&#39;a&gt; LeToNative for &amp;&#39;a mut [u8] {</span>
+<span class="doccomment">/// #     #[cfg(target_endian = &quot;little&quot;)]</span>
+<span class="doccomment">/// #     fn le_to_native&lt;T: Sized&gt;(self) -&gt; Self { self }</span>
+<span class="doccomment">/// #     #[cfg(target_endian = &quot;big&quot;)]</span>
+<span class="doccomment">/// #     fn le_to_native&lt;T: Sized&gt;(mut self) -&gt; Self {</span>
+<span class="doccomment">/// #         use std::mem::size_of;</span>
+<span class="doccomment">/// #         for elem in self.chunks_mut(size_of::&lt;T&gt;()) { elem.reverse(); }</span>
+<span class="doccomment">/// #         self</span>
+<span class="doccomment">/// #     }</span>
+<span class="doccomment">/// # }</span>
+<span class="doccomment">/// # impl LeToNative for Vec&lt;u8&gt; {</span>
+<span class="doccomment">/// #     #[cfg(target_endian = &quot;little&quot;)]</span>
+<span class="doccomment">/// #     fn le_to_native&lt;T: Sized&gt;(self) -&gt; Self { self }</span>
+<span class="doccomment">/// #     #[cfg(target_endian = &quot;big&quot;)]</span>
+<span class="doccomment">/// #     fn le_to_native&lt;T: Sized&gt;(mut self) -&gt; Self { (&amp;mut self[..]).le_to_native::&lt;T&gt;(); self }</span>
+<span class="doccomment">/// # }</span>
 <span class="doccomment">/// // Little-endian</span>
 <span class="doccomment">/// # unsafe {</span>
+<span class="doccomment">/// # /*</span>
 <span class="doccomment">/// assert_eq!(guarded_transmute_vec_permissive::&lt;u16&gt;(vec![0x00, 0x01, 0x00, 0x02]), vec![0x0100, 0x0200]);</span>
-<span class="doccomment">/// assert_eq!(guarded_transmute_vec_permissive::&lt;u32&gt;(vec![0x04, 0x00, 0x00, 0x00, 0xED]), vec![4]);</span>
+<span class="doccomment">/// assert_eq!(guarded_transmute_vec_permissive::&lt;u32&gt;(vec![0x04, 0x00, 0x00, 0x00, 0xED]), vec![0x00000004]);</span>
+<span class="doccomment">/// # */</span>
+<span class="doccomment">/// # assert_eq!(guarded_transmute_vec_permissive::&lt;u16&gt;(vec![0x00, 0x01, 0x00, 0x02].le_to_native::&lt;u16&gt;()),</span>
+<span class="doccomment">/// #            vec![0x0100, 0x0200]);</span>
+<span class="doccomment">/// # assert_eq!(guarded_transmute_vec_permissive::&lt;u32&gt;(vec![0x04, 0x00, 0x00, 0x00, 0xED].le_to_native::&lt;u32&gt;()),</span>
+<span class="doccomment">/// #            vec![0x00000004]);</span>
 <span class="doccomment">/// assert_eq!(guarded_transmute_vec_permissive::&lt;u16&gt;(vec![0xED]), vec![]);</span>
 <span class="doccomment">/// # }</span>
 <span class="doccomment">/// ```</span>
@@ -681,9 +953,31 @@
 <span class="doccomment">///</span>
 <span class="doccomment">/// ```</span>
 <span class="doccomment">/// # use safe_transmute::guarded_transmute_vec_pedantic;</span>
+<span class="doccomment">/// # trait LeToNative { fn le_to_native&lt;T: Sized&gt;(self) -&gt; Self; }</span>
+<span class="doccomment">/// # impl&lt;&#39;a&gt; LeToNative for &amp;&#39;a mut [u8] {</span>
+<span class="doccomment">/// #     #[cfg(target_endian = &quot;little&quot;)]</span>
+<span class="doccomment">/// #     fn le_to_native&lt;T: Sized&gt;(self) -&gt; Self { self }</span>
+<span class="doccomment">/// #     #[cfg(target_endian = &quot;big&quot;)]</span>
+<span class="doccomment">/// #     fn le_to_native&lt;T: Sized&gt;(mut self) -&gt; Self {</span>
+<span class="doccomment">/// #         use std::mem::size_of;</span>
+<span class="doccomment">/// #         for elem in self.chunks_mut(size_of::&lt;T&gt;()) { elem.reverse(); }</span>
+<span class="doccomment">/// #         self</span>
+<span class="doccomment">/// #     }</span>
+<span class="doccomment">/// # }</span>
+<span class="doccomment">/// # impl LeToNative for Vec&lt;u8&gt; {</span>
+<span class="doccomment">/// #     #[cfg(target_endian = &quot;little&quot;)]</span>
+<span class="doccomment">/// #     fn le_to_native&lt;T: Sized&gt;(self) -&gt; Self { self }</span>
+<span class="doccomment">/// #     #[cfg(target_endian = &quot;big&quot;)]</span>
+<span class="doccomment">/// #     fn le_to_native&lt;T: Sized&gt;(mut self) -&gt; Self { (&amp;mut self[..]).le_to_native::&lt;T&gt;(); self }</span>
+<span class="doccomment">/// # }</span>
 <span class="doccomment">/// // Little-endian</span>
 <span class="doccomment">/// # unsafe {</span>
+<span class="doccomment">/// # /*</span>
 <span class="doccomment">/// assert_eq!(guarded_transmute_vec_pedantic::&lt;u16&gt;(vec![0x00, 0x01, 0x00, 0x02]).unwrap(), vec![0x0100, 0x0200]);</span>
+<span class="doccomment">/// # */</span>
+<span class="doccomment">/// # assert_eq!(guarded_transmute_vec_pedantic::&lt;u16&gt;(vec![0x00, 0x01, 0x00, 0x02].le_to_native::&lt;u16&gt;()).unwrap(),</span>
+<span class="doccomment">/// #            vec![0x0100, 0x0200]);</span>
+<span class="doccomment">///</span>
 <span class="doccomment">/// assert!(guarded_transmute_vec_pedantic::&lt;u32&gt;(vec![0x04, 0x00, 0x00, 0x00, 0xED]).is_err());</span>
 <span class="doccomment">/// # }</span>
 <span class="doccomment">/// ```</span>
