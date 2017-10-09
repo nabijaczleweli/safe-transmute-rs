@@ -11,6 +11,14 @@ mod guarded_transmute_many_permissive;
 mod guarded_transmute_vec;
 mod guarded_transmute_vec_pedantic;
 mod guarded_transmute_vec_permissive;
+mod guarded_transmute_pod;
+mod guarded_transmute_pod_many;
+mod guarded_transmute_pod_pedantic;
+mod guarded_transmute_pod_many_pedantic;
+mod guarded_transmute_pod_many_permissive;
+mod guarded_transmute_pod_vec;
+mod guarded_transmute_pod_vec_pedantic;
+mod guarded_transmute_pod_vec_permissive;
 
 
 /// Verify: http://play.integer32.com/?gist=4cd795d6f45898c876a754cd3f3c2aaa&version=stable

@@ -106,15 +106,19 @@
 //! ```
 
 
+mod pod;
 mod error;
 
 use std::slice;
 use std::mem::{align_of, forget};
 
 pub use self::error::{ErrorReason, Error};
+pub use self::pod::{PodTransmutable, guarded_transmute_pod_many_permissive, guarded_transmute_pod_vec_permissive, guarded_transmute_pod_many_pedantic,
+                    guarded_transmute_pod_pedantic, guarded_transmute_pod_vec_pedantic, guarded_transmute_pod_many, guarded_transmute_pod,
+                    guarded_transmute_pod_vec};
 
 
-/// Transmute a byte slice into a single instance of a `Copy`able type
+/// Transmute a byte slice into a single instance of a `Copy`able type.
 ///
 /// The byte slice must have at least enough bytes to fill a single instance of a type,
 /// extraneous data is ignored.
@@ -160,7 +164,7 @@ pub unsafe fn guarded_transmute<T: Copy>(bytes: &[u8]) -> Result<T, Error> {
     }
 }
 
-/// Transmute a byte slice into a single instance of a `Copy`able type
+/// Transmute a byte slice into a single instance of a `Copy`able type.
 ///
 /// The byte slice must have exactly enough bytes to fill a single instance of a type.
 ///
