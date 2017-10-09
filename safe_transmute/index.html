@@ -29,7 +29,7 @@
 
     <nav class="sidebar">
         
-        <p class='location'>Crate safe_transmute</p><div class="block items"><ul><li><a href="#structs">Structs</a></li><li><a href="#enums">Enums</a></li><li><a href="#functions">Functions</a></li></ul></div><p class='location'></p><script>window.sidebarCurrent = {name: 'safe_transmute', ty: 'mod', relpath: '../'};</script>
+        <p class='location'>Crate safe_transmute</p><div class="block items"><ul><li><a href="#structs">Structs</a></li><li><a href="#enums">Enums</a></li><li><a href="#traits">Traits</a></li><li><a href="#functions">Functions</a></li></ul></div><p class='location'></p><script>window.sidebarCurrent = {name: 'safe_transmute', ty: 'mod', relpath: '../'};</script>
     </nav>
 
     <nav class="sub">
@@ -48,7 +48,7 @@
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a class='srclink' href='../src/safe_transmute/lib.rs.html#1-485' title='goto source code'>[src]</a></span></h1>
+               </span><a class='srclink' href='../src/safe_transmute/lib.rs.html#1-489' title='goto source code'>[src]</a></span></h1>
 <div class='docblock'><p>This crate contains checked implementations of <code>transmute()</code>.</p>
 
 <p>The functions in this crate are not inherently safe, but just guarded against common simple mistakes
@@ -98,13 +98,21 @@ for extended discussion).</p>
                            <td class='docblock-short'>
                                 <p>How the type&#39;s size compares to the received byte count and the transmutation function&#39;s characteristic.</p>
                            </td>
+                       </tr></table><h2 id='traits' class='section-header'><a href="#traits">Traits</a></h2>
+<table>
+                       <tr class=' module-item'>
+                           <td><a class="trait" href="trait.PodTransmutable.html"
+                                  title='trait safe_transmute::PodTransmutable'>PodTransmutable</a></td>
+                           <td class='docblock-short'>
+                                <p>Type that can be non-<code>unsafe</code>ly transmuted into</p>
+                           </td>
                        </tr></table><h2 id='functions' class='section-header'><a href="#functions">Functions</a></h2>
 <table>
                        <tr class=' module-item'>
                            <td><a class="fn" href="fn.guarded_transmute.html"
                                   title='fn safe_transmute::guarded_transmute'>guarded_transmute</a><a title='unsafe function' href='#'><sup>⚠</sup></a></td>
                            <td class='docblock-short'>
-                                <p>Transmute a byte slice into a single instance of a <code>Copy</code>able type</p>
+                                <p>Transmute a byte slice into a single instance of a <code>Copy</code>able type.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
@@ -132,7 +140,63 @@ for extended discussion).</p>
                            <td><a class="fn" href="fn.guarded_transmute_pedantic.html"
                                   title='fn safe_transmute::guarded_transmute_pedantic'>guarded_transmute_pedantic</a><a title='unsafe function' href='#'><sup>⚠</sup></a></td>
                            <td class='docblock-short'>
-                                <p>Transmute a byte slice into a single instance of a <code>Copy</code>able type</p>
+                                <p>Transmute a byte slice into a single instance of a <code>Copy</code>able type.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="fn" href="fn.guarded_transmute_pod.html"
+                                  title='fn safe_transmute::guarded_transmute_pod'>guarded_transmute_pod</a></td>
+                           <td class='docblock-short'>
+                                <p>Transmute a byte slice into a single instance of a POD.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="fn" href="fn.guarded_transmute_pod_many.html"
+                                  title='fn safe_transmute::guarded_transmute_pod_many'>guarded_transmute_pod_many</a></td>
+                           <td class='docblock-short'>
+                                <p>Transmute a byte slice into a single instance of a POD.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="fn" href="fn.guarded_transmute_pod_many_pedantic.html"
+                                  title='fn safe_transmute::guarded_transmute_pod_many_pedantic'>guarded_transmute_pod_many_pedantic</a></td>
+                           <td class='docblock-short'>
+                                <p>View a byte slice as a slice of POD.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="fn" href="fn.guarded_transmute_pod_many_permissive.html"
+                                  title='fn safe_transmute::guarded_transmute_pod_many_permissive'>guarded_transmute_pod_many_permissive</a></td>
+                           <td class='docblock-short'>
+                                <p>View a byte slice as a slice of a POD type.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="fn" href="fn.guarded_transmute_pod_pedantic.html"
+                                  title='fn safe_transmute::guarded_transmute_pod_pedantic'>guarded_transmute_pod_pedantic</a></td>
+                           <td class='docblock-short'>
+                                <p>Transmute a byte slice into a single instance of a POD.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="fn" href="fn.guarded_transmute_pod_vec.html"
+                                  title='fn safe_transmute::guarded_transmute_pod_vec'>guarded_transmute_pod_vec</a></td>
+                           <td class='docblock-short'>
+                                <p>Trasform a byte vector into a vector of POD.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="fn" href="fn.guarded_transmute_pod_vec_pedantic.html"
+                                  title='fn safe_transmute::guarded_transmute_pod_vec_pedantic'>guarded_transmute_pod_vec_pedantic</a></td>
+                           <td class='docblock-short'>
+                                <p>Trasform a byte vector into a vector of POD.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="fn" href="fn.guarded_transmute_pod_vec_permissive.html"
+                                  title='fn safe_transmute::guarded_transmute_pod_vec_permissive'>guarded_transmute_pod_vec_permissive</a></td>
+                           <td class='docblock-short'>
+                                <p>Trasform a byte vector into a vector of POD.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
