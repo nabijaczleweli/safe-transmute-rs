@@ -362,6 +362,7 @@
 <span id="317">317</span>
 <span id="318">318</span>
 <span id="319">319</span>
+<span id="320">320</span>
 </pre><pre class="rust ">
 <span class="kw">use</span> <span class="self">self</span>::<span class="kw">super</span>::{<span class="ident">Error</span>, <span class="ident">guarded_transmute_vec_permissive</span>, <span class="ident">guarded_transmute_many_permissive</span>, <span class="ident">guarded_transmute_many_pedantic</span>, <span class="ident">guarded_transmute_vec_pedantic</span>,
                   <span class="ident">guarded_transmute_pedantic</span>, <span class="ident">guarded_transmute_vec</span>, <span class="ident">guarded_transmute_many</span>, <span class="ident">guarded_transmute</span>};
@@ -677,7 +678,8 @@
 <span class="doccomment">/// # assert_eq!(guarded_transmute_pod_vec_pedantic::&lt;u16&gt;(vec![0x00, 0x01, 0x00, 0x02].le_to_native::&lt;u16&gt;()).unwrap(),</span>
 <span class="doccomment">///            vec![0x0100, 0x0200]);</span>
 <span class="doccomment">///</span>
-<span class="doccomment">/// assert!(guarded_transmute_pod_vec_pedantic::&lt;u32&gt;(vec![0x04, 0x00, 0x00, 0x00, 0xED]).is_err());</span>
+<span class="doccomment">/// assert!(guarded_transmute_pod_vec_pedantic::&lt;u32&gt;(vec![0x04, 0x00, 0x00, 0x00, 0xED])</span>
+<span class="doccomment">///           .is_err());</span>
 <span class="doccomment">/// ```</span>
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">guarded_transmute_pod_vec_pedantic</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">PodTransmutable</span><span class="op">&gt;</span>(<span class="ident">bytes</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>, <span class="ident">Error</span><span class="op">&gt;</span> {
     <span class="kw">unsafe</span> { <span class="ident">guarded_transmute_vec_pedantic</span>(<span class="ident">bytes</span>) }
