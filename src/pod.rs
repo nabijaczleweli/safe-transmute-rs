@@ -10,7 +10,7 @@ use self::super::{Error, guarded_transmute_vec_permissive, guarded_transmute_man
 /// Marker trait for `guarded_transmute_pod_*()` functions.
 ///
 /// *Nota bene*: `bool`s aren't *actually* non-`unsafe` to transmute, because they're restricted to being `0` or `1`,
-/// which means it's UB to transmute an arbitrary byte to into a `bool`.
+/// which means it's UB to transmute an arbitrary byte into a `bool`.
 ///
 /// *Nota bene*: if you transmute into a floating-point type you will have a chance to create signaling NaNs
 /// (judgement's still out as to whether they're legal).
@@ -25,9 +25,11 @@ impl PodTransmutable for i32 {}
 impl PodTransmutable for u64 {}
 impl PodTransmutable for i64 {}
 impl PodTransmutable for char {}
-#[cfg(stage0)]
+impl PodTransmutable for f32 {}
+impl PodTransmutable for f64 {}
+#[cfg(i128_type)]
 impl PodTransmutable for u128 {}
-#[cfg(stage0)]
+#[cfg(i128_type)]
 impl PodTransmutable for i128 {}
 
 
