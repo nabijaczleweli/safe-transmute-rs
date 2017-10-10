@@ -363,6 +363,8 @@
 <span id="318">318</span>
 <span id="319">319</span>
 <span id="320">320</span>
+<span id="321">321</span>
+<span id="322">322</span>
 </pre><pre class="rust ">
 <span class="kw">use</span> <span class="self">self</span>::<span class="kw">super</span>::{<span class="ident">Error</span>, <span class="ident">guarded_transmute_vec_permissive</span>, <span class="ident">guarded_transmute_many_permissive</span>, <span class="ident">guarded_transmute_many_pedantic</span>, <span class="ident">guarded_transmute_vec_pedantic</span>,
                   <span class="ident">guarded_transmute_pedantic</span>, <span class="ident">guarded_transmute_vec</span>, <span class="ident">guarded_transmute_many</span>, <span class="ident">guarded_transmute</span>};
@@ -376,7 +378,7 @@
 <span class="doccomment">/// Marker trait for `guarded_transmute_pod_*()` functions.</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// *Nota bene*: `bool`s aren&#39;t *actually* non-`unsafe` to transmute, because they&#39;re restricted to being `0` or `1`,</span>
-<span class="doccomment">/// which means it&#39;s UB to transmute an arbitrary byte to into a `bool`.</span>
+<span class="doccomment">/// which means it&#39;s UB to transmute an arbitrary byte into a `bool`.</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// *Nota bene*: if you transmute into a floating-point type you will have a chance to create signaling NaNs</span>
 <span class="doccomment">/// (judgement&#39;s still out as to whether they&#39;re legal).</span>
@@ -391,9 +393,11 @@
 <span class="kw">impl</span> <span class="ident">PodTransmutable</span> <span class="kw">for</span> <span class="ident">u64</span> {}
 <span class="kw">impl</span> <span class="ident">PodTransmutable</span> <span class="kw">for</span> <span class="ident">i64</span> {}
 <span class="kw">impl</span> <span class="ident">PodTransmutable</span> <span class="kw">for</span> <span class="ident">char</span> {}
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">stage0</span>)]</span>
+<span class="kw">impl</span> <span class="ident">PodTransmutable</span> <span class="kw">for</span> <span class="ident">f32</span> {}
+<span class="kw">impl</span> <span class="ident">PodTransmutable</span> <span class="kw">for</span> <span class="ident">f64</span> {}
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">i128_type</span>)]</span>
 <span class="kw">impl</span> <span class="ident">PodTransmutable</span> <span class="kw">for</span> <span class="ident">u128</span> {}
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">stage0</span>)]</span>
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">i128_type</span>)]</span>
 <span class="kw">impl</span> <span class="ident">PodTransmutable</span> <span class="kw">for</span> <span class="ident">i128</span> {}
 
 

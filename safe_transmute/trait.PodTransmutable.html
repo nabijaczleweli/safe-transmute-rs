@@ -57,7 +57,7 @@ or a <a href="http://eel.is/c++draft/class#6"><em>trivially copyable class</em><
 <p>Marker trait for <code>guarded_transmute_pod_*()</code> functions.</p>
 
 <p><em>Nota bene</em>: <code>bool</code>s aren&#39;t <em>actually</em> non-<code>unsafe</code> to transmute, because they&#39;re restricted to being <code>0</code> or <code>1</code>,
-which means it&#39;s UB to transmute an arbitrary byte to into a <code>bool</code>.</p>
+which means it&#39;s UB to transmute an arbitrary byte into a <code>bool</code>.</p>
 
 <p><em>Nota bene</em>: if you transmute into a floating-point type you will have a chance to create signaling NaNs
 (judgement&#39;s still out as to whether they&#39;re legal).</p>
@@ -73,6 +73,8 @@ which means it&#39;s UB to transmute an arbitrary byte to into a <code>bool</cod
 <li><code>impl PodTransmutable for <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u64.html">u64</a></code></li>
 <li><code>impl PodTransmutable for <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.i64.html">i64</a></code></li>
 <li><code>impl PodTransmutable for <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.char.html">char</a></code></li>
+<li><code>impl PodTransmutable for <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.f32.html">f32</a></code></li>
+<li><code>impl PodTransmutable for <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.f64.html">f64</a></code></li>
 </ul><script type="text/javascript" async
                          src="../implementors/safe_transmute/trait.PodTransmutable.js">
                  </script></section>
