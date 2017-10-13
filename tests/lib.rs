@@ -3,6 +3,7 @@ extern crate safe_transmute;
 #[cfg(target_endian = "big")]
 use std::mem::size_of;
 
+mod util;
 mod guarded_transmute;
 mod guarded_transmute_many;
 mod guarded_transmute_pedantic;

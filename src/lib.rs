@@ -112,6 +112,8 @@ mod error;
 use std::slice;
 use std::mem::{align_of, forget};
 
+pub mod util;
+
 pub use self::error::{ErrorReason, Error};
 pub use self::pod::{PodTransmutable, guarded_transmute_pod_many_permissive, guarded_transmute_pod_vec_permissive, guarded_transmute_pod_many_pedantic,
                     guarded_transmute_pod_pedantic, guarded_transmute_pod_vec_pedantic, guarded_transmute_pod_many, guarded_transmute_pod,
