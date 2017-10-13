@@ -1,0 +1,1 @@
+initSidebarItems({"fn":[["designalise_f32","If the specified 32-bit float is a signaling NaN, make it a quiet NaN."],["designalise_f64","If the specified 64-bit float is a signaling NaN, make it a quiet NaN."]]});

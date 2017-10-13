@@ -56,13 +56,15 @@ or a <a href="http://eel.is/c++draft/class#6"><em>trivially copyable class</em><
 
 <p>Marker trait for <code>guarded_transmute_pod_*()</code> functions.</p>
 
+<p><em>Warning</em>: if you transmute into a floating-point type you will have a chance to create a signaling NaN,
+which, while not illegal, can be unwieldy. Check out <a href="util/"><code>util::designalise_f{32,64}()</code></a> for a remedy.</p>
+
 <p><em>Nota bene</em>: <code>bool</code>s aren&#39;t <em>actually</em> non-<code>unsafe</code> to transmute, because they&#39;re restricted to being <code>0</code> or <code>1</code>,
 which means it&#39;s UB to transmute an arbitrary byte into a <code>bool</code>.</p>
-
-<p><em>Nota bene</em>: if you transmute into a floating-point type you will have a chance to create signaling NaNs
-(judgement&#39;s still out as to whether they&#39;re legal).</p>
 </div>
-        <h2 id='implementors'>Implementors</h2>
+        <h2 id='implementors' class='small-section-header'>
+          Implementors<a href='#implementors' class='anchor'></a>
+        </h2>
         <ul class='item-list' id='implementors-list'>
     <li><code>impl PodTransmutable for <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u8.html">u8</a></code></li>
 <li><code>impl PodTransmutable for <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.i8.html">i8</a></code></li>

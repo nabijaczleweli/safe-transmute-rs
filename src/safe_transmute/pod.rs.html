@@ -377,11 +377,11 @@
 <span class="doccomment">///</span>
 <span class="doccomment">/// Marker trait for `guarded_transmute_pod_*()` functions.</span>
 <span class="doccomment">///</span>
+<span class="doccomment">/// *Warning*: if you transmute into a floating-point type you will have a chance to create a signaling NaN,</span>
+<span class="doccomment">/// which, while not illegal, can be unwieldy. Check out [`util::designalise_f{32,64}()`](util/) for a remedy.</span>
+<span class="doccomment">///</span>
 <span class="doccomment">/// *Nota bene*: `bool`s aren&#39;t *actually* non-`unsafe` to transmute, because they&#39;re restricted to being `0` or `1`,</span>
 <span class="doccomment">/// which means it&#39;s UB to transmute an arbitrary byte into a `bool`.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// *Nota bene*: if you transmute into a floating-point type you will have a chance to create signaling NaNs</span>
-<span class="doccomment">/// (judgement&#39;s still out as to whether they&#39;re legal).</span>
 <span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">PodTransmutable</span> {}
 
 <span class="kw">impl</span> <span class="ident">PodTransmutable</span> <span class="kw">for</span> <span class="ident">u8</span> {}

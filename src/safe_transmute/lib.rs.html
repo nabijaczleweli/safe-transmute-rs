@@ -532,6 +532,8 @@
 <span id="487">487</span>
 <span id="488">488</span>
 <span id="489">489</span>
+<span id="490">490</span>
+<span id="491">491</span>
 </pre><pre class="rust ">
 <span class="doccomment">//! This crate contains checked implementations of `transmute()`.</span>
 <span class="doccomment">//!</span>
@@ -646,6 +648,8 @@
 
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">slice</span>;
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">mem</span>::{<span class="ident">align_of</span>, <span class="ident">forget</span>};
+
+<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">util</span>;
 
 <span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span>::<span class="ident">error</span>::{<span class="ident">ErrorReason</span>, <span class="ident">Error</span>};
 <span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span>::<span class="ident">pod</span>::{<span class="ident">PodTransmutable</span>, <span class="ident">guarded_transmute_pod_many_permissive</span>, <span class="ident">guarded_transmute_pod_vec_permissive</span>, <span class="ident">guarded_transmute_pod_many_pedantic</span>,
