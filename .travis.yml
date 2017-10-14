@@ -26,9 +26,8 @@ script:
   - cargo build --verbose
   - cargo test  --verbose
   - if [ "$CLIPPY" ]; then
-      cargo install clippy;
       cargo install cargo-update;
-      cargo install-update -a;
+      cargo install-update -i cargo-update clippy;
       cargo clippy;
     fi
   - if [ "$TRAVIS_TAG" ]; then cargo build --verbose --release; fi
