@@ -14,23 +14,8 @@
 //!
 //! ```
 //! # use safe_transmute::guarded_transmute_many;
-//! # trait LeToNative { fn le_to_native<T: Sized>(self) -> Self; }
-//! # impl<'a> LeToNative for &'a mut [u8] {
-//! #     #[cfg(target_endian = "little")]
-//! #     fn le_to_native<T: Sized>(self) -> Self { self }
-//! #     #[cfg(target_endian = "big")]
-//! #     fn le_to_native<T: Sized>(mut self) -> Self {
-//! #         use std::mem::size_of;
-//! #         for elem in self.chunks_mut(size_of::<T>()) { elem.reverse(); }
-//! #         self
-//! #     }
-//! # }
-//! # impl LeToNative for [u8; 5] {
-//! #     #[cfg(target_endian = "little")]
-//! #     fn le_to_native<T: Sized>(self) -> Self { self }
-//! #     #[cfg(target_endian = "big")]
-//! #     fn le_to_native<T: Sized>(mut self) -> Self { (&mut self[..]).le_to_native::<T>(); self }
-//! # }
+//! # include!("../tests/test_util/le_to_native.rs");
+//! # fn main() {
 //! # unsafe {
 //! assert_eq!(guarded_transmute_many::<u16>(&[0x00, 0x01,
 //!                                            0x12, 0x34,
@@ -41,29 +26,15 @@
 //! #                                          0x00].le_to_native::<u16>()).unwrap(),
 //!            &[0x0100, 0x3412]);
 //! # }
+//! # }
 //! ```
 //!
 //! View all bytes as a series of `u16`s:
 //!
 //! ```
 //! # use safe_transmute::guarded_transmute_many_pedantic;
-//! # trait LeToNative { fn le_to_native<T: Sized>(self) -> Self; }
-//! # impl<'a> LeToNative for &'a mut [u8] {
-//! #     #[cfg(target_endian = "little")]
-//! #     fn le_to_native<T: Sized>(self) -> Self { self }
-//! #     #[cfg(target_endian = "big")]
-//! #     fn le_to_native<T: Sized>(mut self) -> Self {
-//! #         use std::mem::size_of;
-//! #         for elem in self.chunks_mut(size_of::<T>()) { elem.reverse(); }
-//! #         self
-//! #     }
-//! # }
-//! # impl LeToNative for [u8; 4] {
-//! #     #[cfg(target_endian = "little")]
-//! #     fn le_to_native<T: Sized>(self) -> Self { self }
-//! #     #[cfg(target_endian = "big")]
-//! #     fn le_to_native<T: Sized>(mut self) -> Self { (&mut self[..]).le_to_native::<T>(); self }
-//! # }
+//! # include!("../tests/test_util/le_to_native.rs");
+//! # fn main() {
 //! # unsafe {
 //! assert_eq!(guarded_transmute_many_pedantic::<u16>(&[0x00, 0x01,
 //! # /*
@@ -72,29 +43,15 @@
 //! #                                                   0x12, 0x34].le_to_native::<u16>()).unwrap(),
 //!            &[0x0100, 0x3412]);
 //! # }
+//! # }
 //! ```
 //!
 //! View bytes as an `f64`:
 //!
 //! ```
 //! # use safe_transmute::guarded_transmute;
-//! # trait LeToNative { fn le_to_native<T: Sized>(self) -> Self; }
-//! # impl<'a> LeToNative for &'a mut [u8] {
-//! #     #[cfg(target_endian = "little")]
-//! #     fn le_to_native<T: Sized>(self) -> Self { self }
-//! #     #[cfg(target_endian = "big")]
-//! #     fn le_to_native<T: Sized>(mut self) -> Self {
-//! #         use std::mem::size_of;
-//! #         for elem in self.chunks_mut(size_of::<T>()) { elem.reverse(); }
-//! #         self
-//! #     }
-//! # }
-//! # impl LeToNative for [u8; 8] {
-//! #     #[cfg(target_endian = "little")]
-//! #     fn le_to_native<T: Sized>(self) -> Self { self }
-//! #     #[cfg(target_endian = "big")]
-//! #     fn le_to_native<T: Sized>(mut self) -> Self { (&mut self[..]).le_to_native::<T>(); self }
-//! # }
+//! # include!("../tests/test_util/le_to_native.rs");
+//! # fn main() {
 //! # unsafe {
 //! assert_eq!(guarded_transmute::<f64>(&[0x00, 0x00, 0x00, 0x00,
 //! # /*
@@ -102,6 +59,7 @@
 //! # */
 //! #                                     0x00, 0x00, 0x00, 0x40].le_to_native::<f64>()).unwrap(),
 //!            2.0);
+//! # }
 //! # }
 //! ```
 
@@ -129,29 +87,15 @@ pub use self::pod::{PodTransmutable, guarded_transmute_pod_many_permissive, guar
 ///
 /// ```
 /// # use safe_transmute::guarded_transmute;
-/// # trait LeToNative { fn le_to_native<T: Sized>(self) -> Self; }
-/// # impl<'a> LeToNative for &'a mut [u8] {
-/// #     #[cfg(target_endian = "little")]
-/// #     fn le_to_native<T: Sized>(self) -> Self { self }
-/// #     #[cfg(target_endian = "big")]
-/// #     fn le_to_native<T: Sized>(mut self) -> Self {
-/// #         use std::mem::size_of;
-/// #         for elem in self.chunks_mut(size_of::<T>()) { elem.reverse(); }
-/// #         self
-/// #     }
-/// # }
-/// # impl LeToNative for [u8; 4] {
-/// #     #[cfg(target_endian = "little")]
-/// #     fn le_to_native<T: Sized>(self) -> Self { self }
-/// #     #[cfg(target_endian = "big")]
-/// #     fn le_to_native<T: Sized>(mut self) -> Self { (&mut self[..]).le_to_native::<T>(); self }
-/// # }
+/// # include!("../tests/test_util/le_to_native.rs");
+/// # fn main() {
 /// // Little-endian
 /// # unsafe {
 /// # /*
 /// assert_eq!(guarded_transmute::<u32>(&[0x00, 0x00, 0x00, 0x01]).unwrap(), 0x01000000);
 /// # */
 /// # assert_eq!(guarded_transmute::<u32>(&[0x00, 0x00, 0x00, 0x01].le_to_native::<u32>()).unwrap(), 0x01000000);
+/// # }
 /// # }
 /// ```
 pub unsafe fn guarded_transmute<T: Copy>(bytes: &[u8]) -> Result<T, Error> {
@@ -174,29 +118,15 @@ pub unsafe fn guarded_transmute<T: Copy>(bytes: &[u8]) -> Result<T, Error> {
 ///
 /// ```
 /// # use safe_transmute::guarded_transmute_pedantic;
-/// # trait LeToNative { fn le_to_native<T: Sized>(self) -> Self; }
-/// # impl<'a> LeToNative for &'a mut [u8] {
-/// #     #[cfg(target_endian = "little")]
-/// #     fn le_to_native<T: Sized>(self) -> Self { self }
-/// #     #[cfg(target_endian = "big")]
-/// #     fn le_to_native<T: Sized>(mut self) -> Self {
-/// #         use std::mem::size_of;
-/// #         for elem in self.chunks_mut(size_of::<T>()) { elem.reverse(); }
-/// #         self
-/// #     }
-/// # }
-/// # impl LeToNative for [u8; 2] {
-/// #     #[cfg(target_endian = "little")]
-/// #     fn le_to_native<T: Sized>(self) -> Self { self }
-/// #     #[cfg(target_endian = "big")]
-/// #     fn le_to_native<T: Sized>(mut self) -> Self { (&mut self[..]).le_to_native::<T>(); self }
-/// # }
+/// # include!("../tests/test_util/le_to_native.rs");
+/// # fn main() {
 /// // Little-endian
 /// # unsafe {
 /// # /*
 /// assert_eq!(guarded_transmute_pedantic::<u16>(&[0x0F, 0x0E]).unwrap(), 0x0E0F);
 /// # */
 /// # assert_eq!(guarded_transmute_pedantic::<u16>(&[0x0F, 0x0E].le_to_native::<u16>()).unwrap(), 0x0E0F);
+/// # }
 /// # }
 /// ```
 pub unsafe fn guarded_transmute_pedantic<T: Copy>(bytes: &[u8]) -> Result<T, Error> {
@@ -220,23 +150,8 @@ pub unsafe fn guarded_transmute_pedantic<T: Copy>(bytes: &[u8]) -> Result<T, Err
 ///
 /// ```
 /// # use safe_transmute::guarded_transmute_many;
-/// # trait LeToNative { fn le_to_native<T: Sized>(self) -> Self; }
-/// # impl<'a> LeToNative for &'a mut [u8] {
-/// #     #[cfg(target_endian = "little")]
-/// #     fn le_to_native<T: Sized>(self) -> Self { self }
-/// #     #[cfg(target_endian = "big")]
-/// #     fn le_to_native<T: Sized>(mut self) -> Self {
-/// #         use std::mem::size_of;
-/// #         for elem in self.chunks_mut(size_of::<T>()) { elem.reverse(); }
-/// #         self
-/// #     }
-/// # }
-/// # impl LeToNative for [u8; 4] {
-/// #     #[cfg(target_endian = "little")]
-/// #     fn le_to_native<T: Sized>(self) -> Self { self }
-/// #     #[cfg(target_endian = "big")]
-/// #     fn le_to_native<T: Sized>(mut self) -> Self { (&mut self[..]).le_to_native::<T>(); self }
-/// # }
+/// # include!("../tests/test_util/le_to_native.rs");
+/// # fn main() {
 /// // Little-endian
 /// # unsafe {
 /// # /*
@@ -244,6 +159,7 @@ pub unsafe fn guarded_transmute_pedantic<T: Copy>(bytes: &[u8]) -> Result<T, Err
 /// # */
 /// # assert_eq!(guarded_transmute_many::<u16>(&[0x00, 0x01, 0x00, 0x02].le_to_native::<u16>()).unwrap(),
 ///            &[0x0100, 0x0200]);
+/// # }
 /// # }
 /// ```
 pub unsafe fn guarded_transmute_many<T>(bytes: &[u8]) -> Result<&[T], Error> {
@@ -283,23 +199,8 @@ pub unsafe fn guarded_transmute_many_permissive<T>(bytes: &[u8]) -> &[T] {
 ///
 /// ```
 /// # use safe_transmute::guarded_transmute_many_pedantic;
-/// # trait LeToNative { fn le_to_native<T: Sized>(self) -> Self; }
-/// # impl<'a> LeToNative for &'a mut [u8] {
-/// #     #[cfg(target_endian = "little")]
-/// #     fn le_to_native<T: Sized>(self) -> Self { self }
-/// #     #[cfg(target_endian = "big")]
-/// #     fn le_to_native<T: Sized>(mut self) -> Self {
-/// #         use std::mem::size_of;
-/// #         for elem in self.chunks_mut(size_of::<T>()) { elem.reverse(); }
-/// #         self
-/// #     }
-/// # }
-/// # impl LeToNative for [u8; 4] {
-/// #     #[cfg(target_endian = "little")]
-/// #     fn le_to_native<T: Sized>(self) -> Self { self }
-/// #     #[cfg(target_endian = "big")]
-/// #     fn le_to_native<T: Sized>(mut self) -> Self { (&mut self[..]).le_to_native::<T>(); self }
-/// # }
+/// # include!("../tests/test_util/le_to_native.rs");
+/// # fn main() {
 /// // Little-endian
 /// # unsafe {
 /// # /*
@@ -307,6 +208,7 @@ pub unsafe fn guarded_transmute_many_permissive<T>(bytes: &[u8]) -> &[T] {
 /// # */
 /// # assert_eq!(guarded_transmute_many_pedantic::<u16>(&[0x0F, 0x0E, 0x0A, 0x0B].le_to_native::<u16>()).unwrap(),
 ///            &[0x0E0F, 0x0B0A]);
+/// # }
 /// # }
 /// ```
 pub unsafe fn guarded_transmute_many_pedantic<T>(bytes: &[u8]) -> Result<&[T], Error> {
@@ -337,23 +239,8 @@ pub unsafe fn guarded_transmute_many_pedantic<T>(bytes: &[u8]) -> Result<&[T], E
 ///
 /// ```
 /// # use safe_transmute::guarded_transmute_vec;
-/// # trait LeToNative { fn le_to_native<T: Sized>(self) -> Self; }
-/// # impl<'a> LeToNative for &'a mut [u8] {
-/// #     #[cfg(target_endian = "little")]
-/// #     fn le_to_native<T: Sized>(self) -> Self { self }
-/// #     #[cfg(target_endian = "big")]
-/// #     fn le_to_native<T: Sized>(mut self) -> Self {
-/// #         use std::mem::size_of;
-/// #         for elem in self.chunks_mut(size_of::<T>()) { elem.reverse(); }
-/// #         self
-/// #     }
-/// # }
-/// # impl LeToNative for Vec<u8> {
-/// #     #[cfg(target_endian = "little")]
-/// #     fn le_to_native<T: Sized>(self) -> Self { self }
-/// #     #[cfg(target_endian = "big")]
-/// #     fn le_to_native<T: Sized>(mut self) -> Self { (&mut self[..]).le_to_native::<T>(); self }
-/// # }
+/// # include!("../tests/test_util/le_to_native.rs");
+/// # fn main() {
 /// // Little-endian
 /// # unsafe {
 /// # /*
@@ -368,6 +255,7 @@ pub unsafe fn guarded_transmute_many_pedantic<T>(bytes: &[u8]) -> Result<&[T], E
 ///            vec![0x00000004]);
 ///
 /// assert!(guarded_transmute_vec::<i16>(vec![0xED]).is_err());
+/// # }
 /// # }
 /// ```
 pub unsafe fn guarded_transmute_vec<T>(bytes: Vec<u8>) -> Result<Vec<T>, Error> {
@@ -392,23 +280,8 @@ pub unsafe fn guarded_transmute_vec<T>(bytes: Vec<u8>) -> Result<Vec<T>, Error> 
 ///
 /// ```
 /// # use safe_transmute::guarded_transmute_vec_permissive;
-/// # trait LeToNative { fn le_to_native<T: Sized>(self) -> Self; }
-/// # impl<'a> LeToNative for &'a mut [u8] {
-/// #     #[cfg(target_endian = "little")]
-/// #     fn le_to_native<T: Sized>(self) -> Self { self }
-/// #     #[cfg(target_endian = "big")]
-/// #     fn le_to_native<T: Sized>(mut self) -> Self {
-/// #         use std::mem::size_of;
-/// #         for elem in self.chunks_mut(size_of::<T>()) { elem.reverse(); }
-/// #         self
-/// #     }
-/// # }
-/// # impl LeToNative for Vec<u8> {
-/// #     #[cfg(target_endian = "little")]
-/// #     fn le_to_native<T: Sized>(self) -> Self { self }
-/// #     #[cfg(target_endian = "big")]
-/// #     fn le_to_native<T: Sized>(mut self) -> Self { (&mut self[..]).le_to_native::<T>(); self }
-/// # }
+/// # include!("../tests/test_util/le_to_native.rs");
+/// # fn main() {
 /// // Little-endian
 /// # unsafe {
 /// # /*
@@ -422,6 +295,7 @@ pub unsafe fn guarded_transmute_vec<T>(bytes: Vec<u8>) -> Result<Vec<T>, Error> 
 /// # assert_eq!(guarded_transmute_vec_permissive::<u32>(vec![0x04, 0x00, 0x00, 0x00, 0xED].le_to_native::<u32>()),
 ///            vec![0x00000004]);
 /// assert_eq!(guarded_transmute_vec_permissive::<u16>(vec![0xED]), vec![]);
+/// # }
 /// # }
 /// ```
 pub unsafe fn guarded_transmute_vec_permissive<T>(mut bytes: Vec<u8>) -> Vec<T> {
@@ -442,23 +316,8 @@ pub unsafe fn guarded_transmute_vec_permissive<T>(mut bytes: Vec<u8>) -> Vec<T> 
 ///
 /// ```
 /// # use safe_transmute::guarded_transmute_vec_pedantic;
-/// # trait LeToNative { fn le_to_native<T: Sized>(self) -> Self; }
-/// # impl<'a> LeToNative for &'a mut [u8] {
-/// #     #[cfg(target_endian = "little")]
-/// #     fn le_to_native<T: Sized>(self) -> Self { self }
-/// #     #[cfg(target_endian = "big")]
-/// #     fn le_to_native<T: Sized>(mut self) -> Self {
-/// #         use std::mem::size_of;
-/// #         for elem in self.chunks_mut(size_of::<T>()) { elem.reverse(); }
-/// #         self
-/// #     }
-/// # }
-/// # impl LeToNative for Vec<u8> {
-/// #     #[cfg(target_endian = "little")]
-/// #     fn le_to_native<T: Sized>(self) -> Self { self }
-/// #     #[cfg(target_endian = "big")]
-/// #     fn le_to_native<T: Sized>(mut self) -> Self { (&mut self[..]).le_to_native::<T>(); self }
-/// # }
+/// # include!("../tests/test_util/le_to_native.rs");
+/// # fn main() {
 /// // Little-endian
 /// # unsafe {
 /// # /*
@@ -468,6 +327,7 @@ pub unsafe fn guarded_transmute_vec_permissive<T>(mut bytes: Vec<u8>) -> Vec<T> 
 ///            vec![0x0100, 0x0200]);
 ///
 /// assert!(guarded_transmute_vec_pedantic::<u32>(vec![0x04, 0x00, 0x00, 0x00, 0xED]).is_err());
+/// # }
 /// # }
 /// ```
 pub unsafe fn guarded_transmute_vec_pedantic<T>(bytes: Vec<u8>) -> Result<Vec<T>, Error> {
