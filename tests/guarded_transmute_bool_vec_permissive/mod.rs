@@ -1,5 +1,6 @@
 use safe_transmute::{ErrorReason, Error, guarded_transmute_bool_vec_permissive};
 
+
 #[test]
 fn too_short() {
     assert_eq!(guarded_transmute_bool_vec_permissive(vec![]), Ok(vec![]));

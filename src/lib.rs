@@ -7,9 +7,9 @@
 //! but they don't do that (see [here](https://github.com/nabijaczleweli/safe-transmute-rs/issues/1)
 //! for extended discussion).
 //!
-//! Other functions in this crate, on the other hand, provide enough safety measures to ensure safety on
+//! Other functions in this crate, on the other hand, provide enough safety measures to ensure safety in
 //! all circumstances. This is the case for those found in the `pod` and `bool` modules.
-//! 
+//!
 //! # Examples
 //!
 //! View bytes as a series of `u16`s:
@@ -66,8 +66,8 @@
 //! ```
 
 
-mod bool;
 mod pod;
+mod bool;
 mod error;
 
 use std::slice;
@@ -79,8 +79,9 @@ pub use self::error::{ErrorReason, Error};
 pub use self::pod::{PodTransmutable, guarded_transmute_pod_many_permissive, guarded_transmute_pod_vec_permissive, guarded_transmute_pod_many_pedantic,
                     guarded_transmute_pod_pedantic, guarded_transmute_pod_vec_pedantic, guarded_transmute_pod_many, guarded_transmute_pod,
                     guarded_transmute_pod_vec};
-pub use self::bool::{guarded_transmute_bool_pedantic, guarded_transmute_bool_permissive, guarded_transmute_bool_vec_pedantic,
-                     guarded_transmute_bool_vec_permissive};
+pub use self::bool::{guarded_transmute_bool_vec_permissive, guarded_transmute_bool_vec_pedantic, guarded_transmute_bool_permissive,
+                     guarded_transmute_bool_pedantic};
+
 
 /// Transmute a byte slice into a single instance of a `Copy`able type.
 ///

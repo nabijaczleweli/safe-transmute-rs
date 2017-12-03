@@ -3,38 +3,27 @@
 //! either 0 or 1. These functions will return an error if the integer value
 //! behind the `bool` value is neither one.
 
-use self::super::{guarded_transmute_many_pedantic, guarded_transmute_many_permissive, guarded_transmute_vec_pedantic, guarded_transmute_vec_permissive, Error,
-                  ErrorReason};
 
+use self::super::{ErrorReason, Error, guarded_transmute_many_permissive, guarded_transmute_vec_permissive, guarded_transmute_many_pedantic,
+                  guarded_transmute_vec_pedantic};
 use std::mem::align_of;
 
+
 /// Makes sure that the bytes represent a sequence of valid boolean values. It is done
-/// this way because the language does not guarantee that `bool` is 1 byte sized.
+/// this way because the language does not guarantee that `bool` is 1-byte sized.
 #[inline]
 pub fn bytes_are_bool(v: &[u8]) -> bool {
-    let sizeof_bool: usize = ::std::mem::align_of::<bool>();
-    v.chunks(sizeof_bool)
-        .filter(|c| c.len() == sizeof_bool)
+    let bool_size = align_of::<bool>();
+    v.chunks(bool_size)
+        .filter(|c| c.len() == bool_size)
         .all(|c| {
             let (rest, lsb) = if cfg!(target_endian = "little") {
                 (&c[1..], c)
             } else {
-                c.split_at(sizeof_bool - 1)
+                c.split_at(bool_size - 1)
             };
             lsb[0] <= 1 && rest.iter().all(|&x| x == 0)
         })
-}
-
-fn check_bool(bytes: &[u8]) -> Result<(), Error> {
-    if bytes_are_bool(bytes) {
-        Ok(())
-    } else {
-        Err(Error {
-            required: align_of::<bool>(),
-            actual: bytes.len(),
-            reason: ErrorReason::InvalidValue,
-        })
-    }
 }
 
 /// View a byte slice as a slice of boolean values.
@@ -50,7 +39,6 @@ fn check_bool(bytes: &[u8]) -> Result<(), Error> {
 ///            &[false, true, false, true]);
 /// assert_eq!(guarded_transmute_bool_permissive(&[]).unwrap(), &[]);
 /// # }
-
 /// ```
 pub fn guarded_transmute_bool_permissive(bytes: &[u8]) -> Result<&[bool], Error> {
     check_bool(bytes)?;
@@ -117,4 +105,17 @@ pub fn guarded_transmute_bool_vec_permissive(bytes: Vec<u8>) -> Result<Vec<bool>
 pub fn guarded_transmute_bool_vec_pedantic(bytes: Vec<u8>) -> Result<Vec<bool>, Error> {
     check_bool(&bytes)?;
     unsafe { guarded_transmute_vec_pedantic(bytes) }
+}
+
+
+fn check_bool(bytes: &[u8]) -> Result<(), Error> {
+    if bytes_are_bool(bytes) {
+        Ok(())
+    } else {
+        Err(Error {
+            required: align_of::<bool>(),
+            actual: bytes.len(),
+            reason: ErrorReason::InvalidValue,
+        })
+    }
 }
