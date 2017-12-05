@@ -14,7 +14,7 @@ impl<'a> LeToNative for &'a mut [u8] {
     }
 
     #[cfg(target_endian = "big")]
-    fn le_to_native<T: Sized>(mut self) -> Self {
+    fn le_to_native<T: Sized>(self) -> Self {
         for elem in self.chunks_mut(size_of::<T>()) {
             elem.reverse();
         }

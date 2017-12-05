@@ -13,6 +13,12 @@ matrix:
     - env: LANGUAGE=Rust CLIPPY=true
       language: rust
       rust: nightly
+    - env: LANGUAGE=Rust CROSS_TARGET=mips64-unknown-linux-gnuabi64
+      language: rust
+      rust: stable
+      services: docker
+      sudo: required
+
   allow_failures:
     - rust: beta
     - rust: nightly
@@ -22,9 +28,19 @@ before_install:
       openssl aes-256-cbc -K $encrypted_c5a96e28c9a9_key -iv $encrypted_c5a96e28c9a9_iv -in gh_rsa.enc -out gh_rsa -d;
     fi
 
+before_script:
+  - if [ ! -z "$CROSS_TARGET" ]; then
+      rustup target add $CROSS_TARGET;
+      cargo install cross --force;
+    fi
+
 script:
   - cargo build --verbose
-  - cargo test  --verbose
+  - if [ ! -z "$CROSS_TARGET" ]; then
+      cross test --verbose --target $CROSS_TARGET;
+    else
+      cargo test --verbose;
+    fi
   - if [ "$CLIPPY" ]; then
       cargo install cargo-update;
       cargo install-update -i cargo-update clippy;
