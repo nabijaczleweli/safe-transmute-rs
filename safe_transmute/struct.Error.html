@@ -64,16 +64,19 @@
                <span class="ident">reason</span>: <span class="ident">ErrorReason</span>::<span class="ident">NotEnoughBytes</span>,
            }));</pre>
 </div><h2 id='fields' class='fields small-section-header'>
-                       Fields<a href='#fields' class='anchor'></a></h2><span id='structfield.required' class="structfield">
-                           <span id='required.v' class='invisible'>
+                       Fields<a href='#fields' class='anchor'></a></h2><span id="structfield.required" class="structfield small-section-header">
+                           <a href="#structfield.required" class="anchor field"></a>
+                           <span id="required.v" class='invisible'>
                            <code>required: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.usize.html">usize</a></code>
                            </span></span><div class='docblock'><p>The required amount of bytes for transmutation.</p>
-</div><span id='structfield.actual' class="structfield">
-                           <span id='actual.v' class='invisible'>
+</div><span id="structfield.actual" class="structfield small-section-header">
+                           <a href="#structfield.actual" class="anchor field"></a>
+                           <span id="actual.v" class='invisible'>
                            <code>actual: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.usize.html">usize</a></code>
                            </span></span><div class='docblock'><p>The actual amount of bytes.</p>
-</div><span id='structfield.reason' class="structfield">
-                           <span id='reason.v' class='invisible'>
+</div><span id="structfield.reason" class="structfield small-section-header">
+                           <a href="#structfield.reason" class="anchor field"></a>
+                           <span id="reason.v" class='invisible'>
                            <code>reason: <a class="enum" href="../safe_transmute/enum.ErrorReason.html" title="enum safe_transmute::ErrorReason">ErrorReason</a></code>
                            </span></span><div class='docblock'><p>Why this <code>required</code>/<code>actual</code>/<code>T</code> combo is an error.</p>
 </div>
@@ -103,7 +106,7 @@
 </div></div><h3 id='impl-StdError' class='impl'><span class='in-band'><code>impl <a class="trait" href="https://doc.rust-lang.org/nightly/std/error/trait.Error.html" title="trait std::error::Error">StdError</a> for <a class="struct" href="../safe_transmute/struct.Error.html" title="struct safe_transmute::Error">Error</a></code><a href='#impl-StdError' class='anchor'></a></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/safe_transmute/error.rs.html#44-52' title='goto source code'>[src]</a></span></h3>
 <div class='impl-items'><h4 id='method.description' class="method"><span id='description.v' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/std/error/trait.Error.html#tymethod.description' class='fnname'>description</a>(&amp;self) -&gt; &amp;<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.str.html">str</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/safe_transmute/error.rs.html#45-51' title='goto source code'>[src]</a></span></h4>
 <div class='docblock'><p>A short description of the error. <a href="https://doc.rust-lang.org/nightly/std/error/trait.Error.html#tymethod.description">Read more</a></p>
-</div><h4 id='method.cause' class="method"><span id='cause.v' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/std/error/trait.Error.html#method.cause' class='fnname'>cause</a>(&amp;self) -&gt; <a class="enum" href="https://doc.rust-lang.org/nightly/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;&amp;<a class="trait" href="https://doc.rust-lang.org/nightly/std/error/trait.Error.html" title="trait std::error::Error">Error</a>&gt;</code></span><span class='out-of-band'><div class='ghost'></div><div class='since' title='Stable since Rust version 1.0.0'>1.0.0</div><a class='srclink' href='https://doc.rust-lang.org/nightly/src/std/error.rs.html#151' title='goto source code'>[src]</a></span></h4>
+</div><h4 id='method.cause' class="method"><span id='cause.v' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/std/error/trait.Error.html#method.cause' class='fnname'>cause</a>(&amp;self) -&gt; <a class="enum" href="https://doc.rust-lang.org/nightly/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;&amp;<a class="trait" href="https://doc.rust-lang.org/nightly/std/error/trait.Error.html" title="trait std::error::Error">Error</a>&gt;</code></span><span class='out-of-band'><div class='ghost'></div><div class='since' title='Stable since Rust version 1.0.0'>1.0.0</div><a class='srclink' href='https://doc.rust-lang.org/nightly/src/std/error.rs.html#153' title='goto source code'>[src]</a></span></h4>
 <div class='docblock'><p>The lower-level cause of this error, if any. <a href="https://doc.rust-lang.org/nightly/std/error/trait.Error.html#method.cause">Read more</a></p>
 </div></div><h3 id='impl-Display' class='impl'><span class='in-band'><code>impl <a class="trait" href="https://doc.rust-lang.org/nightly/core/fmt/trait.Display.html" title="trait core::fmt::Display">Display</a> for <a class="struct" href="../safe_transmute/struct.Error.html" title="struct safe_transmute::Error">Error</a></code><a href='#impl-Display' class='anchor'></a></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/safe_transmute/error.rs.html#54-58' title='goto source code'>[src]</a></span></h3>
 <div class='impl-items'><h4 id='method.fmt-1' class="method"><span id='fmt.v-1' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/core/fmt/trait.Display.html#tymethod.fmt' class='fnname'>fmt</a>(&amp;self, f: &amp;mut <a class="struct" href="https://doc.rust-lang.org/nightly/core/fmt/struct.Formatter.html" title="struct core::fmt::Formatter">Formatter</a>) -&gt; <a class="type" href="https://doc.rust-lang.org/nightly/core/fmt/type.Result.html" title="type core::fmt::Result">Result</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/safe_transmute/error.rs.html#55-57' title='goto source code'>[src]</a></span></h4>
