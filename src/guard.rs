@@ -7,7 +7,7 @@
 //!
 //! ```
 //! # use safe_transmute::Error;
-//! # use safe_transmute::guard::{Guard, SingleValueGuard};
+//! # use safe_transmute::guard::{SingleValueGuard, Guard};
 //! # fn run() -> Result<(), Error> {
 //! SingleValueGuard::check::<u32>(&[0x00, 0x01, 0x00, 0x02])?;
 //! # Ok(())
@@ -16,13 +16,13 @@
 //! ```
 //!
 //! Different guard types implement different checking strategies.
-//! For example, the pedantic guard type [`PedanticGuard`] requires
+//! For example, the pedantic guard type [`PedanticGuard`](struct.PedanticGuard.html) requires
 //! the slice to have space for at least one value, and not have
 //! extraneous bytes at the end.
 //!
 //! ```
 //! # use safe_transmute::Error;
-//! # use safe_transmute::guard::{Guard, PedanticGuard};
+//! # use safe_transmute::guard::{PedanticGuard, Guard};
 //! # fn run() -> Result<(), Error> {
 //! PedanticGuard::check::<u16>(&[0xAA, 0xAA, 0xBB, 0xBB, 0xCC, 0xCC])?;
 //! # Ok(())
@@ -30,11 +30,11 @@
 //! # run().unwrap();
 //! ```
 //!
-//! [`PermissiveGuard`], on the other hand, will accept any memory slice.
+//! [`PermissiveGuard`](struct.PermissiveGuard.html, on the other hand, will accept any memory slice.
 //!
 //! ```
 //! # use safe_transmute::Error;
-//! # use safe_transmute::guard::{Guard, PermissiveGuard};
+//! # use safe_transmute::guard::{PermissiveGuard, Guard};
 //! # fn run() -> Result<(), Error> {
 //! PermissiveGuard::check::<i16>(b"covfefe")?;
 //! # Ok(())
@@ -42,11 +42,11 @@
 //! # run().unwrap();
 //! ```
 //!
-//! If the check fails, the resulting [`GuardError`] value describes why.
+//! If the check fails, the resulting [`GuardError`](../type.GuardError.html) value describes why.
 //!
 //! ```
 //! # use safe_transmute::{GuardError, ErrorReason};
-//! # use safe_transmute::guard::{Guard, PedanticGuard};
+//! # use safe_transmute::guard::{PedanticGuard, Guard};
 //! assert_eq!(PedanticGuard::check::<i16>(b"covfefe"),
 //!            Err(GuardError {
 //!                required: 2,
@@ -54,13 +54,11 @@
 //!                reason: ErrorReason::InexactByteCount,
 //!            }));
 //! ```
-//!
-//! [`GuardError`]: ../type.GuardError.html
-//! [`PedanticGuard`]: struct.PedanticGuard.html
-//! [`PermissiveGuard`]: struct.PermissiveGuard.html
+
 
 use error::{ErrorReason, GuardError};
 use std::mem::align_of;
+
 
 /// The `Guard` type describes types which define boundary checking strategies.
 pub trait Guard {
@@ -72,6 +70,7 @@ pub trait Guard {
     /// which specifies the incompatibility is returned.
     fn check<T>(v: &[u8]) -> Result<(), GuardError>;
 }
+
 
 /// Single value guard: The byte slice must have exactly enough bytes to fill a single
 /// instance of a type.
@@ -90,6 +89,7 @@ impl Guard for SingleValueGuard {
         }
     }
 }
+
 
 /// Pedantic guard: The byte slice must have at least enough bytes to fill a single
 /// instance of a type, and should not have extraneous data.
@@ -115,6 +115,7 @@ impl Guard for PedanticGuard {
     }
 }
 
+
 /// An all-or-nothing guard: The byte slice should not have extraneous data, but can be
 /// empty, unlike `PedanticGuard`.
 pub struct AllOrNothingGuard;
@@ -133,6 +134,7 @@ impl Guard for AllOrNothingGuard {
     }
 }
 
+
 /// A single-or-many guard: The byte slice must have at least enough bytes to fill a single
 /// instance of a type, and extraneous data is ignored.
 pub struct SingleManyGuard;
@@ -150,6 +152,7 @@ impl Guard for SingleManyGuard {
         }
     }
 }
+
 
 /// Permissive guard: The resulting slice would have as many instances of a type as will
 /// fit, rounded down. Therefore, this guard will never yield an error.

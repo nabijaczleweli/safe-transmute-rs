@@ -72,17 +72,18 @@ mod error;
 
 use std::slice;
 use std::mem::{align_of, forget};
-use guard::{Guard, PedanticGuard, PermissiveGuard, SingleManyGuard, SingleValueGuard};
+use guard::{SingleValueGuard, PermissiveGuard, SingleManyGuard, PedanticGuard, Guard};
 
-pub mod guard;
 pub mod util;
+pub mod guard;
 
 pub use self::error::{Error, ErrorReason, GuardError};
-pub use self::pod::{guarded_transmute_pod, guarded_transmute_pod_many, guarded_transmute_pod_many_pedantic, guarded_transmute_pod_many_permissive,
-                    guarded_transmute_pod_pedantic, guarded_transmute_pod_vec, guarded_transmute_pod_vec_pedantic, guarded_transmute_pod_vec_permissive,
-                    PodTransmutable};
-pub use self::bool::{guarded_transmute_bool_pedantic, guarded_transmute_bool_permissive, guarded_transmute_bool_vec_pedantic,
-                     guarded_transmute_bool_vec_permissive};
+pub use self::pod::{PodTransmutable, guarded_transmute_pod_many_permissive, guarded_transmute_pod_vec_permissive, guarded_transmute_pod_many_pedantic,
+                    guarded_transmute_pod_vec_pedantic, guarded_transmute_pod_pedantic, guarded_transmute_pod_many, guarded_transmute_pod_vec,
+                    guarded_transmute_pod};
+pub use self::bool::{guarded_transmute_bool_vec_permissive, guarded_transmute_bool_vec_pedantic, guarded_transmute_bool_permissive,
+                     guarded_transmute_bool_pedantic};
+
 
 /// Transmute a byte slice into a single instance of a `Copy`able type.
 ///
@@ -272,7 +273,6 @@ pub unsafe fn guarded_transmute_vec_permissive<T>(mut bytes: Vec<u8>) -> Vec<T> 
     forget(bytes);
     Vec::from_raw_parts(ptr as *mut T, capacity, len)
 }
-
 
 /// Trasform a byte vector into a vector of an arbitrary type.
 ///

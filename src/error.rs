@@ -1,8 +1,10 @@
 use std::error::Error as StdError;
 use std::fmt;
 
+
 /// Describes possible errors originating from operations in this crate.
 pub type Error = GuardError;
+
 
 /// A transmutation error.
 ///
