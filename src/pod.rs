@@ -1,5 +1,6 @@
-use self::super::{guarded_transmute, guarded_transmute_many, guarded_transmute_many_pedantic, guarded_transmute_many_permissive, guarded_transmute_pedantic,
-                  guarded_transmute_vec, guarded_transmute_vec_pedantic, guarded_transmute_vec_permissive, Error};
+use self::super::{Error, guarded_transmute_many_permissive, guarded_transmute_vec_permissive, guarded_transmute_many_pedantic, guarded_transmute_vec_pedantic,
+                  guarded_transmute_pedantic, guarded_transmute_many, guarded_transmute_vec, guarded_transmute};
+
 
 /// Type that can be non-`unsafe`ly transmuted into
 ///
@@ -18,9 +19,10 @@ use self::super::{guarded_transmute, guarded_transmute_many, guarded_transmute_m
 /// # Safety
 ///
 /// It is only safe to implement `PodTransmutable` for a type `T` if it is safe for a slice of any arbitrary data
-/// `&[u8]` with the byte length of `T` to be transmuted with [`std::mem::transmute`](https://doc.rust-lang.org/stable/std/mem/fn.transmute.html)
-/// to a slice `&[T]` of length 1. Please see the [Nomicon](https://doc.rust-lang.org/nomicon/transmutes.html) for more details.
+/// `&[u8]` of length `sizeof<T>()` to be [`transmute()`]((https://doc.rust-lang.org/stable/std/mem/fn.transmute.html)d
+/// to a unit-length `&[T]`.
 ///
+/// Consult the [Transmutes section](https://doc.rust-lang.org/nomicon/transmutes.html) of the Nomicon for more details.
 pub unsafe trait PodTransmutable {}
 
 unsafe impl PodTransmutable for u8 {}
