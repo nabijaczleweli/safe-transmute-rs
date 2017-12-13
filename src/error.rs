@@ -1,6 +1,7 @@
 use std::error::Error as StdError;
 use std::fmt;
 
+pub type Error = GuardError;
 
 /// A transmutation error.
 ///
@@ -18,7 +19,7 @@ use std::fmt;
 /// # }
 /// ```
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
-pub struct Error {
+pub struct GuardError {
     /// The required amount of bytes for transmutation.
     pub required: usize,
     /// The actual amount of bytes.
@@ -42,8 +43,7 @@ pub enum ErrorReason {
     InvalidValue,
 }
 
-
-impl StdError for Error {
+impl StdError for GuardError {
     fn description(&self) -> &str {
         match self.reason {
             ErrorReason::NotEnoughBytes => "Not enough bytes to fill type",
@@ -54,7 +54,7 @@ impl StdError for Error {
     }
 }
 
-impl fmt::Display for Error {
+impl fmt::Display for GuardError {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "{} (required: {}, actual: {})", self.description(), self.required, self.actual)
     }

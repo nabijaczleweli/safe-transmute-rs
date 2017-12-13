@@ -73,6 +73,7 @@ mod error;
 use std::slice;
 use std::mem::{align_of, forget};
 
+pub mod guard;
 pub mod util;
 
 pub use self::error::{ErrorReason, Error};
@@ -82,6 +83,7 @@ pub use self::pod::{PodTransmutable, guarded_transmute_pod_many_permissive, guar
 pub use self::bool::{guarded_transmute_bool_vec_permissive, guarded_transmute_bool_vec_pedantic, guarded_transmute_bool_permissive,
                      guarded_transmute_bool_pedantic};
 
+use guard::*;
 
 /// Transmute a byte slice into a single instance of a `Copy`able type.
 ///
@@ -104,15 +106,8 @@ pub use self::bool::{guarded_transmute_bool_vec_permissive, guarded_transmute_bo
 /// # }
 /// ```
 pub unsafe fn guarded_transmute<T: Copy>(bytes: &[u8]) -> Result<T, Error> {
-    if bytes.len() < align_of::<T>() {
-        Err(Error {
-            required: align_of::<T>(),
-            actual: bytes.len(),
-            reason: ErrorReason::NotEnoughBytes,
-        })
-    } else {
-        Ok(slice::from_raw_parts(bytes.as_ptr() as *const T, 1)[0])
-    }
+    BasicGuard::check::<T>(bytes)?;
+    Ok(slice::from_raw_parts(bytes.as_ptr() as *const T, 1)[0])
 }
 
 /// Transmute a byte slice into a single instance of a `Copy`able type.
@@ -135,15 +130,8 @@ pub unsafe fn guarded_transmute<T: Copy>(bytes: &[u8]) -> Result<T, Error> {
 /// # }
 /// ```
 pub unsafe fn guarded_transmute_pedantic<T: Copy>(bytes: &[u8]) -> Result<T, Error> {
-    if bytes.len() != align_of::<T>() {
-        Err(Error {
-            required: align_of::<T>(),
-            actual: bytes.len(),
-            reason: ErrorReason::InexactByteCount,
-        })
-    } else {
-        Ok(slice::from_raw_parts(bytes.as_ptr() as *const T, 1)[0])
-    }
+    SingleValueGuard::check::<T>(bytes)?;
+    Ok(slice::from_raw_parts(bytes.as_ptr() as *const T, 1)[0])
 }
 
 /// View a byte slice as a slice of an arbitrary type.
@@ -168,15 +156,8 @@ pub unsafe fn guarded_transmute_pedantic<T: Copy>(bytes: &[u8]) -> Result<T, Err
 /// # }
 /// ```
 pub unsafe fn guarded_transmute_many<T>(bytes: &[u8]) -> Result<&[T], Error> {
-    if bytes.len() < align_of::<T>() {
-        Err(Error {
-            required: align_of::<T>(),
-            actual: bytes.len(),
-            reason: ErrorReason::NotEnoughBytes,
-        })
-    } else {
-        Ok(guarded_transmute_many_permissive(bytes))
-    }
+    BasicGuard::check::<T>(bytes)?;
+    Ok(slice::from_raw_parts(bytes.as_ptr() as *const T, bytes.len() / align_of::<T>()))
 }
 
 /// View a byte slice as a slice of an arbitrary type.
@@ -192,7 +173,8 @@ pub unsafe fn guarded_transmute_many<T>(bytes: &[u8]) -> Result<&[T], Error> {
 /// # }
 /// ```
 pub unsafe fn guarded_transmute_many_permissive<T>(bytes: &[u8]) -> &[T] {
-    slice::from_raw_parts(bytes.as_ptr() as *const T, (bytes.len() - (bytes.len() % align_of::<T>())) / align_of::<T>())
+    PermissiveGuard::check::<T>(bytes).unwrap();
+    slice::from_raw_parts(bytes.as_ptr() as *const T, bytes.len() / align_of::<T>())
 }
 
 /// View a byte slice as a slice of an arbitrary type.
@@ -217,21 +199,8 @@ pub unsafe fn guarded_transmute_many_permissive<T>(bytes: &[u8]) -> &[T] {
 /// # }
 /// ```
 pub unsafe fn guarded_transmute_many_pedantic<T>(bytes: &[u8]) -> Result<&[T], Error> {
-    if bytes.len() < align_of::<T>() {
-        Err(Error {
-            required: align_of::<T>(),
-            actual: bytes.len(),
-            reason: ErrorReason::NotEnoughBytes,
-        })
-    } else if bytes.len() % align_of::<T>() != 0 {
-        Err(Error {
-            required: align_of::<T>(),
-            actual: bytes.len(),
-            reason: ErrorReason::InexactByteCount,
-        })
-    } else {
-        Ok(slice::from_raw_parts(bytes.as_ptr() as *const T, bytes.len() / align_of::<T>()))
-    }
+    PedanticGuard::check::<T>(bytes)?;
+    Ok(slice::from_raw_parts(bytes.as_ptr() as *const T, bytes.len() / align_of::<T>()))
 }
 
 /// Trasform a byte vector into a vector of an arbitrary type.
@@ -264,15 +233,8 @@ pub unsafe fn guarded_transmute_many_pedantic<T>(bytes: &[u8]) -> Result<&[T], E
 /// # }
 /// ```
 pub unsafe fn guarded_transmute_vec<T>(bytes: Vec<u8>) -> Result<Vec<T>, Error> {
-    if bytes.len() < align_of::<T>() {
-        Err(Error {
-            required: align_of::<T>(),
-            actual: bytes.len(),
-            reason: ErrorReason::NotEnoughBytes,
-        })
-    } else {
-        Ok(guarded_transmute_vec_permissive(bytes))
-    }
+    BasicGuard::check::<T>(&bytes)?;
+    Ok(guarded_transmute_vec_permissive(bytes))
 }
 
 /// Trasform a byte vector into a vector of an arbitrary type.
@@ -304,6 +266,7 @@ pub unsafe fn guarded_transmute_vec<T>(bytes: Vec<u8>) -> Result<Vec<T>, Error> 
 /// # }
 /// ```
 pub unsafe fn guarded_transmute_vec_permissive<T>(mut bytes: Vec<u8>) -> Vec<T> {
+    PermissiveGuard::check::<T>(&bytes).unwrap();
     let ptr = bytes.as_mut_ptr();
     let capacity = bytes.capacity() / align_of::<T>();
     let len = bytes.len() / align_of::<T>();
@@ -336,21 +299,6 @@ pub unsafe fn guarded_transmute_vec_permissive<T>(mut bytes: Vec<u8>) -> Vec<T> 
 /// # }
 /// ```
 pub unsafe fn guarded_transmute_vec_pedantic<T>(bytes: Vec<u8>) -> Result<Vec<T>, Error> {
-    let a = align_of::<T>();
-    let len = bytes.len();
-    if len < a {
-        Err(Error {
-            required: a,
-            actual: len,
-            reason: ErrorReason::NotEnoughBytes,
-        })
-    } else if len % a != 0 {
-        Err(Error {
-            required: a,
-            actual: len,
-            reason: ErrorReason::InexactByteCount,
-        })
-    } else {
-        Ok(guarded_transmute_vec_permissive(bytes))
-    }
+    PedanticGuard::check::<T>(&bytes)?;
+    Ok(guarded_transmute_vec_permissive(bytes))
 }
