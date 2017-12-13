@@ -394,17 +394,23 @@
 <span id="349">349</span>
 <span id="350">350</span>
 <span id="351">351</span>
+<span id="352">352</span>
+<span id="353">353</span>
+<span id="354">354</span>
+<span id="355">355</span>
 </pre><pre class="rust ">
 <span class="doccomment">//! This crate contains checked implementations of `transmute()`.</span>
 <span class="doccomment">//!</span>
-<span class="doccomment">//! The functions in this crate are not inherently safe, but just guarded against common simple mistakes</span>
-<span class="doccomment">//! (like trying to create an 8-byte type from 7 bytes).</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! Those functions are exactly as safe as the data passed to them - creating a null pointer,</span>
+<span class="doccomment">//! The base functions in this crate are not inherently safe, but just guarded against common simple mistakes</span>
+<span class="doccomment">//! (like trying to create an 8-byte type from 7 bytes.</span>
+<span class="doccomment">//! These functions are exactly as safe as the data passed to them - creating a null pointer,</span>
 <span class="doccomment">//! for example, is not unsafe in and of itself, but dereferencing it certainly *is*,</span>
 <span class="doccomment">//! but they don&#39;t do that (see [here](https://github.com/nabijaczleweli/safe-transmute-rs/issues/1)</span>
 <span class="doccomment">//! for extended discussion).</span>
 <span class="doccomment">//!</span>
+<span class="doccomment">//! Other functions in this crate, on the other hand, provide enough safety measures to ensure safety on</span>
+<span class="doccomment">//! all circumstances. This is the case for those found in the `pod` and `bool` modules.</span>
+<span class="doccomment">//! </span>
 <span class="doccomment">//! # Examples</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! View bytes as a series of `u16`s:</span>
@@ -461,6 +467,7 @@
 <span class="doccomment">//! ```</span>
 
 
+<span class="kw">mod</span> <span class="ident">bool</span>;
 <span class="kw">mod</span> <span class="ident">pod</span>;
 <span class="kw">mod</span> <span class="ident">error</span>;
 
@@ -473,7 +480,8 @@
 <span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span>::<span class="ident">pod</span>::{<span class="ident">PodTransmutable</span>, <span class="ident">guarded_transmute_pod_many_permissive</span>, <span class="ident">guarded_transmute_pod_vec_permissive</span>, <span class="ident">guarded_transmute_pod_many_pedantic</span>,
                     <span class="ident">guarded_transmute_pod_pedantic</span>, <span class="ident">guarded_transmute_pod_vec_pedantic</span>, <span class="ident">guarded_transmute_pod_many</span>, <span class="ident">guarded_transmute_pod</span>,
                     <span class="ident">guarded_transmute_pod_vec</span>};
-
+<span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span>::<span class="ident">bool</span>::{<span class="ident">guarded_transmute_bool_permissive</span>, <span class="ident">guarded_transmute_bool_pedantic</span>,
+                     <span class="ident">guarded_transmute_bool_vec_permissive</span>, <span class="ident">guarded_transmute_bool_vec_pedantic</span>};
 
 <span class="doccomment">/// Transmute a byte slice into a single instance of a `Copy`able type.</span>
 <span class="doccomment">///</span>

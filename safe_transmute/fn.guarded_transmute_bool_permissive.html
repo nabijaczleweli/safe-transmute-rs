@@ -4,10 +4,10 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="generator" content="rustdoc">
-    <meta name="description" content="API documentation for the Rust `guarded_transmute_many_pedantic` fn in crate `safe_transmute`.">
-    <meta name="keywords" content="rust, rustlang, rust-lang, guarded_transmute_many_pedantic">
+    <meta name="description" content="API documentation for the Rust `guarded_transmute_bool_permissive` fn in crate `safe_transmute`.">
+    <meta name="keywords" content="rust, rustlang, rust-lang, guarded_transmute_bool_permissive">
 
-    <title>safe_transmute::guarded_transmute_many_pedantic - Rust</title>
+    <title>safe_transmute::guarded_transmute_bool_permissive - Rust</title>
 
     <link rel="stylesheet" type="text/css" href="../normalize.css">
     <link rel="stylesheet" type="text/css" href="../rustdoc.css">
@@ -29,7 +29,7 @@
 
     <nav class="sidebar">
         
-        <p class='location'><a href='index.html'>safe_transmute</a></p><script>window.sidebarCurrent = {name: 'guarded_transmute_many_pedantic', ty: 'fn', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+        <p class='location'><a href='index.html'>safe_transmute</a></p><script>window.sidebarCurrent = {name: 'guarded_transmute_bool_permissive', ty: 'fn', relpath: ''};</script><script defer src="sidebar-items.js"></script>
     </nav>
 
     <nav class="sub">
@@ -44,21 +44,20 @@
     </nav>
 
     <section id='main' class="content">
-<h1 class='fqn'><span class='in-band'>Function <a href='index.html'>safe_transmute</a>::<wbr><a class="fn" href=''>guarded_transmute_many_pedantic</a></span><span class='out-of-band'><span id='render-detail'>
+<h1 class='fqn'><span class='in-band'>Function <a href='index.html'>safe_transmute</a>::<wbr><a class="fn" href=''>guarded_transmute_bool_permissive</a></span><span class='out-of-band'><span id='render-detail'>
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a class='srclink' href='../src/safe_transmute/lib.rs.html#218-234' title='goto source code'>[src]</a></span></h1>
-<pre class='rust fn'>pub unsafe fn guarded_transmute_many_pedantic&lt;T&gt;(<br>&nbsp;&nbsp;&nbsp;&nbsp;bytes: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.slice.html">&amp;[</a><a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u8.html">u8</a><a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.slice.html">]</a><br>) -&gt; <a class="enum" href="https://doc.rust-lang.org/nightly/core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.slice.html">&amp;[T]</a>, <a class="struct" href="../safe_transmute/struct.Error.html" title="struct safe_transmute::Error">Error</a>&gt;</pre><div class='docblock'><p>View a byte slice as a slice of an arbitrary type.</p>
+               </span><a class='srclink' href='../src/safe_transmute/bool.rs.html#67-70' title='goto source code'>[src]</a></span></h1>
+<pre class='rust fn'>pub fn guarded_transmute_bool_permissive(bytes: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.slice.html">&amp;[</a><a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u8.html">u8</a><a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.slice.html">]</a>) -&gt; <a class="enum" href="https://doc.rust-lang.org/nightly/core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.slice.html">&amp;[</a><a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.bool.html">bool</a><a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.slice.html">]</a>, <a class="struct" href="../safe_transmute/struct.Error.html" title="struct safe_transmute::Error">Error</a>&gt;</pre><div class='docblock'><p>View a byte slice as a slice of boolean values.</p>
 
-<p>The byte slice must have at least enough bytes to fill a single instance of a type,
-and should not have extraneous data.</p>
+<p>The resulting slice will have as many instances of <code>bool</code> as will fit, can be empty.</p>
 
 <h1 id='examples' class='section-header'><a href='#examples'>Examples</a></h1>
 <pre class="rust rust-example-rendered">
-<span class="comment">// Little-endian</span>
-<span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">guarded_transmute_many_pedantic</span>::<span class="op">&lt;</span><span class="ident">u16</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span>[<span class="number">0x0F</span>, <span class="number">0x0E</span>, <span class="number">0x0A</span>, <span class="number">0x0B</span>]).<span class="ident">unwrap</span>(),
-           <span class="kw-2">&amp;</span>[<span class="number">0x0E0F</span>, <span class="number">0x0B0A</span>]);</pre>
+<span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">guarded_transmute_bool_permissive</span>(<span class="kw-2">&amp;</span>[<span class="number">0x00</span>, <span class="number">0x01</span>, <span class="number">0x00</span>, <span class="number">0x01</span>]).<span class="ident">unwrap</span>(),
+           <span class="kw-2">&amp;</span>[<span class="bool-val">false</span>, <span class="bool-val">true</span>, <span class="bool-val">false</span>, <span class="bool-val">true</span>]);
+<span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">guarded_transmute_bool_permissive</span>(<span class="kw-2">&amp;</span>[]).<span class="ident">unwrap</span>(), <span class="kw-2">&amp;</span>[]);</pre>
 </div></section>
     <section id='search' class="content hidden"></section>
 

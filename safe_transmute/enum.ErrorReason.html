@@ -48,11 +48,12 @@
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a class='srclink' href='../src/safe_transmute/error.rs.html#32-41' title='goto source code'>[src]</a></span></h1>
+               </span><a class='srclink' href='../src/safe_transmute/error.rs.html#32-43' title='goto source code'>[src]</a></span></h1>
 <pre class='rust enum'>pub enum ErrorReason {
     NotEnoughBytes,
     TooManyBytes,
     InexactByteCount,
+    InvalidValue,
 }</pre><div class='docblock'><p>How the type&#39;s size compares to the received byte count and the transmutation function&#39;s characteristic.</p>
 </div><h2 id='variants' class='variants small-section-header'>
                    Variants<a href='#variants' class='anchor'></a></h2>
@@ -61,6 +62,7 @@
 
 <p>Currently unused.</p>
 </div><span id="variant.InexactByteCount" class="variant small-section-header"><a href="#variant.InexactByteCount" class="anchor field"></a><span id='InexactByteCount.v' class='invisible'><code>InexactByteCount</code></span></span><div class='docblock'><p>The byte amount received is not the same as the type&#39;s size.</p>
+</div><span id="variant.InvalidValue" class="variant small-section-header"><a href="#variant.InvalidValue" class="anchor field"></a><span id='InvalidValue.v' class='invisible'><code>InvalidValue</code></span></span><div class='docblock'><p>The byte count is fine, but the data contains an invalid value for the target type.</p>
 </div>
             <h2 id='implementations' class='small-section-header'>
               Trait Implementations<a href='#implementations' class='anchor'></a>
