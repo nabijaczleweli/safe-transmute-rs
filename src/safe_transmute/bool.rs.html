@@ -175,7 +175,6 @@
 <span id="130">130</span>
 <span id="131">131</span>
 <span id="132">132</span>
-<span id="133">133</span>
 </pre><pre class="rust ">
 <span class="doccomment">//! Functions for safe transmutation to `bool`.</span>
 <span class="doccomment">//! Transmuting to `bool&#39; is not undefined behavior if the transmuted value is either 0 or 1.</span>
@@ -219,10 +218,9 @@
     <span class="kw">if</span> <span class="ident">bytes_are_bool</span>(<span class="ident">bytes</span>) {
         <span class="prelude-val">Ok</span>(())
     } <span class="kw">else</span> {
-        <span class="kw">let</span> <span class="ident">len</span> <span class="op">=</span> <span class="ident">bytes</span>.<span class="ident">len</span>();
         <span class="prelude-val">Err</span>(<span class="ident">Error</span> {
-            <span class="ident">required</span>: <span class="ident">len</span>,
-            <span class="ident">actual</span>: <span class="ident">len</span>,
+            <span class="ident">required</span>: <span class="ident">align_of</span>::<span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span>(),
+            <span class="ident">actual</span>: <span class="ident">bytes</span>.<span class="ident">len</span>(),
             <span class="ident">reason</span>: <span class="ident">ErrorReason</span>::<span class="ident">InvalidValue</span>,
         })
     }
