@@ -38,6 +38,8 @@ pub enum ErrorReason {
     TooManyBytes,
     /// The byte amount received is not the same as the type's size.
     InexactByteCount,
+    /// The byte count is fine, but the data contains an invalid value for the target type.
+    InvalidValue,
 }
 
 
@@ -47,6 +49,7 @@ impl StdError for Error {
             ErrorReason::NotEnoughBytes => "Not enough bytes to fill type",
             ErrorReason::TooManyBytes => "Too many bytes for type",
             ErrorReason::InexactByteCount => "Not exactly the amount of bytes for type",
+            ErrorReason::InvalidValue => "Invalid target value detected",
         }
     }
 }

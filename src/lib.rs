@@ -1,13 +1,15 @@
 //! This crate contains checked implementations of `transmute()`.
 //!
-//! The functions in this crate are not inherently safe, but just guarded against common simple mistakes
-//! (like trying to create an 8-byte type from 7 bytes).
-//!
-//! Those functions are exactly as safe as the data passed to them - creating a null pointer,
+//! The base functions in this crate are not inherently safe, but just guarded against common simple mistakes
+//! (like trying to create an 8-byte type from 7 bytes.
+//! These functions are exactly as safe as the data passed to them - creating a null pointer,
 //! for example, is not unsafe in and of itself, but dereferencing it certainly *is*,
 //! but they don't do that (see [here](https://github.com/nabijaczleweli/safe-transmute-rs/issues/1)
 //! for extended discussion).
 //!
+//! Other functions in this crate, on the other hand, provide enough safety measures to ensure safety on
+//! all circumstances. This is the case for those found in the `pod` and `bool` modules.
+//! 
 //! # Examples
 //!
 //! View bytes as a series of `u16`s:
@@ -64,6 +66,7 @@
 //! ```
 
 
+mod bool;
 mod pod;
 mod error;
 
@@ -76,7 +79,8 @@ pub use self::error::{ErrorReason, Error};
 pub use self::pod::{PodTransmutable, guarded_transmute_pod_many_permissive, guarded_transmute_pod_vec_permissive, guarded_transmute_pod_many_pedantic,
                     guarded_transmute_pod_pedantic, guarded_transmute_pod_vec_pedantic, guarded_transmute_pod_many, guarded_transmute_pod,
                     guarded_transmute_pod_vec};
-
+pub use self::bool::{guarded_transmute_bool_permissive, guarded_transmute_bool_pedantic,
+                     guarded_transmute_bool_vec_permissive, guarded_transmute_bool_vec_pedantic};
 
 /// Transmute a byte slice into a single instance of a `Copy`able type.
 ///
