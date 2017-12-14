@@ -1,39 +1,28 @@
 //! Functions for safe transmutation to `bool`.
-//! Transmuting to `bool' is not undefined behavior if the transmuted value is either 0 or 1.
-//! These functions will return an error if the integer value behind the `bool` value is neither one.
+//! Transmuting to `bool' is not undefined behavior if the transmuted value is
+//! either 0 or 1. These functions will return an error if the integer value
+//! behind the `bool` value is neither one.
 
-use self::super::{Error, ErrorReason, guarded_transmute_vec_permissive, guarded_transmute_many_permissive, guarded_transmute_many_pedantic,
-                  guarded_transmute_vec_pedantic};
+use self::super::{guarded_transmute_many_pedantic, guarded_transmute_many_permissive, guarded_transmute_vec_pedantic, guarded_transmute_vec_permissive, Error,
+                  ErrorReason};
 
 use std::mem::align_of;
 
 /// Makes sure that the bytes represent a sequence of valid boolean values. It is done
 /// this way because the language does not guarantee that `bool` is 1 byte sized.
-#[cfg(target_endian = "little")]
 #[inline]
-fn bytes_are_bool(v: &[u8]) -> bool {
-    let sizeof_bool: usize = align_of::<bool>();
-    for c in v.chunks(sizeof_bool).filter(|c| c.len() == sizeof_bool) {
-        if c[0] > 1 || c[1..].iter().any(|x| *x != 0) {
-            return false;
-        }
-    }
-    true
-}
-
-/// Makes sure that the bytes represent a sequence of valid boolean values. It is done
-/// this way because the language does not guarantee that `bool` is 1 byte sized.
-#[cfg(target_endian = "big")]
-#[inline]
-fn bytes_are_bool(v: &[u8]) -> bool {
-    let sizeof_bool: usize = align_of::<bool>();
-    for c in v.chunks(sizeof_bool).filter(|c| c.len() == sizeof_bool)  {
-        let (l, r) = c.split_at(sizeof_bool - 1);
-        if r[0] > 1 || l.iter().any(|x| *x != 0) {
-            return false;
-        }
-    }
-    true
+pub fn bytes_are_bool(v: &[u8]) -> bool {
+    let sizeof_bool: usize = ::std::mem::align_of::<bool>();
+    v.chunks(sizeof_bool)
+        .filter(|c| c.len() == sizeof_bool)
+        .all(|c| {
+            let (rest, lsb) = if cfg!(target_endian = "little") {
+                (&c[1..], c)
+            } else {
+                c.split_at(sizeof_bool - 1)
+            };
+            lsb[0] <= 1 && rest.iter().all(|&x| x == 0)
+        })
 }
 
 fn check_bool(bytes: &[u8]) -> Result<(), Error> {
@@ -109,7 +98,6 @@ pub fn guarded_transmute_bool_vec_permissive(bytes: Vec<u8>) -> Result<Vec<bool>
     unsafe { Ok(guarded_transmute_vec_permissive(bytes)) }
 }
 
-
 /// Trasform a byte vector into a vector of bool.
 ///
 /// The vector's allocated byte buffer will be reused when possible, and
@@ -123,7 +111,7 @@ pub fn guarded_transmute_bool_vec_permissive(bytes: Vec<u8>) -> Result<Vec<bool>
 ///            vec![false, true, false, true]);
 ///
 /// assert!(guarded_transmute_bool_vec_pedantic(vec![]).is_err());
-/// 
+///
 /// assert!(guarded_transmute_bool_vec_pedantic(vec![0x04, 0x00, 0xED]).is_err());
 /// ```
 pub fn guarded_transmute_bool_vec_pedantic(bytes: Vec<u8>) -> Result<Vec<bool>, Error> {
