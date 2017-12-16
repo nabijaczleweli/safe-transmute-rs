@@ -72,6 +72,7 @@ mod error;
 
 use std::slice;
 use std::mem::{align_of, forget};
+use guard::{Guard, PedanticGuard, PermissiveGuard, SingleManyGuard, SingleValueGuard};
 
 pub mod guard;
 pub mod util;
@@ -82,7 +83,6 @@ pub use self::pod::{guarded_transmute_pod, guarded_transmute_pod_many, guarded_t
                     PodTransmutable};
 pub use self::bool::{guarded_transmute_bool_pedantic, guarded_transmute_bool_permissive, guarded_transmute_bool_vec_pedantic,
                      guarded_transmute_bool_vec_permissive};
-use guard::*;
 
 /// Transmute a byte slice into a single instance of a `Copy`able type.
 ///
@@ -105,7 +105,7 @@ use guard::*;
 /// # }
 /// ```
 pub unsafe fn guarded_transmute<T: Copy>(bytes: &[u8]) -> Result<T, Error> {
-    BasicGuard::check::<T>(bytes)?;
+    SingleManyGuard::check::<T>(bytes)?;
     Ok(slice::from_raw_parts(bytes.as_ptr() as *const T, 1)[0])
 }
 
@@ -155,7 +155,7 @@ pub unsafe fn guarded_transmute_pedantic<T: Copy>(bytes: &[u8]) -> Result<T, Err
 /// # }
 /// ```
 pub unsafe fn guarded_transmute_many<T>(bytes: &[u8]) -> Result<&[T], Error> {
-    BasicGuard::check::<T>(bytes)?;
+    SingleManyGuard::check::<T>(bytes)?;
     Ok(slice::from_raw_parts(bytes.as_ptr() as *const T, bytes.len() / align_of::<T>()))
 }
 
@@ -232,7 +232,7 @@ pub unsafe fn guarded_transmute_many_pedantic<T>(bytes: &[u8]) -> Result<&[T], E
 /// # }
 /// ```
 pub unsafe fn guarded_transmute_vec<T>(bytes: Vec<u8>) -> Result<Vec<T>, Error> {
-    BasicGuard::check::<T>(&bytes)?;
+    SingleManyGuard::check::<T>(&bytes)?;
     Ok(guarded_transmute_vec_permissive(bytes))
 }
 

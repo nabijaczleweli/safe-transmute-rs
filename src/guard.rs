@@ -20,7 +20,6 @@
 //! the slice to have space for at least one value, and not have
 //! extraneous bytes at the end.
 //!
-//!
 //! ```
 //! # use safe_transmute::Error;
 //! # use safe_transmute::guard::{Guard, PedanticGuard};
@@ -48,13 +47,12 @@
 //! ```
 //! # use safe_transmute::{GuardError, ErrorReason};
 //! # use safe_transmute::guard::{Guard, PedanticGuard};
-//! assert_eq!(
-//!     PedanticGuard::check::<i16>(b"covfefe"),
-//!     Err(GuardError {
-//!         required: 2,
-//!         actual: 7,
-//!         reason: ErrorReason::InexactByteCount,
-//!     }));
+//! assert_eq!(PedanticGuard::check::<i16>(b"covfefe"),
+//!            Err(GuardError {
+//!                required: 2,
+//!                actual: 7,
+//!                reason: ErrorReason::InexactByteCount,
+//!            }));
 //! ```
 //!
 //! [`GuardError`]: ../type.GuardError.html
@@ -78,6 +76,7 @@ pub trait Guard {
 /// Single value guard: The byte slice must have exactly enough bytes to fill a single
 /// instance of a type.
 pub struct SingleValueGuard;
+
 impl Guard for SingleValueGuard {
     fn check<T>(bytes: &[u8]) -> Result<(), GuardError> {
         if bytes.len() != align_of::<T>() {
@@ -95,6 +94,7 @@ impl Guard for SingleValueGuard {
 /// Pedantic guard: The byte slice must have at least enough bytes to fill a single
 /// instance of a type, and should not have extraneous data.
 pub struct PedanticGuard;
+
 impl Guard for PedanticGuard {
     fn check<T>(bytes: &[u8]) -> Result<(), GuardError> {
         if bytes.len() < align_of::<T>() {
@@ -115,10 +115,11 @@ impl Guard for PedanticGuard {
     }
 }
 
-/// A strict guard: The byte slice should not have extraneous data, but can be
-/// empty.
-pub struct StrictGuard;
-impl Guard for StrictGuard {
+/// An all-or-nothing guard: The byte slice should not have extraneous data, but can be
+/// empty, unlike `PedanticGuard`.
+pub struct AllOrNothingGuard;
+
+impl Guard for AllOrNothingGuard {
     fn check<T>(bytes: &[u8]) -> Result<(), GuardError> {
         if bytes.len() % align_of::<T>() != 0 {
             Err(GuardError {
@@ -132,10 +133,11 @@ impl Guard for StrictGuard {
     }
 }
 
-/// A basic reasonable guard: The byte slice must have at least enough bytes to fill a single
+/// A single-or-many guard: The byte slice must have at least enough bytes to fill a single
 /// instance of a type, and extraneous data is ignored.
-pub struct BasicGuard;
-impl Guard for BasicGuard {
+pub struct SingleManyGuard;
+
+impl Guard for SingleManyGuard {
     fn check<T>(bytes: &[u8]) -> Result<(), GuardError> {
         if bytes.len() < align_of::<T>() {
             Err(GuardError {
@@ -152,9 +154,10 @@ impl Guard for BasicGuard {
 /// Permissive guard: The resulting slice would have as many instances of a type as will
 /// fit, rounded down. Therefore, this guard will never yield an error.
 pub struct PermissiveGuard;
+
 impl Guard for PermissiveGuard {
     #[inline]
-    fn check<T>(_bytes: &[u8]) -> Result<(), GuardError> {
+    fn check<T>(_: &[u8]) -> Result<(), GuardError> {
         Ok(())
     }
 }

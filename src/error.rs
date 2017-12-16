@@ -1,6 +1,7 @@
 use std::error::Error as StdError;
 use std::fmt;
 
+/// Describes possible errors originating from operations in this crate.
 pub type Error = GuardError;
 
 /// A transmutation error.
@@ -42,6 +43,7 @@ pub enum ErrorReason {
     /// The byte count is fine, but the data contains an invalid value for the target type.
     InvalidValue,
 }
+
 
 impl StdError for GuardError {
     fn description(&self) -> &str {
