@@ -13,7 +13,7 @@ use self::super::{Error, guarded_transmute_vec_permissive, guarded_transmute_man
 /// which, while not illegal, can be unwieldy. Check out [`util::designalise_f{32,64}()`](util/index.html)
 /// for a remedy.
 ///
-/// *Nota bene*: guarded transmutation to `bool`s is provided as separate functiions, because they're
+/// *Nota bene*: guarded transmutation to `bool`s is provided as separate functions, because they're
 /// restricted to being `0` or `1`, which means that an additional value check is required.
 pub trait PodTransmutable {}
 
