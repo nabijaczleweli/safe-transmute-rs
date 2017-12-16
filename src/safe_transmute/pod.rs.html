@@ -272,9 +272,12 @@
 <span id="227">227</span>
 <span id="228">228</span>
 <span id="229">229</span>
+<span id="230">230</span>
+<span id="231">231</span>
 </pre><pre class="rust ">
-<span class="kw">use</span> <span class="self">self</span>::<span class="kw">super</span>::{<span class="ident">guarded_transmute</span>, <span class="ident">guarded_transmute_many</span>, <span class="ident">guarded_transmute_many_pedantic</span>, <span class="ident">guarded_transmute_many_permissive</span>, <span class="ident">guarded_transmute_pedantic</span>,
-                  <span class="ident">guarded_transmute_vec</span>, <span class="ident">guarded_transmute_vec_pedantic</span>, <span class="ident">guarded_transmute_vec_permissive</span>, <span class="ident">Error</span>};
+<span class="kw">use</span> <span class="self">self</span>::<span class="kw">super</span>::{<span class="ident">Error</span>, <span class="ident">guarded_transmute_many_permissive</span>, <span class="ident">guarded_transmute_vec_permissive</span>, <span class="ident">guarded_transmute_many_pedantic</span>, <span class="ident">guarded_transmute_vec_pedantic</span>,
+                  <span class="ident">guarded_transmute_pedantic</span>, <span class="ident">guarded_transmute_many</span>, <span class="ident">guarded_transmute_vec</span>, <span class="ident">guarded_transmute</span>};
+
 
 <span class="doccomment">/// Type that can be non-`unsafe`ly transmuted into</span>
 <span class="doccomment">///</span>
@@ -293,9 +296,10 @@
 <span class="doccomment">/// # Safety</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// It is only safe to implement `PodTransmutable` for a type `T` if it is safe for a slice of any arbitrary data</span>
-<span class="doccomment">/// `&amp;[u8]` with the byte length of `T` to be transmuted with [`std::mem::transmute`](https://doc.rust-lang.org/stable/std/mem/fn.transmute.html)</span>
-<span class="doccomment">/// to a slice `&amp;[T]` of length 1. Please see the [Nomicon](https://doc.rust-lang.org/nomicon/transmutes.html) for more details.</span>
+<span class="doccomment">/// `&amp;[u8]` of length `sizeof&lt;T&gt;()` to be [`transmute()`]((https://doc.rust-lang.org/stable/std/mem/fn.transmute.html)d</span>
+<span class="doccomment">/// to a unit-length `&amp;[T]`.</span>
 <span class="doccomment">///</span>
+<span class="doccomment">/// Consult the [Transmutes section](https://doc.rust-lang.org/nomicon/transmutes.html) of the Nomicon for more details.</span>
 <span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">trait</span> <span class="ident">PodTransmutable</span> {}
 
 <span class="kw">unsafe</span> <span class="kw">impl</span> <span class="ident">PodTransmutable</span> <span class="kw">for</span> <span class="ident">u8</span> {}
