@@ -108,6 +108,7 @@
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">error</span>::<span class="ident">Error</span> <span class="kw">as</span> <span class="ident">StdError</span>;
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">fmt</span>;
 
+<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">Error</span> <span class="op">=</span> <span class="ident">GuardError</span>;
 
 <span class="doccomment">/// A transmutation error.</span>
 <span class="doccomment">///</span>
@@ -125,7 +126,7 @@
 <span class="doccomment">/// # }</span>
 <span class="doccomment">/// ```</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">Copy</span>, <span class="ident">Debug</span>, <span class="ident">PartialEq</span>, <span class="ident">Eq</span>, <span class="ident">Hash</span>)]</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Error</span> {
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">GuardError</span> {
     <span class="doccomment">/// The required amount of bytes for transmutation.</span>
     <span class="kw">pub</span> <span class="ident">required</span>: <span class="ident">usize</span>,
     <span class="doccomment">/// The actual amount of bytes.</span>
@@ -149,8 +150,7 @@
     <span class="ident">InvalidValue</span>,
 }
 
-
-<span class="kw">impl</span> <span class="ident">StdError</span> <span class="kw">for</span> <span class="ident">Error</span> {
+<span class="kw">impl</span> <span class="ident">StdError</span> <span class="kw">for</span> <span class="ident">GuardError</span> {
     <span class="kw">fn</span> <span class="ident">description</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-&gt;</span> <span class="kw-2">&amp;</span><span class="ident">str</span> {
         <span class="kw">match</span> <span class="self">self</span>.<span class="ident">reason</span> {
             <span class="ident">ErrorReason</span>::<span class="ident">NotEnoughBytes</span> <span class="op">=&gt;</span> <span class="string">&quot;Not enough bytes to fill type&quot;</span>,
@@ -161,7 +161,7 @@
     }
 }
 
-<span class="kw">impl</span> <span class="ident">fmt</span>::<span class="ident">Display</span> <span class="kw">for</span> <span class="ident">Error</span> {
+<span class="kw">impl</span> <span class="ident">fmt</span>::<span class="ident">Display</span> <span class="kw">for</span> <span class="ident">GuardError</span> {
     <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">fmt</span>::<span class="ident">Formatter</span>) <span class="op">-&gt;</span> <span class="ident">fmt</span>::<span class="prelude-ty">Result</span> {
         <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;{} (required: {}, actual: {})&quot;</span>, <span class="self">self</span>.<span class="ident">description</span>(), <span class="self">self</span>.<span class="ident">required</span>, <span class="self">self</span>.<span class="ident">actual</span>)
     }

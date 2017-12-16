@@ -48,8 +48,40 @@
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a class='srclink' href='../../src/safe_transmute/guard.rs.html#1-90' title='goto source code'>[src]</a></span></h1>
-<h2 id='structs' class='section-header'><a href="#structs">Structs</a></h2>
+               </span><a class='srclink' href='../../src/safe_transmute/guard.rs.html#1-160' title='goto source code'>[src]</a></span></h1>
+<div class='docblock'><p>The <code>guard</code> module exposes an API for memory boundary checking.</p>
+
+<h1 id='examples' class='section-header'><a href='#examples'>Examples:</a></h1>
+<p>In order to check whether a value would fit in the given
+slice without extraneous space:</p>
+
+<pre class="rust rust-example-rendered">
+<span class="ident">SingleValueGuard</span>::<span class="ident">check</span>::<span class="op">&lt;</span><span class="ident">u32</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span>[<span class="number">0x00</span>, <span class="number">0x01</span>, <span class="number">0x00</span>, <span class="number">0x02</span>])<span class="question-mark">?</span>;</pre>
+
+<p>Different guard types implement different checking strategies.
+For example, the pedantic guard type <a href="struct.PedanticGuard.html"><code>PedanticGuard</code></a> requires
+the slice to have space for at least one value, and not have
+extraneous bytes at the end.</p>
+
+<pre class="rust rust-example-rendered">
+<span class="ident">PedanticGuard</span>::<span class="ident">check</span>::<span class="op">&lt;</span><span class="ident">u16</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span>[<span class="number">0xAA</span>, <span class="number">0xAA</span>, <span class="number">0xBB</span>, <span class="number">0xBB</span>, <span class="number">0xCC</span>, <span class="number">0xCC</span>])<span class="question-mark">?</span>;</pre>
+
+<p><a href="struct.PermissiveGuard.html"><code>PermissiveGuard</code></a>, on the other hand, will accept any memory slice.</p>
+
+<pre class="rust rust-example-rendered">
+<span class="ident">PermissiveGuard</span>::<span class="ident">check</span>::<span class="op">&lt;</span><span class="ident">i16</span><span class="op">&gt;</span>(<span class="string">b&quot;covfefe&quot;</span>)<span class="question-mark">?</span>;</pre>
+
+<p>If the check fails, the resulting <a href="../type.GuardError.html"><code>GuardError</code></a> value describes why.</p>
+
+<pre class="rust rust-example-rendered">
+<span class="macro">assert_eq</span><span class="macro">!</span>(
+    <span class="ident">PedanticGuard</span>::<span class="ident">check</span>::<span class="op">&lt;</span><span class="ident">i16</span><span class="op">&gt;</span>(<span class="string">b&quot;covfefe&quot;</span>),
+    <span class="prelude-val">Err</span>(<span class="ident">GuardError</span> {
+        <span class="ident">required</span>: <span class="number">2</span>,
+        <span class="ident">actual</span>: <span class="number">7</span>,
+        <span class="ident">reason</span>: <span class="ident">ErrorReason</span>::<span class="ident">InexactByteCount</span>,
+    }));</pre>
+</div><h2 id='structs' class='section-header'><a href="#structs">Structs</a></h2>
 <table>
                        <tr class=' module-item'>
                            <td><a class="struct" href="struct.BasicGuard.html"
@@ -71,7 +103,7 @@ instance of a type, and should not have extraneous data.</p>
                            <td><a class="struct" href="struct.PermissiveGuard.html"
                                   title='struct safe_transmute::guard::PermissiveGuard'>PermissiveGuard</a></td>
                            <td class='docblock-short'>
-                                <p>Permissive guard: The resulting slice will have as many instances of a type as will
+                                <p>Permissive guard: The resulting slice would have as many instances of a type as will
 fit, rounded down. Therefore, this guard will never yield an error.</p>
                            </td>
                        </tr>
@@ -87,7 +119,8 @@ instance of a type.</p>
                            <td><a class="struct" href="struct.StrictGuard.html"
                                   title='struct safe_transmute::guard::StrictGuard'>StrictGuard</a></td>
                            <td class='docblock-short'>
-                                <p>A strict guard: The byte slice should not have extraneous data, but can be empty.</p>
+                                <p>A strict guard: The byte slice should not have extraneous data, but can be
+empty.</p>
                            </td>
                        </tr></table><h2 id='traits' class='section-header'><a href="#traits">Traits</a></h2>
 <table>
