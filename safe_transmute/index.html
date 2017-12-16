@@ -68,21 +68,21 @@ all circumstances. This is the case for those found in the <code>pod</code> and 
 <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">guarded_transmute_many</span>::<span class="op">&lt;</span><span class="ident">u16</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span>[<span class="number">0x00</span>, <span class="number">0x01</span>,
                                            <span class="number">0x12</span>, <span class="number">0x34</span>,
                                            <span class="comment">// Spare byte, unused</span>
-                                           <span class="number">0x00</span>]).<span class="ident">unwrap</span>(),
+                                           <span class="number">0x00</span>])<span class="question-mark">?</span>,
            <span class="kw-2">&amp;</span>[<span class="number">0x0100</span>, <span class="number">0x3412</span>]);</pre>
 
 <p>View all bytes as a series of <code>u16</code>s:</p>
 
 <pre class="rust rust-example-rendered">
 <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">guarded_transmute_many_pedantic</span>::<span class="op">&lt;</span><span class="ident">u16</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span>[<span class="number">0x00</span>, <span class="number">0x01</span>,
-                                                    <span class="number">0x12</span>, <span class="number">0x34</span>]).<span class="ident">unwrap</span>(),
+                                                    <span class="number">0x12</span>, <span class="number">0x34</span>])<span class="question-mark">?</span>,
            <span class="kw-2">&amp;</span>[<span class="number">0x0100</span>, <span class="number">0x3412</span>]);</pre>
 
 <p>View bytes as an <code>f64</code>:</p>
 
 <pre class="rust rust-example-rendered">
 <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">guarded_transmute</span>::<span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span>[<span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span>,
-                                      <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x40</span>]).<span class="ident">unwrap</span>(),
+                                      <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x40</span>])<span class="question-mark">?</span>,
            <span class="number">2.0</span>);</pre>
 </div><h2 id='modules' class='section-header'><a href="#modules">Modules</a></h2>
 <table>
