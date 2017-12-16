@@ -48,7 +48,7 @@
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a class='srclink' href='../../src/safe_transmute/guard.rs.html#1-163' title='goto source code'>[src]</a></span></h1>
+               </span><a class='srclink' href='../../src/safe_transmute/guard.rs.html#1-166' title='goto source code'>[src]</a></span></h1>
 <div class='docblock'><p>The <code>guard</code> module exposes an API for memory boundary checking.</p>
 
 <h1 id='examples' class='section-header'><a href='#examples'>Examples:</a></h1>
@@ -66,7 +66,7 @@ extraneous bytes at the end.</p>
 <pre class="rust rust-example-rendered">
 <span class="ident">PedanticGuard</span>::<span class="ident">check</span>::<span class="op">&lt;</span><span class="ident">u16</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span>[<span class="number">0xAA</span>, <span class="number">0xAA</span>, <span class="number">0xBB</span>, <span class="number">0xBB</span>, <span class="number">0xCC</span>, <span class="number">0xCC</span>])<span class="question-mark">?</span>;</pre>
 
-<p><a href="struct.PermissiveGuard.html"><code>PermissiveGuard</code></a>, on the other hand, will accept any memory slice.</p>
+<p>[<code>PermissiveGuard</code>](struct.PermissiveGuard.html, on the other hand, will accept any memory slice.</p>
 
 <pre class="rust rust-example-rendered">
 <span class="ident">PermissiveGuard</span>::<span class="ident">check</span>::<span class="op">&lt;</span><span class="ident">i16</span><span class="op">&gt;</span>(<span class="string">b&quot;covfefe&quot;</span>)<span class="question-mark">?</span>;</pre>
