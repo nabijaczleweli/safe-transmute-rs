@@ -16,6 +16,27 @@ use self::super::{Error, guarded_transmute_vec_permissive, guarded_transmute_man
 /// which means it's UB to transmute an arbitrary byte into a `bool`.
 pub trait PodTransmutable {}
 
+/// Trait seal
+mod private {
+    pub trait Sealed {}
+
+    impl Sealed for u8 {}
+    impl Sealed for i8 {}
+    impl Sealed for u16 {}
+    impl Sealed for i16 {}
+    impl Sealed for u32 {}
+    impl Sealed for i32 {}
+    impl Sealed for u64 {}
+    impl Sealed for i64 {}
+    impl Sealed for char {}
+    impl Sealed for f32 {}
+    impl Sealed for f64 {}
+    #[cfg(i128_type)]
+    impl Sealed for u128 {}
+    #[cfg(i128_type)]
+    impl Sealed for i128 {}
+}
+
 impl PodTransmutable for u8 {}
 impl PodTransmutable for i8 {}
 impl PodTransmutable for u16 {}
@@ -31,7 +52,6 @@ impl PodTransmutable for f64 {}
 impl PodTransmutable for u128 {}
 #[cfg(i128_type)]
 impl PodTransmutable for i128 {}
-
 
 /// Transmute a byte slice into a single instance of a POD.
 ///
