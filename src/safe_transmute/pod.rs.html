@@ -268,25 +268,6 @@
 <span id="223">223</span>
 <span id="224">224</span>
 <span id="225">225</span>
-<span id="226">226</span>
-<span id="227">227</span>
-<span id="228">228</span>
-<span id="229">229</span>
-<span id="230">230</span>
-<span id="231">231</span>
-<span id="232">232</span>
-<span id="233">233</span>
-<span id="234">234</span>
-<span id="235">235</span>
-<span id="236">236</span>
-<span id="237">237</span>
-<span id="238">238</span>
-<span id="239">239</span>
-<span id="240">240</span>
-<span id="241">241</span>
-<span id="242">242</span>
-<span id="243">243</span>
-<span id="244">244</span>
 </pre><pre class="rust ">
 <span class="kw">use</span> <span class="self">self</span>::<span class="kw">super</span>::{<span class="ident">Error</span>, <span class="ident">guarded_transmute_vec_permissive</span>, <span class="ident">guarded_transmute_many_permissive</span>, <span class="ident">guarded_transmute_many_pedantic</span>, <span class="ident">guarded_transmute_vec_pedantic</span>,
                   <span class="ident">guarded_transmute_pedantic</span>, <span class="ident">guarded_transmute_vec</span>, <span class="ident">guarded_transmute_many</span>, <span class="ident">guarded_transmute</span>};
@@ -300,32 +281,12 @@
 <span class="doccomment">/// Marker trait for `guarded_transmute_pod_*()` functions.</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// *Warning*: if you transmute into a floating-point type you will have a chance to create a signaling NaN,</span>
-<span class="doccomment">/// which, while not illegal, can be unwieldy. Check out [`util::designalise_f{32,64}()`](util/) for a remedy.</span>
+<span class="doccomment">/// which, while not illegal, can be unwieldy. Check out [`util::designalise_f{32,64}()`](util/index.html)</span>
+<span class="doccomment">/// for a remedy.</span>
 <span class="doccomment">///</span>
-<span class="doccomment">/// *Nota bene*: `bool`s aren&#39;t *actually* non-`unsafe` to transmute, because they&#39;re restricted to being `0` or `1`,</span>
-<span class="doccomment">/// which means it&#39;s UB to transmute an arbitrary byte into a `bool`.</span>
+<span class="doccomment">/// *Nota bene*: guarded transmutation to `bool`s is provided as separate functiions, because they&#39;re</span>
+<span class="doccomment">/// restricted to being `0` or `1`, which means that an additional value check is required.</span>
 <span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">PodTransmutable</span> {}
-
-<span class="doccomment">/// Trait seal</span>
-<span class="kw">mod</span> <span class="ident">private</span> {
-    <span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">Sealed</span> {}
-
-    <span class="kw">impl</span> <span class="ident">Sealed</span> <span class="kw">for</span> <span class="ident">u8</span> {}
-    <span class="kw">impl</span> <span class="ident">Sealed</span> <span class="kw">for</span> <span class="ident">i8</span> {}
-    <span class="kw">impl</span> <span class="ident">Sealed</span> <span class="kw">for</span> <span class="ident">u16</span> {}
-    <span class="kw">impl</span> <span class="ident">Sealed</span> <span class="kw">for</span> <span class="ident">i16</span> {}
-    <span class="kw">impl</span> <span class="ident">Sealed</span> <span class="kw">for</span> <span class="ident">u32</span> {}
-    <span class="kw">impl</span> <span class="ident">Sealed</span> <span class="kw">for</span> <span class="ident">i32</span> {}
-    <span class="kw">impl</span> <span class="ident">Sealed</span> <span class="kw">for</span> <span class="ident">u64</span> {}
-    <span class="kw">impl</span> <span class="ident">Sealed</span> <span class="kw">for</span> <span class="ident">i64</span> {}
-    <span class="kw">impl</span> <span class="ident">Sealed</span> <span class="kw">for</span> <span class="ident">char</span> {}
-    <span class="kw">impl</span> <span class="ident">Sealed</span> <span class="kw">for</span> <span class="ident">f32</span> {}
-    <span class="kw">impl</span> <span class="ident">Sealed</span> <span class="kw">for</span> <span class="ident">f64</span> {}
-    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">i128_type</span>)]</span>
-    <span class="kw">impl</span> <span class="ident">Sealed</span> <span class="kw">for</span> <span class="ident">u128</span> {}
-    <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">i128_type</span>)]</span>
-    <span class="kw">impl</span> <span class="ident">Sealed</span> <span class="kw">for</span> <span class="ident">i128</span> {}
-}
 
 <span class="kw">impl</span> <span class="ident">PodTransmutable</span> <span class="kw">for</span> <span class="ident">u8</span> {}
 <span class="kw">impl</span> <span class="ident">PodTransmutable</span> <span class="kw">for</span> <span class="ident">i8</span> {}
@@ -343,6 +304,7 @@
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">i128_type</span>)]</span>
 <span class="kw">impl</span> <span class="ident">PodTransmutable</span> <span class="kw">for</span> <span class="ident">i128</span> {}
 
+
 <span class="doccomment">/// Transmute a byte slice into a single instance of a POD.</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// The byte slice must have at least enough bytes to fill a single instance of a type,</span>
@@ -356,7 +318,7 @@
 <span class="doccomment">/// # fn main() {</span>
 <span class="doccomment">/// // Little-endian</span>
 <span class="doccomment">/// # /*</span>
-<span class="doccomment">/// assert_eq!(guarded_transmute_pod::&lt;u32&gt;(&amp;[0x00, 0x00, 0x00, 0x01]).unwrap(), 0x01000000);</span>
+<span class="doccomment">/// assert_eq!(guarded_transmute_pod::&lt;u32&gt;(&amp;[0x00, 0x00, 0x00, 0x01])?, 0x01000000);</span>
 <span class="doccomment">/// # */</span>
 <span class="doccomment">/// # assert_eq!(guarded_transmute_pod::&lt;u32&gt;(&amp;[0x00, 0x00, 0x00, 0x01].le_to_native::&lt;u32&gt;()).unwrap(), 0x01000000);</span>
 <span class="doccomment">/// # }</span>
@@ -377,7 +339,7 @@
 <span class="doccomment">/// # fn main() {</span>
 <span class="doccomment">/// // Little-endian</span>
 <span class="doccomment">/// # /*</span>
-<span class="doccomment">/// assert_eq!(guarded_transmute_pod_pedantic::&lt;u16&gt;(&amp;[0x0F, 0x0E]).unwrap(), 0x0E0F);</span>
+<span class="doccomment">/// assert_eq!(guarded_transmute_pod_pedantic::&lt;u16&gt;(&amp;[0x0F, 0x0E])?, 0x0E0F);</span>
 <span class="doccomment">/// # */</span>
 <span class="doccomment">/// # assert_eq!(guarded_transmute_pod_pedantic::&lt;u16&gt;(&amp;[0x0F, 0x0E].le_to_native::&lt;u16&gt;()).unwrap(), 0x0E0F);</span>
 <span class="doccomment">/// # }</span>
@@ -398,7 +360,7 @@
 <span class="doccomment">/// # fn main() {</span>
 <span class="doccomment">/// // Little-endian</span>
 <span class="doccomment">/// # /*</span>
-<span class="doccomment">/// assert_eq!(guarded_transmute_pod_many::&lt;u16&gt;(&amp;[0x00, 0x01, 0x00, 0x02]).unwrap(),</span>
+<span class="doccomment">/// assert_eq!(guarded_transmute_pod_many::&lt;u16&gt;(&amp;[0x00, 0x01, 0x00, 0x02])?,</span>
 <span class="doccomment">/// # */</span>
 <span class="doccomment">/// # assert_eq!(guarded_transmute_pod_many::&lt;u16&gt;(&amp;[0x00, 0x01, 0x00, 0x02].le_to_native::&lt;u16&gt;()).unwrap(),</span>
 <span class="doccomment">///            &amp;[0x0100, 0x0200]);</span>
@@ -435,7 +397,7 @@
 <span class="doccomment">/// # fn main() {</span>
 <span class="doccomment">/// // Little-endian</span>
 <span class="doccomment">/// # /*</span>
-<span class="doccomment">/// assert_eq!(guarded_transmute_pod_many_pedantic::&lt;u16&gt;(&amp;[0x0F, 0x0E, 0x0A, 0x0B]).unwrap(),</span>
+<span class="doccomment">/// assert_eq!(guarded_transmute_pod_many_pedantic::&lt;u16&gt;(&amp;[0x0F, 0x0E, 0x0A, 0x0B])?,</span>
 <span class="doccomment">/// # */</span>
 <span class="doccomment">/// # assert_eq!(guarded_transmute_pod_many_pedantic::&lt;u16&gt;(&amp;[0x0F, 0x0E, 0x0A, 0x0B].le_to_native::&lt;u16&gt;()).unwrap(),</span>
 <span class="doccomment">///            &amp;[0x0E0F, 0x0B0A]);</span>
@@ -459,12 +421,12 @@
 <span class="doccomment">/// # fn main() {</span>
 <span class="doccomment">/// // Little-endian</span>
 <span class="doccomment">/// # /*</span>
-<span class="doccomment">/// assert_eq!(guarded_transmute_pod_vec::&lt;u16&gt;(vec![0x00, 0x01, 0x00, 0x02]).unwrap(),</span>
+<span class="doccomment">/// assert_eq!(guarded_transmute_pod_vec::&lt;u16&gt;(vec![0x00, 0x01, 0x00, 0x02])?,</span>
 <span class="doccomment">/// # */</span>
 <span class="doccomment">/// # assert_eq!(guarded_transmute_pod_vec::&lt;u16&gt;(vec![0x00, 0x01, 0x00, 0x02].le_to_native::&lt;u16&gt;()).unwrap(),</span>
 <span class="doccomment">///            vec![0x0100, 0x0200]);</span>
 <span class="doccomment">/// # /*</span>
-<span class="doccomment">/// assert_eq!(guarded_transmute_pod_vec::&lt;u32&gt;(vec![0x04, 0x00, 0x00, 0x00, 0xED]).unwrap(),</span>
+<span class="doccomment">/// assert_eq!(guarded_transmute_pod_vec::&lt;u32&gt;(vec![0x04, 0x00, 0x00, 0x00, 0xED])?,</span>
 <span class="doccomment">/// # */</span>
 <span class="doccomment">/// # assert_eq!(guarded_transmute_pod_vec::&lt;u32&gt;(vec![0x04, 0x00, 0x00, 0x00, 0xED].le_to_native::&lt;u32&gt;()).unwrap(),</span>
 <span class="doccomment">///            vec![0x00000004]);</span>
@@ -520,7 +482,7 @@
 <span class="doccomment">/// # fn main() {</span>
 <span class="doccomment">/// // Little-endian</span>
 <span class="doccomment">/// # /*</span>
-<span class="doccomment">/// assert_eq!(guarded_transmute_pod_vec_pedantic::&lt;u16&gt;(vec![0x00, 0x01, 0x00, 0x02]).unwrap(),</span>
+<span class="doccomment">/// assert_eq!(guarded_transmute_pod_vec_pedantic::&lt;u16&gt;(vec![0x00, 0x01, 0x00, 0x02])?,</span>
 <span class="doccomment">/// # */</span>
 <span class="doccomment">/// # assert_eq!(guarded_transmute_pod_vec_pedantic::&lt;u16&gt;(vec![0x00, 0x01, 0x00, 0x02].le_to_native::&lt;u16&gt;()).unwrap(),</span>
 <span class="doccomment">///            vec![0x0100, 0x0200]);</span>

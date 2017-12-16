@@ -57,7 +57,7 @@ and should not have extraneous data.</p>
 <h1 id='examples' class='section-header'><a href='#examples'>Examples</a></h1>
 <pre class="rust rust-example-rendered">
 <span class="comment">// Little-endian</span>
-<span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">guarded_transmute_many_pedantic</span>::<span class="op">&lt;</span><span class="ident">u16</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span>[<span class="number">0x0F</span>, <span class="number">0x0E</span>, <span class="number">0x0A</span>, <span class="number">0x0B</span>]).<span class="ident">unwrap</span>(),
+<span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">guarded_transmute_many_pedantic</span>::<span class="op">&lt;</span><span class="ident">u16</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span>[<span class="number">0x0F</span>, <span class="number">0x0E</span>, <span class="number">0x0A</span>, <span class="number">0x0B</span>])<span class="question-mark">?</span>,
            <span class="kw-2">&amp;</span>[<span class="number">0x0E0F</span>, <span class="number">0x0B0A</span>]);</pre>
 </div></section>
     <section id='search' class="content hidden"></section>
