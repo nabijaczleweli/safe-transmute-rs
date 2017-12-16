@@ -203,6 +203,9 @@
 <span id="158">158</span>
 <span id="159">159</span>
 <span id="160">160</span>
+<span id="161">161</span>
+<span id="162">162</span>
+<span id="163">163</span>
 </pre><pre class="rust ">
 <span class="doccomment">//! The `guard` module exposes an API for memory boundary checking.</span>
 <span class="doccomment">//!</span>
@@ -225,7 +228,6 @@
 <span class="doccomment">//! For example, the pedantic guard type [`PedanticGuard`] requires</span>
 <span class="doccomment">//! the slice to have space for at least one value, and not have</span>
 <span class="doccomment">//! extraneous bytes at the end.</span>
-<span class="doccomment">//!</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! ```</span>
 <span class="doccomment">//! # use safe_transmute::Error;</span>
@@ -254,13 +256,12 @@
 <span class="doccomment">//! ```</span>
 <span class="doccomment">//! # use safe_transmute::{GuardError, ErrorReason};</span>
 <span class="doccomment">//! # use safe_transmute::guard::{Guard, PedanticGuard};</span>
-<span class="doccomment">//! assert_eq!(</span>
-<span class="doccomment">//!     PedanticGuard::check::&lt;i16&gt;(b&quot;covfefe&quot;),</span>
-<span class="doccomment">//!     Err(GuardError {</span>
-<span class="doccomment">//!         required: 2,</span>
-<span class="doccomment">//!         actual: 7,</span>
-<span class="doccomment">//!         reason: ErrorReason::InexactByteCount,</span>
-<span class="doccomment">//!     }));</span>
+<span class="doccomment">//! assert_eq!(PedanticGuard::check::&lt;i16&gt;(b&quot;covfefe&quot;),</span>
+<span class="doccomment">//!            Err(GuardError {</span>
+<span class="doccomment">//!                required: 2,</span>
+<span class="doccomment">//!                actual: 7,</span>
+<span class="doccomment">//!                reason: ErrorReason::InexactByteCount,</span>
+<span class="doccomment">//!            }));</span>
 <span class="doccomment">//! ```</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! [`GuardError`]: ../type.GuardError.html</span>
@@ -284,6 +285,7 @@
 <span class="doccomment">/// Single value guard: The byte slice must have exactly enough bytes to fill a single</span>
 <span class="doccomment">/// instance of a type.</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">SingleValueGuard</span>;
+
 <span class="kw">impl</span> <span class="ident">Guard</span> <span class="kw">for</span> <span class="ident">SingleValueGuard</span> {
     <span class="kw">fn</span> <span class="ident">check</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(<span class="ident">bytes</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>]) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">GuardError</span><span class="op">&gt;</span> {
         <span class="kw">if</span> <span class="ident">bytes</span>.<span class="ident">len</span>() <span class="op">!=</span> <span class="ident">align_of</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>() {
@@ -301,6 +303,7 @@
 <span class="doccomment">/// Pedantic guard: The byte slice must have at least enough bytes to fill a single</span>
 <span class="doccomment">/// instance of a type, and should not have extraneous data.</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">PedanticGuard</span>;
+
 <span class="kw">impl</span> <span class="ident">Guard</span> <span class="kw">for</span> <span class="ident">PedanticGuard</span> {
     <span class="kw">fn</span> <span class="ident">check</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(<span class="ident">bytes</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>]) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">GuardError</span><span class="op">&gt;</span> {
         <span class="kw">if</span> <span class="ident">bytes</span>.<span class="ident">len</span>() <span class="op">&lt;</span> <span class="ident">align_of</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>() {
@@ -321,10 +324,11 @@
     }
 }
 
-<span class="doccomment">/// A strict guard: The byte slice should not have extraneous data, but can be</span>
-<span class="doccomment">/// empty.</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">StrictGuard</span>;
-<span class="kw">impl</span> <span class="ident">Guard</span> <span class="kw">for</span> <span class="ident">StrictGuard</span> {
+<span class="doccomment">/// An all-or-nothing guard: The byte slice should not have extraneous data, but can be</span>
+<span class="doccomment">/// empty, unlike `PedanticGuard`.</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">AllOrNothingGuard</span>;
+
+<span class="kw">impl</span> <span class="ident">Guard</span> <span class="kw">for</span> <span class="ident">AllOrNothingGuard</span> {
     <span class="kw">fn</span> <span class="ident">check</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(<span class="ident">bytes</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>]) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">GuardError</span><span class="op">&gt;</span> {
         <span class="kw">if</span> <span class="ident">bytes</span>.<span class="ident">len</span>() <span class="op">%</span> <span class="ident">align_of</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>() <span class="op">!=</span> <span class="number">0</span> {
             <span class="prelude-val">Err</span>(<span class="ident">GuardError</span> {
@@ -338,10 +342,11 @@
     }
 }
 
-<span class="doccomment">/// A basic reasonable guard: The byte slice must have at least enough bytes to fill a single</span>
+<span class="doccomment">/// A single-or-many guard: The byte slice must have at least enough bytes to fill a single</span>
 <span class="doccomment">/// instance of a type, and extraneous data is ignored.</span>
-<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">BasicGuard</span>;
-<span class="kw">impl</span> <span class="ident">Guard</span> <span class="kw">for</span> <span class="ident">BasicGuard</span> {
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">SingleManyGuard</span>;
+
+<span class="kw">impl</span> <span class="ident">Guard</span> <span class="kw">for</span> <span class="ident">SingleManyGuard</span> {
     <span class="kw">fn</span> <span class="ident">check</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(<span class="ident">bytes</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>]) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">GuardError</span><span class="op">&gt;</span> {
         <span class="kw">if</span> <span class="ident">bytes</span>.<span class="ident">len</span>() <span class="op">&lt;</span> <span class="ident">align_of</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>() {
             <span class="prelude-val">Err</span>(<span class="ident">GuardError</span> {
@@ -358,9 +363,10 @@
 <span class="doccomment">/// Permissive guard: The resulting slice would have as many instances of a type as will</span>
 <span class="doccomment">/// fit, rounded down. Therefore, this guard will never yield an error.</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">PermissiveGuard</span>;
+
 <span class="kw">impl</span> <span class="ident">Guard</span> <span class="kw">for</span> <span class="ident">PermissiveGuard</span> {
     <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="kw">fn</span> <span class="ident">check</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(<span class="ident">_bytes</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>]) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">GuardError</span><span class="op">&gt;</span> {
+    <span class="kw">fn</span> <span class="ident">check</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(_: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>]) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">GuardError</span><span class="op">&gt;</span> {
         <span class="prelude-val">Ok</span>(())
     }
 }

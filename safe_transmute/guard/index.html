@@ -48,7 +48,7 @@
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a class='srclink' href='../../src/safe_transmute/guard.rs.html#1-160' title='goto source code'>[src]</a></span></h1>
+               </span><a class='srclink' href='../../src/safe_transmute/guard.rs.html#1-163' title='goto source code'>[src]</a></span></h1>
 <div class='docblock'><p>The <code>guard</code> module exposes an API for memory boundary checking.</p>
 
 <h1 id='examples' class='section-header'><a href='#examples'>Examples:</a></h1>
@@ -74,21 +74,20 @@ extraneous bytes at the end.</p>
 <p>If the check fails, the resulting <a href="../type.GuardError.html"><code>GuardError</code></a> value describes why.</p>
 
 <pre class="rust rust-example-rendered">
-<span class="macro">assert_eq</span><span class="macro">!</span>(
-    <span class="ident">PedanticGuard</span>::<span class="ident">check</span>::<span class="op">&lt;</span><span class="ident">i16</span><span class="op">&gt;</span>(<span class="string">b&quot;covfefe&quot;</span>),
-    <span class="prelude-val">Err</span>(<span class="ident">GuardError</span> {
-        <span class="ident">required</span>: <span class="number">2</span>,
-        <span class="ident">actual</span>: <span class="number">7</span>,
-        <span class="ident">reason</span>: <span class="ident">ErrorReason</span>::<span class="ident">InexactByteCount</span>,
-    }));</pre>
+<span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">PedanticGuard</span>::<span class="ident">check</span>::<span class="op">&lt;</span><span class="ident">i16</span><span class="op">&gt;</span>(<span class="string">b&quot;covfefe&quot;</span>),
+           <span class="prelude-val">Err</span>(<span class="ident">GuardError</span> {
+               <span class="ident">required</span>: <span class="number">2</span>,
+               <span class="ident">actual</span>: <span class="number">7</span>,
+               <span class="ident">reason</span>: <span class="ident">ErrorReason</span>::<span class="ident">InexactByteCount</span>,
+           }));</pre>
 </div><h2 id='structs' class='section-header'><a href="#structs">Structs</a></h2>
 <table>
                        <tr class=' module-item'>
-                           <td><a class="struct" href="struct.BasicGuard.html"
-                                  title='struct safe_transmute::guard::BasicGuard'>BasicGuard</a></td>
+                           <td><a class="struct" href="struct.AllOrNothingGuard.html"
+                                  title='struct safe_transmute::guard::AllOrNothingGuard'>AllOrNothingGuard</a></td>
                            <td class='docblock-short'>
-                                <p>A basic reasonable guard: The byte slice must have at least enough bytes to fill a single
-instance of a type, and extraneous data is ignored.</p>
+                                <p>An all-or-nothing guard: The byte slice should not have extraneous data, but can be
+empty, unlike <code>PedanticGuard</code>.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
@@ -108,19 +107,19 @@ fit, rounded down. Therefore, this guard will never yield an error.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
+                           <td><a class="struct" href="struct.SingleManyGuard.html"
+                                  title='struct safe_transmute::guard::SingleManyGuard'>SingleManyGuard</a></td>
+                           <td class='docblock-short'>
+                                <p>A single-or-many guard: The byte slice must have at least enough bytes to fill a single
+instance of a type, and extraneous data is ignored.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
                            <td><a class="struct" href="struct.SingleValueGuard.html"
                                   title='struct safe_transmute::guard::SingleValueGuard'>SingleValueGuard</a></td>
                            <td class='docblock-short'>
                                 <p>Single value guard: The byte slice must have exactly enough bytes to fill a single
 instance of a type.</p>
-                           </td>
-                       </tr>
-                       <tr class=' module-item'>
-                           <td><a class="struct" href="struct.StrictGuard.html"
-                                  title='struct safe_transmute::guard::StrictGuard'>StrictGuard</a></td>
-                           <td class='docblock-short'>
-                                <p>A strict guard: The byte slice should not have extraneous data, but can be
-empty.</p>
                            </td>
                        </tr></table><h2 id='traits' class='section-header'><a href="#traits">Traits</a></h2>
 <table>
