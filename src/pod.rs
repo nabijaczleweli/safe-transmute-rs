@@ -1,6 +1,5 @@
-use self::super::{Error, guarded_transmute_vec_permissive, guarded_transmute_many_permissive, guarded_transmute_many_pedantic, guarded_transmute_vec_pedantic,
-                  guarded_transmute_pedantic, guarded_transmute_vec, guarded_transmute_many, guarded_transmute};
-
+use self::super::{guarded_transmute, guarded_transmute_many, guarded_transmute_many_pedantic, guarded_transmute_many_permissive, guarded_transmute_pedantic,
+                  guarded_transmute_vec, guarded_transmute_vec_pedantic, guarded_transmute_vec_permissive, Error};
 
 /// Type that can be non-`unsafe`ly transmuted into
 ///
@@ -15,24 +14,30 @@ use self::super::{Error, guarded_transmute_vec_permissive, guarded_transmute_man
 ///
 /// *Nota bene*: guarded transmutation to `bool`s is provided as separate functions, because they're
 /// restricted to being `0` or `1`, which means that an additional value check is required.
-pub trait PodTransmutable {}
+///
+/// # Safety
+///
+/// It is only safe to implement `PodTransmutable` for a type `T` if it is safe for a slice of any arbitrary data
+/// `&[u8]` with the byte length of `T` to be transmuted with [`std::mem::transmute`](https://doc.rust-lang.org/stable/std/mem/fn.transmute.html)
+/// to a slice `&[T]` of length 1. Please see the [Nomicon](https://doc.rust-lang.org/nomicon/transmutes.html) for more details.
+///
+pub unsafe trait PodTransmutable {}
 
-impl PodTransmutable for u8 {}
-impl PodTransmutable for i8 {}
-impl PodTransmutable for u16 {}
-impl PodTransmutable for i16 {}
-impl PodTransmutable for u32 {}
-impl PodTransmutable for i32 {}
-impl PodTransmutable for u64 {}
-impl PodTransmutable for i64 {}
-impl PodTransmutable for char {}
-impl PodTransmutable for f32 {}
-impl PodTransmutable for f64 {}
+unsafe impl PodTransmutable for u8 {}
+unsafe impl PodTransmutable for i8 {}
+unsafe impl PodTransmutable for u16 {}
+unsafe impl PodTransmutable for i16 {}
+unsafe impl PodTransmutable for u32 {}
+unsafe impl PodTransmutable for i32 {}
+unsafe impl PodTransmutable for u64 {}
+unsafe impl PodTransmutable for i64 {}
+unsafe impl PodTransmutable for char {}
+unsafe impl PodTransmutable for f32 {}
+unsafe impl PodTransmutable for f64 {}
 #[cfg(i128_type)]
-impl PodTransmutable for u128 {}
+unsafe impl PodTransmutable for u128 {}
 #[cfg(i128_type)]
-impl PodTransmutable for i128 {}
-
+unsafe impl PodTransmutable for i128 {}
 
 /// Transmute a byte slice into a single instance of a POD.
 ///
@@ -196,7 +201,6 @@ pub fn guarded_transmute_pod_vec<T: PodTransmutable>(bytes: Vec<u8>) -> Result<V
 pub fn guarded_transmute_pod_vec_permissive<T: PodTransmutable>(bytes: Vec<u8>) -> Vec<T> {
     unsafe { guarded_transmute_vec_permissive(bytes) }
 }
-
 
 /// Trasform a byte vector into a vector of POD.
 ///
