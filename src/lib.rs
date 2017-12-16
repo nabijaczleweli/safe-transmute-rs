@@ -76,13 +76,12 @@ use std::mem::{align_of, forget};
 pub mod guard;
 pub mod util;
 
-pub use self::error::{ErrorReason, Error};
-pub use self::pod::{PodTransmutable, guarded_transmute_pod_many_permissive, guarded_transmute_pod_vec_permissive, guarded_transmute_pod_many_pedantic,
-                    guarded_transmute_pod_pedantic, guarded_transmute_pod_vec_pedantic, guarded_transmute_pod_many, guarded_transmute_pod,
-                    guarded_transmute_pod_vec};
-pub use self::bool::{guarded_transmute_bool_vec_permissive, guarded_transmute_bool_vec_pedantic, guarded_transmute_bool_permissive,
-                     guarded_transmute_bool_pedantic};
-
+pub use self::error::{Error, ErrorReason, GuardError};
+pub use self::pod::{guarded_transmute_pod, guarded_transmute_pod_many, guarded_transmute_pod_many_pedantic, guarded_transmute_pod_many_permissive,
+                    guarded_transmute_pod_pedantic, guarded_transmute_pod_vec, guarded_transmute_pod_vec_pedantic, guarded_transmute_pod_vec_permissive,
+                    PodTransmutable};
+pub use self::bool::{guarded_transmute_bool_pedantic, guarded_transmute_bool_permissive, guarded_transmute_bool_vec_pedantic,
+                     guarded_transmute_bool_vec_permissive};
 use guard::*;
 
 /// Transmute a byte slice into a single instance of a `Copy`able type.
