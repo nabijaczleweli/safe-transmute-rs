@@ -268,10 +268,13 @@
 <span id="223">223</span>
 <span id="224">224</span>
 <span id="225">225</span>
+<span id="226">226</span>
+<span id="227">227</span>
+<span id="228">228</span>
+<span id="229">229</span>
 </pre><pre class="rust ">
-<span class="kw">use</span> <span class="self">self</span>::<span class="kw">super</span>::{<span class="ident">Error</span>, <span class="ident">guarded_transmute_vec_permissive</span>, <span class="ident">guarded_transmute_many_permissive</span>, <span class="ident">guarded_transmute_many_pedantic</span>, <span class="ident">guarded_transmute_vec_pedantic</span>,
-                  <span class="ident">guarded_transmute_pedantic</span>, <span class="ident">guarded_transmute_vec</span>, <span class="ident">guarded_transmute_many</span>, <span class="ident">guarded_transmute</span>};
-
+<span class="kw">use</span> <span class="self">self</span>::<span class="kw">super</span>::{<span class="ident">guarded_transmute</span>, <span class="ident">guarded_transmute_many</span>, <span class="ident">guarded_transmute_many_pedantic</span>, <span class="ident">guarded_transmute_many_permissive</span>, <span class="ident">guarded_transmute_pedantic</span>,
+                  <span class="ident">guarded_transmute_vec</span>, <span class="ident">guarded_transmute_vec_pedantic</span>, <span class="ident">guarded_transmute_vec_permissive</span>, <span class="ident">Error</span>};
 
 <span class="doccomment">/// Type that can be non-`unsafe`ly transmuted into</span>
 <span class="doccomment">///</span>
@@ -286,24 +289,30 @@
 <span class="doccomment">///</span>
 <span class="doccomment">/// *Nota bene*: guarded transmutation to `bool`s is provided as separate functions, because they&#39;re</span>
 <span class="doccomment">/// restricted to being `0` or `1`, which means that an additional value check is required.</span>
-<span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">PodTransmutable</span> {}
+<span class="doccomment">///</span>
+<span class="doccomment">/// # Safety</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// It is only safe to implement `PodTransmutable` for a type `T` if it is safe for a slice of any arbitrary data</span>
+<span class="doccomment">/// `&amp;[u8]` with the byte length of `T` to be transmuted with [`std::mem::transmute`](https://doc.rust-lang.org/stable/std/mem/fn.transmute.html)</span>
+<span class="doccomment">/// to a slice `&amp;[T]` of length 1. Please see the [Nomicon](https://doc.rust-lang.org/nomicon/transmutes.html) for more details.</span>
+<span class="doccomment">///</span>
+<span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">trait</span> <span class="ident">PodTransmutable</span> {}
 
-<span class="kw">impl</span> <span class="ident">PodTransmutable</span> <span class="kw">for</span> <span class="ident">u8</span> {}
-<span class="kw">impl</span> <span class="ident">PodTransmutable</span> <span class="kw">for</span> <span class="ident">i8</span> {}
-<span class="kw">impl</span> <span class="ident">PodTransmutable</span> <span class="kw">for</span> <span class="ident">u16</span> {}
-<span class="kw">impl</span> <span class="ident">PodTransmutable</span> <span class="kw">for</span> <span class="ident">i16</span> {}
-<span class="kw">impl</span> <span class="ident">PodTransmutable</span> <span class="kw">for</span> <span class="ident">u32</span> {}
-<span class="kw">impl</span> <span class="ident">PodTransmutable</span> <span class="kw">for</span> <span class="ident">i32</span> {}
-<span class="kw">impl</span> <span class="ident">PodTransmutable</span> <span class="kw">for</span> <span class="ident">u64</span> {}
-<span class="kw">impl</span> <span class="ident">PodTransmutable</span> <span class="kw">for</span> <span class="ident">i64</span> {}
-<span class="kw">impl</span> <span class="ident">PodTransmutable</span> <span class="kw">for</span> <span class="ident">char</span> {}
-<span class="kw">impl</span> <span class="ident">PodTransmutable</span> <span class="kw">for</span> <span class="ident">f32</span> {}
-<span class="kw">impl</span> <span class="ident">PodTransmutable</span> <span class="kw">for</span> <span class="ident">f64</span> {}
+<span class="kw">unsafe</span> <span class="kw">impl</span> <span class="ident">PodTransmutable</span> <span class="kw">for</span> <span class="ident">u8</span> {}
+<span class="kw">unsafe</span> <span class="kw">impl</span> <span class="ident">PodTransmutable</span> <span class="kw">for</span> <span class="ident">i8</span> {}
+<span class="kw">unsafe</span> <span class="kw">impl</span> <span class="ident">PodTransmutable</span> <span class="kw">for</span> <span class="ident">u16</span> {}
+<span class="kw">unsafe</span> <span class="kw">impl</span> <span class="ident">PodTransmutable</span> <span class="kw">for</span> <span class="ident">i16</span> {}
+<span class="kw">unsafe</span> <span class="kw">impl</span> <span class="ident">PodTransmutable</span> <span class="kw">for</span> <span class="ident">u32</span> {}
+<span class="kw">unsafe</span> <span class="kw">impl</span> <span class="ident">PodTransmutable</span> <span class="kw">for</span> <span class="ident">i32</span> {}
+<span class="kw">unsafe</span> <span class="kw">impl</span> <span class="ident">PodTransmutable</span> <span class="kw">for</span> <span class="ident">u64</span> {}
+<span class="kw">unsafe</span> <span class="kw">impl</span> <span class="ident">PodTransmutable</span> <span class="kw">for</span> <span class="ident">i64</span> {}
+<span class="kw">unsafe</span> <span class="kw">impl</span> <span class="ident">PodTransmutable</span> <span class="kw">for</span> <span class="ident">char</span> {}
+<span class="kw">unsafe</span> <span class="kw">impl</span> <span class="ident">PodTransmutable</span> <span class="kw">for</span> <span class="ident">f32</span> {}
+<span class="kw">unsafe</span> <span class="kw">impl</span> <span class="ident">PodTransmutable</span> <span class="kw">for</span> <span class="ident">f64</span> {}
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">i128_type</span>)]</span>
-<span class="kw">impl</span> <span class="ident">PodTransmutable</span> <span class="kw">for</span> <span class="ident">u128</span> {}
+<span class="kw">unsafe</span> <span class="kw">impl</span> <span class="ident">PodTransmutable</span> <span class="kw">for</span> <span class="ident">u128</span> {}
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">i128_type</span>)]</span>
-<span class="kw">impl</span> <span class="ident">PodTransmutable</span> <span class="kw">for</span> <span class="ident">i128</span> {}
-
+<span class="kw">unsafe</span> <span class="kw">impl</span> <span class="ident">PodTransmutable</span> <span class="kw">for</span> <span class="ident">i128</span> {}
 
 <span class="doccomment">/// Transmute a byte slice into a single instance of a POD.</span>
 <span class="doccomment">///</span>
@@ -467,7 +476,6 @@
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">guarded_transmute_pod_vec_permissive</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">PodTransmutable</span><span class="op">&gt;</span>(<span class="ident">bytes</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
     <span class="kw">unsafe</span> { <span class="ident">guarded_transmute_vec_permissive</span>(<span class="ident">bytes</span>) }
 }
-
 
 <span class="doccomment">/// Trasform a byte vector into a vector of POD.</span>
 <span class="doccomment">///</span>
