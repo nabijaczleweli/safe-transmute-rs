@@ -33,12 +33,14 @@ pub fn bytes_are_bool(v: &[u8]) -> bool {
 /// # Examples
 ///
 /// ```
-/// # use safe_transmute::guarded_transmute_bool_permissive;
-/// # fn main() {
-/// assert_eq!(guarded_transmute_bool_permissive(&[0x00, 0x01, 0x00, 0x01]).unwrap(),
+/// # use safe_transmute::{Error, guarded_transmute_bool_permissive};
+/// # fn run() -> Result<(), Error> {
+/// assert_eq!(guarded_transmute_bool_permissive(&[0x00, 0x01, 0x00, 0x01])?,
 ///            &[false, true, false, true]);
-/// assert_eq!(guarded_transmute_bool_permissive(&[]).unwrap(), &[]);
+/// assert_eq!(guarded_transmute_bool_permissive(&[])?, &[]);
+/// # Ok(())
 /// # }
+/// # run().unwrap()
 /// ```
 pub fn guarded_transmute_bool_permissive(bytes: &[u8]) -> Result<&[bool], Error> {
     check_bool(bytes)?;
@@ -52,12 +54,14 @@ pub fn guarded_transmute_bool_permissive(bytes: &[u8]) -> Result<&[bool], Error>
 /// # Examples
 ///
 /// ```
-/// # use safe_transmute::guarded_transmute_bool_pedantic;
-/// # fn main() {
-/// assert_eq!(guarded_transmute_bool_pedantic(&[0x01, 0x01, 0x01, 0x01]).unwrap(),
+/// # use safe_transmute::{Error, guarded_transmute_bool_pedantic};
+/// # fn run() -> Result<(), Error> {
+/// assert_eq!(guarded_transmute_bool_pedantic(&[0x01, 0x01, 0x01, 0x01])?,
 ///            &[true, true, true, true]);
 /// assert!(guarded_transmute_bool_pedantic(&[]).is_err());
+/// # Ok(())
 /// # }
+/// # run().unwrap()
 /// ```
 pub fn guarded_transmute_bool_pedantic(bytes: &[u8]) -> Result<&[bool], Error> {
     check_bool(bytes)?;
@@ -72,14 +76,16 @@ pub fn guarded_transmute_bool_pedantic(bytes: &[u8]) -> Result<&[bool], Error> {
 /// # Examples
 ///
 /// ```
-/// # use safe_transmute::guarded_transmute_bool_vec_permissive;
-/// # fn main() {
-/// assert_eq!(guarded_transmute_bool_vec_permissive(vec![0x00, 0x01, 0x00, 0x01]).unwrap(),
+/// # use safe_transmute::{Error, guarded_transmute_bool_vec_permissive};
+/// # fn run() -> Result<(), Error> {
+/// assert_eq!(guarded_transmute_bool_vec_permissive(vec![0x00, 0x01, 0x00, 0x01])?,
 ///            vec![false, true, false, true]);
-/// assert_eq!(guarded_transmute_bool_vec_permissive(vec![0x01, 0x00, 0x00, 0x00, 0x01]).unwrap(),
+/// assert_eq!(guarded_transmute_bool_vec_permissive(vec![0x01, 0x00, 0x00, 0x00, 0x01])?,
 ///            vec![true, false, false, false, true]);
 /// assert_eq!(guarded_transmute_bool_vec_permissive(vec![]), Ok(vec![]));
+/// # Ok(())
 /// # }
+/// # run().unwrap()
 /// ```
 pub fn guarded_transmute_bool_vec_permissive(bytes: Vec<u8>) -> Result<Vec<bool>, Error> {
     check_bool(&bytes)?;
@@ -94,13 +100,17 @@ pub fn guarded_transmute_bool_vec_permissive(bytes: Vec<u8>) -> Result<Vec<bool>
 /// # Examples
 ///
 /// ```
-/// # use safe_transmute::guarded_transmute_bool_vec_pedantic;
-/// assert_eq!(guarded_transmute_bool_vec_pedantic(vec![0x00, 0x01, 0x00, 0x01]).unwrap(),
+/// # use safe_transmute::{Error, guarded_transmute_bool_vec_pedantic};
+/// # fn run() -> Result<(), Error> {
+/// assert_eq!(guarded_transmute_bool_vec_pedantic(vec![0x00, 0x01, 0x00, 0x01])?,
 ///            vec![false, true, false, true]);
 ///
 /// assert!(guarded_transmute_bool_vec_pedantic(vec![]).is_err());
 ///
 /// assert!(guarded_transmute_bool_vec_pedantic(vec![0x04, 0x00, 0xED]).is_err());
+/// # Ok(())
+/// # }
+/// # run().unwrap()
 /// ```
 pub fn guarded_transmute_bool_vec_pedantic(bytes: Vec<u8>) -> Result<Vec<bool>, Error> {
     check_bool(&bytes)?;

@@ -10,10 +10,11 @@ use self::super::{Error, guarded_transmute_vec_permissive, guarded_transmute_man
 /// Marker trait for `guarded_transmute_pod_*()` functions.
 ///
 /// *Warning*: if you transmute into a floating-point type you will have a chance to create a signaling NaN,
-/// which, while not illegal, can be unwieldy. Check out [`util::designalise_f{32,64}()`](util/) for a remedy.
+/// which, while not illegal, can be unwieldy. Check out [`util::designalise_f{32,64}()`](util/index.html)
+/// for a remedy.
 ///
-/// *Nota bene*: `bool`s aren't *actually* non-`unsafe` to transmute, because they're restricted to being `0` or `1`,
-/// which means it's UB to transmute an arbitrary byte into a `bool`.
+/// *Nota bene*: guarded transmutation to `bool`s is provided as separate functiions, because they're
+/// restricted to being `0` or `1`, which means that an additional value check is required.
 pub trait PodTransmutable {}
 
 impl PodTransmutable for u8 {}
@@ -46,7 +47,7 @@ impl PodTransmutable for i128 {}
 /// # fn main() {
 /// // Little-endian
 /// # /*
-/// assert_eq!(guarded_transmute_pod::<u32>(&[0x00, 0x00, 0x00, 0x01]).unwrap(), 0x01000000);
+/// assert_eq!(guarded_transmute_pod::<u32>(&[0x00, 0x00, 0x00, 0x01])?, 0x01000000);
 /// # */
 /// # assert_eq!(guarded_transmute_pod::<u32>(&[0x00, 0x00, 0x00, 0x01].le_to_native::<u32>()).unwrap(), 0x01000000);
 /// # }
@@ -67,7 +68,7 @@ pub fn guarded_transmute_pod<T: PodTransmutable + Copy>(bytes: &[u8]) -> Result<
 /// # fn main() {
 /// // Little-endian
 /// # /*
-/// assert_eq!(guarded_transmute_pod_pedantic::<u16>(&[0x0F, 0x0E]).unwrap(), 0x0E0F);
+/// assert_eq!(guarded_transmute_pod_pedantic::<u16>(&[0x0F, 0x0E])?, 0x0E0F);
 /// # */
 /// # assert_eq!(guarded_transmute_pod_pedantic::<u16>(&[0x0F, 0x0E].le_to_native::<u16>()).unwrap(), 0x0E0F);
 /// # }
@@ -88,7 +89,7 @@ pub fn guarded_transmute_pod_pedantic<T: PodTransmutable + Copy>(bytes: &[u8]) -
 /// # fn main() {
 /// // Little-endian
 /// # /*
-/// assert_eq!(guarded_transmute_pod_many::<u16>(&[0x00, 0x01, 0x00, 0x02]).unwrap(),
+/// assert_eq!(guarded_transmute_pod_many::<u16>(&[0x00, 0x01, 0x00, 0x02])?,
 /// # */
 /// # assert_eq!(guarded_transmute_pod_many::<u16>(&[0x00, 0x01, 0x00, 0x02].le_to_native::<u16>()).unwrap(),
 ///            &[0x0100, 0x0200]);
@@ -125,7 +126,7 @@ pub fn guarded_transmute_pod_many_permissive<T: PodTransmutable>(bytes: &[u8]) -
 /// # fn main() {
 /// // Little-endian
 /// # /*
-/// assert_eq!(guarded_transmute_pod_many_pedantic::<u16>(&[0x0F, 0x0E, 0x0A, 0x0B]).unwrap(),
+/// assert_eq!(guarded_transmute_pod_many_pedantic::<u16>(&[0x0F, 0x0E, 0x0A, 0x0B])?,
 /// # */
 /// # assert_eq!(guarded_transmute_pod_many_pedantic::<u16>(&[0x0F, 0x0E, 0x0A, 0x0B].le_to_native::<u16>()).unwrap(),
 ///            &[0x0E0F, 0x0B0A]);
@@ -149,12 +150,12 @@ pub fn guarded_transmute_pod_many_pedantic<T: PodTransmutable>(bytes: &[u8]) -> 
 /// # fn main() {
 /// // Little-endian
 /// # /*
-/// assert_eq!(guarded_transmute_pod_vec::<u16>(vec![0x00, 0x01, 0x00, 0x02]).unwrap(),
+/// assert_eq!(guarded_transmute_pod_vec::<u16>(vec![0x00, 0x01, 0x00, 0x02])?,
 /// # */
 /// # assert_eq!(guarded_transmute_pod_vec::<u16>(vec![0x00, 0x01, 0x00, 0x02].le_to_native::<u16>()).unwrap(),
 ///            vec![0x0100, 0x0200]);
 /// # /*
-/// assert_eq!(guarded_transmute_pod_vec::<u32>(vec![0x04, 0x00, 0x00, 0x00, 0xED]).unwrap(),
+/// assert_eq!(guarded_transmute_pod_vec::<u32>(vec![0x04, 0x00, 0x00, 0x00, 0xED])?,
 /// # */
 /// # assert_eq!(guarded_transmute_pod_vec::<u32>(vec![0x04, 0x00, 0x00, 0x00, 0xED].le_to_native::<u32>()).unwrap(),
 ///            vec![0x00000004]);
@@ -210,7 +211,7 @@ pub fn guarded_transmute_pod_vec_permissive<T: PodTransmutable>(bytes: Vec<u8>) 
 /// # fn main() {
 /// // Little-endian
 /// # /*
-/// assert_eq!(guarded_transmute_pod_vec_pedantic::<u16>(vec![0x00, 0x01, 0x00, 0x02]).unwrap(),
+/// assert_eq!(guarded_transmute_pod_vec_pedantic::<u16>(vec![0x00, 0x01, 0x00, 0x02])?,
 /// # */
 /// # assert_eq!(guarded_transmute_pod_vec_pedantic::<u16>(vec![0x00, 0x01, 0x00, 0x02].le_to_native::<u16>()).unwrap(),
 ///            vec![0x0100, 0x0200]);

@@ -23,7 +23,7 @@
 //!                                            0x12, 0x34,
 //!                                            // Spare byte, unused
 //! # /*
-//!                                            0x00]).unwrap(),
+//!                                            0x00])?,
 //! # */
 //! #                                          0x00].le_to_native::<u16>()).unwrap(),
 //!            &[0x0100, 0x3412]);
@@ -40,7 +40,7 @@
 //! # unsafe {
 //! assert_eq!(guarded_transmute_many_pedantic::<u16>(&[0x00, 0x01,
 //! # /*
-//!                                                     0x12, 0x34]).unwrap(),
+//!                                                     0x12, 0x34])?,
 //! # */
 //! #                                                   0x12, 0x34].le_to_native::<u16>()).unwrap(),
 //!            &[0x0100, 0x3412]);
@@ -57,7 +57,7 @@
 //! # unsafe {
 //! assert_eq!(guarded_transmute::<f64>(&[0x00, 0x00, 0x00, 0x00,
 //! # /*
-//!                                       0x00, 0x00, 0x00, 0x40]).unwrap(),
+//!                                       0x00, 0x00, 0x00, 0x40])?,
 //! # */
 //! #                                     0x00, 0x00, 0x00, 0x40].le_to_native::<f64>()).unwrap(),
 //!            2.0);
@@ -97,7 +97,7 @@ pub use self::bool::{guarded_transmute_bool_vec_permissive, guarded_transmute_bo
 /// // Little-endian
 /// # unsafe {
 /// # /*
-/// assert_eq!(guarded_transmute::<u32>(&[0x00, 0x00, 0x00, 0x01]).unwrap(), 0x01000000);
+/// assert_eq!(guarded_transmute::<u32>(&[0x00, 0x00, 0x00, 0x01])?, 0x01000000);
 /// # */
 /// # assert_eq!(guarded_transmute::<u32>(&[0x00, 0x00, 0x00, 0x01].le_to_native::<u32>()).unwrap(), 0x01000000);
 /// # }
@@ -128,7 +128,7 @@ pub unsafe fn guarded_transmute<T: Copy>(bytes: &[u8]) -> Result<T, Error> {
 /// // Little-endian
 /// # unsafe {
 /// # /*
-/// assert_eq!(guarded_transmute_pedantic::<u16>(&[0x0F, 0x0E]).unwrap(), 0x0E0F);
+/// assert_eq!(guarded_transmute_pedantic::<u16>(&[0x0F, 0x0E])?, 0x0E0F);
 /// # */
 /// # assert_eq!(guarded_transmute_pedantic::<u16>(&[0x0F, 0x0E].le_to_native::<u16>()).unwrap(), 0x0E0F);
 /// # }
@@ -160,7 +160,7 @@ pub unsafe fn guarded_transmute_pedantic<T: Copy>(bytes: &[u8]) -> Result<T, Err
 /// // Little-endian
 /// # unsafe {
 /// # /*
-/// assert_eq!(guarded_transmute_many::<u16>(&[0x00, 0x01, 0x00, 0x02]).unwrap(),
+/// assert_eq!(guarded_transmute_many::<u16>(&[0x00, 0x01, 0x00, 0x02])?,
 /// # */
 /// # assert_eq!(guarded_transmute_many::<u16>(&[0x00, 0x01, 0x00, 0x02].le_to_native::<u16>()).unwrap(),
 ///            &[0x0100, 0x0200]);
@@ -209,7 +209,7 @@ pub unsafe fn guarded_transmute_many_permissive<T>(bytes: &[u8]) -> &[T] {
 /// // Little-endian
 /// # unsafe {
 /// # /*
-/// assert_eq!(guarded_transmute_many_pedantic::<u16>(&[0x0F, 0x0E, 0x0A, 0x0B]).unwrap(),
+/// assert_eq!(guarded_transmute_many_pedantic::<u16>(&[0x0F, 0x0E, 0x0A, 0x0B])?,
 /// # */
 /// # assert_eq!(guarded_transmute_many_pedantic::<u16>(&[0x0F, 0x0E, 0x0A, 0x0B].le_to_native::<u16>()).unwrap(),
 ///            &[0x0E0F, 0x0B0A]);
@@ -249,12 +249,12 @@ pub unsafe fn guarded_transmute_many_pedantic<T>(bytes: &[u8]) -> Result<&[T], E
 /// // Little-endian
 /// # unsafe {
 /// # /*
-/// assert_eq!(guarded_transmute_vec::<u16>(vec![0x00, 0x01, 0x00, 0x02]).unwrap(),
+/// assert_eq!(guarded_transmute_vec::<u16>(vec![0x00, 0x01, 0x00, 0x02])?,
 /// # */
 /// # assert_eq!(guarded_transmute_vec::<u16>(vec![0x00, 0x01, 0x00, 0x02].le_to_native::<u16>()).unwrap(),
 ///            vec![0x0100, 0x0200]);
 /// # /*
-/// assert_eq!(guarded_transmute_vec::<u32>(vec![0x04, 0x00, 0x00, 0x00, 0xED]).unwrap(),
+/// assert_eq!(guarded_transmute_vec::<u32>(vec![0x04, 0x00, 0x00, 0x00, 0xED])?,
 /// # */
 /// # assert_eq!(guarded_transmute_vec::<u32>(vec![0x04, 0x00, 0x00, 0x00, 0xED].le_to_native::<u32>()).unwrap(),
 ///            vec![0x00000004]);
@@ -326,7 +326,7 @@ pub unsafe fn guarded_transmute_vec_permissive<T>(mut bytes: Vec<u8>) -> Vec<T> 
 /// // Little-endian
 /// # unsafe {
 /// # /*
-/// assert_eq!(guarded_transmute_vec_pedantic::<u16>(vec![0x00, 0x01, 0x00, 0x02]).unwrap(),
+/// assert_eq!(guarded_transmute_vec_pedantic::<u16>(vec![0x00, 0x01, 0x00, 0x02])?,
 /// # */
 /// # assert_eq!(guarded_transmute_vec_pedantic::<u16>(vec![0x00, 0x01, 0x00, 0x02].le_to_native::<u16>()).unwrap(),
 ///            vec![0x0100, 0x0200]);
