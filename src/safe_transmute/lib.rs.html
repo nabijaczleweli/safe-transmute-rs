@@ -425,7 +425,7 @@
 <span class="doccomment">//!                                            0x12, 0x34,</span>
 <span class="doccomment">//!                                            // Spare byte, unused</span>
 <span class="doccomment">//! # /*</span>
-<span class="doccomment">//!                                            0x00])?,</span>
+<span class="doccomment">//!                                            0x00]).unwrap(),</span>
 <span class="doccomment">//! # */</span>
 <span class="doccomment">//! #                                          0x00].le_to_native::&lt;u16&gt;()).unwrap(),</span>
 <span class="doccomment">//!            &amp;[0x0100, 0x3412]);</span>
@@ -442,7 +442,7 @@
 <span class="doccomment">//! # unsafe {</span>
 <span class="doccomment">//! assert_eq!(guarded_transmute_many_pedantic::&lt;u16&gt;(&amp;[0x00, 0x01,</span>
 <span class="doccomment">//! # /*</span>
-<span class="doccomment">//!                                                     0x12, 0x34])?,</span>
+<span class="doccomment">//!                                                     0x12, 0x34]).unwrap(),</span>
 <span class="doccomment">//! # */</span>
 <span class="doccomment">//! #                                                   0x12, 0x34].le_to_native::&lt;u16&gt;()).unwrap(),</span>
 <span class="doccomment">//!            &amp;[0x0100, 0x3412]);</span>
@@ -459,7 +459,7 @@
 <span class="doccomment">//! # unsafe {</span>
 <span class="doccomment">//! assert_eq!(guarded_transmute::&lt;f64&gt;(&amp;[0x00, 0x00, 0x00, 0x00,</span>
 <span class="doccomment">//! # /*</span>
-<span class="doccomment">//!                                       0x00, 0x00, 0x00, 0x40])?,</span>
+<span class="doccomment">//!                                       0x00, 0x00, 0x00, 0x40]).unwrap(),</span>
 <span class="doccomment">//! # */</span>
 <span class="doccomment">//! #                                     0x00, 0x00, 0x00, 0x40].le_to_native::&lt;f64&gt;()).unwrap(),</span>
 <span class="doccomment">//!            2.0);</span>
@@ -499,7 +499,7 @@
 <span class="doccomment">/// // Little-endian</span>
 <span class="doccomment">/// # unsafe {</span>
 <span class="doccomment">/// # /*</span>
-<span class="doccomment">/// assert_eq!(guarded_transmute::&lt;u32&gt;(&amp;[0x00, 0x00, 0x00, 0x01])?, 0x01000000);</span>
+<span class="doccomment">/// assert_eq!(guarded_transmute::&lt;u32&gt;(&amp;[0x00, 0x00, 0x00, 0x01]).unwrap(), 0x01000000);</span>
 <span class="doccomment">/// # */</span>
 <span class="doccomment">/// # assert_eq!(guarded_transmute::&lt;u32&gt;(&amp;[0x00, 0x00, 0x00, 0x01].le_to_native::&lt;u32&gt;()).unwrap(), 0x01000000);</span>
 <span class="doccomment">/// # }</span>
@@ -530,7 +530,7 @@
 <span class="doccomment">/// // Little-endian</span>
 <span class="doccomment">/// # unsafe {</span>
 <span class="doccomment">/// # /*</span>
-<span class="doccomment">/// assert_eq!(guarded_transmute_pedantic::&lt;u16&gt;(&amp;[0x0F, 0x0E])?, 0x0E0F);</span>
+<span class="doccomment">/// assert_eq!(guarded_transmute_pedantic::&lt;u16&gt;(&amp;[0x0F, 0x0E]).unwrap(), 0x0E0F);</span>
 <span class="doccomment">/// # */</span>
 <span class="doccomment">/// # assert_eq!(guarded_transmute_pedantic::&lt;u16&gt;(&amp;[0x0F, 0x0E].le_to_native::&lt;u16&gt;()).unwrap(), 0x0E0F);</span>
 <span class="doccomment">/// # }</span>
@@ -562,7 +562,7 @@
 <span class="doccomment">/// // Little-endian</span>
 <span class="doccomment">/// # unsafe {</span>
 <span class="doccomment">/// # /*</span>
-<span class="doccomment">/// assert_eq!(guarded_transmute_many::&lt;u16&gt;(&amp;[0x00, 0x01, 0x00, 0x02])?,</span>
+<span class="doccomment">/// assert_eq!(guarded_transmute_many::&lt;u16&gt;(&amp;[0x00, 0x01, 0x00, 0x02]).unwrap(),</span>
 <span class="doccomment">/// # */</span>
 <span class="doccomment">/// # assert_eq!(guarded_transmute_many::&lt;u16&gt;(&amp;[0x00, 0x01, 0x00, 0x02].le_to_native::&lt;u16&gt;()).unwrap(),</span>
 <span class="doccomment">///            &amp;[0x0100, 0x0200]);</span>
@@ -611,7 +611,7 @@
 <span class="doccomment">/// // Little-endian</span>
 <span class="doccomment">/// # unsafe {</span>
 <span class="doccomment">/// # /*</span>
-<span class="doccomment">/// assert_eq!(guarded_transmute_many_pedantic::&lt;u16&gt;(&amp;[0x0F, 0x0E, 0x0A, 0x0B])?,</span>
+<span class="doccomment">/// assert_eq!(guarded_transmute_many_pedantic::&lt;u16&gt;(&amp;[0x0F, 0x0E, 0x0A, 0x0B]).unwrap(),</span>
 <span class="doccomment">/// # */</span>
 <span class="doccomment">/// # assert_eq!(guarded_transmute_many_pedantic::&lt;u16&gt;(&amp;[0x0F, 0x0E, 0x0A, 0x0B].le_to_native::&lt;u16&gt;()).unwrap(),</span>
 <span class="doccomment">///            &amp;[0x0E0F, 0x0B0A]);</span>
@@ -651,12 +651,12 @@
 <span class="doccomment">/// // Little-endian</span>
 <span class="doccomment">/// # unsafe {</span>
 <span class="doccomment">/// # /*</span>
-<span class="doccomment">/// assert_eq!(guarded_transmute_vec::&lt;u16&gt;(vec![0x00, 0x01, 0x00, 0x02])?,</span>
+<span class="doccomment">/// assert_eq!(guarded_transmute_vec::&lt;u16&gt;(vec![0x00, 0x01, 0x00, 0x02]).unwrap(),</span>
 <span class="doccomment">/// # */</span>
 <span class="doccomment">/// # assert_eq!(guarded_transmute_vec::&lt;u16&gt;(vec![0x00, 0x01, 0x00, 0x02].le_to_native::&lt;u16&gt;()).unwrap(),</span>
 <span class="doccomment">///            vec![0x0100, 0x0200]);</span>
 <span class="doccomment">/// # /*</span>
-<span class="doccomment">/// assert_eq!(guarded_transmute_vec::&lt;u32&gt;(vec![0x04, 0x00, 0x00, 0x00, 0xED])?,</span>
+<span class="doccomment">/// assert_eq!(guarded_transmute_vec::&lt;u32&gt;(vec![0x04, 0x00, 0x00, 0x00, 0xED]).unwrap(),</span>
 <span class="doccomment">/// # */</span>
 <span class="doccomment">/// # assert_eq!(guarded_transmute_vec::&lt;u32&gt;(vec![0x04, 0x00, 0x00, 0x00, 0xED].le_to_native::&lt;u32&gt;()).unwrap(),</span>
 <span class="doccomment">///            vec![0x00000004]);</span>
@@ -728,7 +728,7 @@
 <span class="doccomment">/// // Little-endian</span>
 <span class="doccomment">/// # unsafe {</span>
 <span class="doccomment">/// # /*</span>
-<span class="doccomment">/// assert_eq!(guarded_transmute_vec_pedantic::&lt;u16&gt;(vec![0x00, 0x01, 0x00, 0x02])?,</span>
+<span class="doccomment">/// assert_eq!(guarded_transmute_vec_pedantic::&lt;u16&gt;(vec![0x00, 0x01, 0x00, 0x02]).unwrap(),</span>
 <span class="doccomment">/// # */</span>
 <span class="doccomment">/// # assert_eq!(guarded_transmute_vec_pedantic::&lt;u16&gt;(vec![0x00, 0x01, 0x00, 0x02].le_to_native::&lt;u16&gt;()).unwrap(),</span>
 <span class="doccomment">///            vec![0x0100, 0x0200]);</span>
