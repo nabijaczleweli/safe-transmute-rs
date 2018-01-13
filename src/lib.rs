@@ -64,11 +64,29 @@
 //! # }
 //! # }
 //! ```
+//!
+//! View a series of `u16`s as bytes:
+//!
+//! ```
+//! # use safe_transmute::guarded_transmute_to_bytes_pod_many;
+//! # include!("../tests/test_util/le_to_native.rs");
+//! # fn main() {
+//! # unsafe {
+//! assert_eq!(guarded_transmute_to_bytes_pod_many(&[0x0001u16,
+//!                                                  0x1234u16]),
+//! # /*
+//!            &[0x01, 0x00, 0x34, 0x12].le_to_native::<u16>());
+//! # */
+//! #          &[0x01, 0x00, 0x34, 0x12].le_to_native::<u16>());
+//! # }
+//! # }
+//! ```
 
 
 mod pod;
 mod bool;
 mod error;
+mod to_bytes;
 
 use std::slice;
 use std::mem::{size_of, forget};
@@ -78,6 +96,7 @@ pub mod util;
 pub mod guard;
 
 pub use self::error::{Error, ErrorReason, GuardError};
+pub use self::to_bytes::{guarded_transmute_to_bytes_pod_many, guarded_transmute_to_bytes_many, guarded_transmute_to_bytes_pod, guarded_transmute_to_bytes};
 pub use self::pod::{PodTransmutable, guarded_transmute_pod_many_permissive, guarded_transmute_pod_vec_permissive, guarded_transmute_pod_many_pedantic,
                     guarded_transmute_pod_vec_pedantic, guarded_transmute_pod_pedantic, guarded_transmute_pod_many, guarded_transmute_pod_vec,
                     guarded_transmute_pod};
