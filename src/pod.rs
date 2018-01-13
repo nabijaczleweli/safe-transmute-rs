@@ -25,6 +25,7 @@ use self::super::{Error, guarded_transmute_many_permissive, guarded_transmute_ve
 /// Consult the [Transmutes section](https://doc.rust-lang.org/nomicon/transmutes.html) of the Nomicon for more details.
 pub unsafe trait PodTransmutable {}
 
+
 unsafe impl PodTransmutable for u8 {}
 unsafe impl PodTransmutable for i8 {}
 unsafe impl PodTransmutable for u16 {}
@@ -40,6 +41,7 @@ unsafe impl PodTransmutable for f64 {}
 unsafe impl PodTransmutable for u128 {}
 #[cfg(i128_type)]
 unsafe impl PodTransmutable for i128 {}
+
 
 /// Transmute a byte slice into a single instance of a POD.
 ///

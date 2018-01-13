@@ -6,14 +6,14 @@
 
 use self::super::{ErrorReason, Error, guarded_transmute_many_permissive, guarded_transmute_vec_permissive, guarded_transmute_many_pedantic,
                   guarded_transmute_vec_pedantic};
-use std::mem::align_of;
+use std::mem::size_of;
 
 
 /// Makes sure that the bytes represent a sequence of valid boolean values. It is done
 /// this way because the language does not guarantee that `bool` is 1-byte sized.
 #[inline]
 pub fn bytes_are_bool(v: &[u8]) -> bool {
-    let bool_size = align_of::<bool>();
+    let bool_size = size_of::<bool>();
     v.chunks(bool_size)
         .filter(|c| c.len() == bool_size)
         .all(|c| {
@@ -123,7 +123,7 @@ fn check_bool(bytes: &[u8]) -> Result<(), Error> {
         Ok(())
     } else {
         Err(Error {
-            required: align_of::<bool>(),
+            required: size_of::<bool>(),
             actual: bytes.len(),
             reason: ErrorReason::InvalidValue,
         })

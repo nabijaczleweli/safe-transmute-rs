@@ -71,7 +71,7 @@ mod bool;
 mod error;
 
 use std::slice;
-use std::mem::{align_of, forget};
+use std::mem::{size_of, forget};
 use guard::{SingleValueGuard, PermissiveGuard, SingleManyGuard, PedanticGuard, Guard};
 
 pub mod util;
@@ -157,7 +157,7 @@ pub unsafe fn guarded_transmute_pedantic<T: Copy>(bytes: &[u8]) -> Result<T, Err
 /// ```
 pub unsafe fn guarded_transmute_many<T>(bytes: &[u8]) -> Result<&[T], Error> {
     SingleManyGuard::check::<T>(bytes)?;
-    Ok(slice::from_raw_parts(bytes.as_ptr() as *const T, bytes.len() / align_of::<T>()))
+    Ok(slice::from_raw_parts(bytes.as_ptr() as *const T, bytes.len() / size_of::<T>()))
 }
 
 /// View a byte slice as a slice of an arbitrary type.
@@ -174,7 +174,7 @@ pub unsafe fn guarded_transmute_many<T>(bytes: &[u8]) -> Result<&[T], Error> {
 /// ```
 pub unsafe fn guarded_transmute_many_permissive<T>(bytes: &[u8]) -> &[T] {
     PermissiveGuard::check::<T>(bytes).unwrap();
-    slice::from_raw_parts(bytes.as_ptr() as *const T, bytes.len() / align_of::<T>())
+    slice::from_raw_parts(bytes.as_ptr() as *const T, bytes.len() / size_of::<T>())
 }
 
 /// View a byte slice as a slice of an arbitrary type.
@@ -200,7 +200,7 @@ pub unsafe fn guarded_transmute_many_permissive<T>(bytes: &[u8]) -> &[T] {
 /// ```
 pub unsafe fn guarded_transmute_many_pedantic<T>(bytes: &[u8]) -> Result<&[T], Error> {
     PedanticGuard::check::<T>(bytes)?;
-    Ok(slice::from_raw_parts(bytes.as_ptr() as *const T, bytes.len() / align_of::<T>()))
+    Ok(slice::from_raw_parts(bytes.as_ptr() as *const T, bytes.len() / size_of::<T>()))
 }
 
 /// Trasform a byte vector into a vector of an arbitrary type.
@@ -268,8 +268,8 @@ pub unsafe fn guarded_transmute_vec<T>(bytes: Vec<u8>) -> Result<Vec<T>, Error> 
 pub unsafe fn guarded_transmute_vec_permissive<T>(mut bytes: Vec<u8>) -> Vec<T> {
     PermissiveGuard::check::<T>(&bytes).unwrap();
     let ptr = bytes.as_mut_ptr();
-    let capacity = bytes.capacity() / align_of::<T>();
-    let len = bytes.len() / align_of::<T>();
+    let capacity = bytes.capacity() / size_of::<T>();
+    let len = bytes.len() / size_of::<T>();
     forget(bytes);
     Vec::from_raw_parts(ptr as *mut T, capacity, len)
 }

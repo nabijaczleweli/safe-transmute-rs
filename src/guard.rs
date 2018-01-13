@@ -57,7 +57,7 @@
 
 
 use error::{ErrorReason, GuardError};
-use std::mem::align_of;
+use std::mem::size_of;
 
 
 /// The `Guard` type describes types which define boundary checking strategies.
@@ -78,9 +78,9 @@ pub struct SingleValueGuard;
 
 impl Guard for SingleValueGuard {
     fn check<T>(bytes: &[u8]) -> Result<(), GuardError> {
-        if bytes.len() != align_of::<T>() {
+        if bytes.len() != size_of::<T>() {
             Err(GuardError {
-                required: align_of::<T>(),
+                required: size_of::<T>(),
                 actual: bytes.len(),
                 reason: ErrorReason::InexactByteCount,
             })
@@ -97,15 +97,15 @@ pub struct PedanticGuard;
 
 impl Guard for PedanticGuard {
     fn check<T>(bytes: &[u8]) -> Result<(), GuardError> {
-        if bytes.len() < align_of::<T>() {
+        if bytes.len() < size_of::<T>() {
             Err(GuardError {
-                required: align_of::<T>(),
+                required: size_of::<T>(),
                 actual: bytes.len(),
                 reason: ErrorReason::NotEnoughBytes,
             })
-        } else if bytes.len() % align_of::<T>() != 0 {
+        } else if bytes.len() % size_of::<T>() != 0 {
             Err(GuardError {
-                required: align_of::<T>(),
+                required: size_of::<T>(),
                 actual: bytes.len(),
                 reason: ErrorReason::InexactByteCount,
             })
@@ -122,9 +122,9 @@ pub struct AllOrNothingGuard;
 
 impl Guard for AllOrNothingGuard {
     fn check<T>(bytes: &[u8]) -> Result<(), GuardError> {
-        if bytes.len() % align_of::<T>() != 0 {
+        if bytes.len() % size_of::<T>() != 0 {
             Err(GuardError {
-                required: align_of::<T>(),
+                required: size_of::<T>(),
                 actual: bytes.len(),
                 reason: ErrorReason::InexactByteCount,
             })
@@ -141,9 +141,9 @@ pub struct SingleManyGuard;
 
 impl Guard for SingleManyGuard {
     fn check<T>(bytes: &[u8]) -> Result<(), GuardError> {
-        if bytes.len() < align_of::<T>() {
+        if bytes.len() < size_of::<T>() {
             Err(GuardError {
-                required: align_of::<T>(),
+                required: size_of::<T>(),
                 actual: bytes.len(),
                 reason: ErrorReason::NotEnoughBytes,
             })
