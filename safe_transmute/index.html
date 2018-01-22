@@ -48,7 +48,7 @@
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a class='srclink' href='../src/safe_transmute/lib.rs.html#1-303' title='goto source code'>[src]</a></span></h1>
+               </span><a class='srclink' href='../src/safe_transmute/lib.rs.html#1-322' title='goto source code'>[src]</a></span></h1>
 <div class='docblock'><p>This crate contains checked implementations of <code>transmute()</code>.</p>
 
 <p>The base functions in this crate are not inherently safe, but just guarded against common simple mistakes
@@ -84,6 +84,13 @@ all circumstances. This is the case for those found in the <code>pod</code> and 
 <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">guarded_transmute</span>::<span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span>[<span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span>,
                                       <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x40</span>])<span class="question-mark">?</span>,
            <span class="number">2.0</span>);</pre>
+
+<p>View a series of <code>u16</code>s as bytes:</p>
+
+<pre class="rust rust-example-rendered">
+<span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">guarded_transmute_to_bytes_pod_many</span>(<span class="kw-2">&amp;</span>[<span class="number">0x0001u16</span>,
+                                                 <span class="number">0x1234u16</span>]),
+           <span class="kw-2">&amp;</span>[<span class="number">0x01</span>, <span class="number">0x00</span>, <span class="number">0x34</span>, <span class="number">0x12</span>].<span class="ident">le_to_native</span>::<span class="op">&lt;</span><span class="ident">u16</span><span class="op">&gt;</span>());</pre>
 </div><h2 id='modules' class='section-header'><a href="#modules">Modules</a></h2>
 <table>
                        <tr class=' module-item'>
@@ -242,6 +249,34 @@ all circumstances. This is the case for those found in the <code>pod</code> and 
                                   title='fn safe_transmute::guarded_transmute_pod_vec_permissive'>guarded_transmute_pod_vec_permissive</a></td>
                            <td class='docblock-short'>
                                 <p>Trasform a byte vector into a vector of POD.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="fn" href="fn.guarded_transmute_to_bytes.html"
+                                  title='fn safe_transmute::guarded_transmute_to_bytes'>guarded_transmute_to_bytes</a><a title='unsafe function' href='#'><sup>⚠</sup></a></td>
+                           <td class='docblock-short'>
+                                <p>Transmute a single instance of an arbitrary type into a slice of its bytes.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="fn" href="fn.guarded_transmute_to_bytes_many.html"
+                                  title='fn safe_transmute::guarded_transmute_to_bytes_many'>guarded_transmute_to_bytes_many</a><a title='unsafe function' href='#'><sup>⚠</sup></a></td>
+                           <td class='docblock-short'>
+                                <p>Transmute a slice of arbitrary types into a slice of their bytes.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="fn" href="fn.guarded_transmute_to_bytes_pod.html"
+                                  title='fn safe_transmute::guarded_transmute_to_bytes_pod'>guarded_transmute_to_bytes_pod</a></td>
+                           <td class='docblock-short'>
+                                <p>Transmute a single instance of a POD type into a slice of its bytes.</p>
+                           </td>
+                       </tr>
+                       <tr class=' module-item'>
+                           <td><a class="fn" href="fn.guarded_transmute_to_bytes_pod_many.html"
+                                  title='fn safe_transmute::guarded_transmute_to_bytes_pod_many'>guarded_transmute_to_bytes_pod_many</a></td>
+                           <td class='docblock-short'>
+                                <p>Transmute a slice of arbitrary types into a slice of their bytes.</p>
                            </td>
                        </tr>
                        <tr class=' module-item'>
