@@ -183,14 +183,14 @@
 
 <span class="kw">use</span> <span class="self">self</span>::<span class="kw">super</span>::{<span class="ident">ErrorReason</span>, <span class="ident">Error</span>, <span class="ident">guarded_transmute_many_permissive</span>, <span class="ident">guarded_transmute_vec_permissive</span>, <span class="ident">guarded_transmute_many_pedantic</span>,
                   <span class="ident">guarded_transmute_vec_pedantic</span>};
-<span class="kw">use</span> <span class="ident">std</span>::<span class="ident">mem</span>::<span class="ident">align_of</span>;
+<span class="kw">use</span> <span class="ident">std</span>::<span class="ident">mem</span>::<span class="ident">size_of</span>;
 
 
 <span class="doccomment">/// Makes sure that the bytes represent a sequence of valid boolean values. It is done</span>
 <span class="doccomment">/// this way because the language does not guarantee that `bool` is 1-byte sized.</span>
 <span class="attribute">#[<span class="ident">inline</span>]</span>
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">bytes_are_bool</span>(<span class="ident">v</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>]) <span class="op">-&gt;</span> <span class="ident">bool</span> {
-    <span class="kw">let</span> <span class="ident">bool_size</span> <span class="op">=</span> <span class="ident">align_of</span>::<span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span>();
+    <span class="kw">let</span> <span class="ident">bool_size</span> <span class="op">=</span> <span class="ident">size_of</span>::<span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span>();
     <span class="ident">v</span>.<span class="ident">chunks</span>(<span class="ident">bool_size</span>)
         .<span class="ident">filter</span>(<span class="op">|</span><span class="ident">c</span><span class="op">|</span> <span class="ident">c</span>.<span class="ident">len</span>() <span class="op">==</span> <span class="ident">bool_size</span>)
         .<span class="ident">all</span>(<span class="op">|</span><span class="ident">c</span><span class="op">|</span> {
@@ -300,7 +300,7 @@
         <span class="prelude-val">Ok</span>(())
     } <span class="kw">else</span> {
         <span class="prelude-val">Err</span>(<span class="ident">Error</span> {
-            <span class="ident">required</span>: <span class="ident">align_of</span>::<span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span>(),
+            <span class="ident">required</span>: <span class="ident">size_of</span>::<span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span>(),
             <span class="ident">actual</span>: <span class="ident">bytes</span>.<span class="ident">len</span>(),
             <span class="ident">reason</span>: <span class="ident">ErrorReason</span>::<span class="ident">InvalidValue</span>,
         })
@@ -324,13 +324,15 @@
                     <dd>Show this help dialog</dd>
                     <dt>S</dt>
                     <dd>Focus the search field</dd>
-                    <dt>&larrb;</dt>
+                    <dt>↑</dt>
                     <dd>Move up in search results</dd>
-                    <dt>&rarrb;</dt>
+                    <dt>↓</dt>
                     <dd>Move down in search results</dd>
+                    <dt>↹</dt>
+                    <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>
