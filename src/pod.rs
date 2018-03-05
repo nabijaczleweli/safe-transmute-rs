@@ -19,11 +19,11 @@ use self::super::{Error, guarded_transmute_many_permissive, guarded_transmute_ve
 /// # Safety
 ///
 /// It is only safe to implement `PodTransmutable` for a type `T` if it is safe for a slice of any arbitrary data
-/// `&[u8]` of length `sizeof<T>()` to be [`transmute()`]((https://doc.rust-lang.org/stable/std/mem/fn.transmute.html)d
+/// `&[u8]` of length `sizeof<T>()` to be [`transmute()`](https://doc.rust-lang.org/stable/std/mem/fn.transmute.html)d
 /// to a unit-length `&[T]`.
 ///
 /// Consult the [Transmutes section](https://doc.rust-lang.org/nomicon/transmutes.html) of the Nomicon for more details.
-pub unsafe trait PodTransmutable {}
+pub unsafe trait PodTransmutable: Copy {}
 
 
 unsafe impl PodTransmutable for u8 {}
@@ -61,7 +61,7 @@ unsafe impl PodTransmutable for i128 {}
 /// # assert_eq!(guarded_transmute_pod::<u32>(&[0x00, 0x00, 0x00, 0x01].le_to_native::<u32>()).unwrap(), 0x01000000);
 /// # }
 /// ```
-pub fn guarded_transmute_pod<T: PodTransmutable + Copy>(bytes: &[u8]) -> Result<T, Error> {
+pub fn guarded_transmute_pod<T: PodTransmutable>(bytes: &[u8]) -> Result<T, Error> {
     unsafe { guarded_transmute(bytes) }
 }
 
@@ -82,7 +82,7 @@ pub fn guarded_transmute_pod<T: PodTransmutable + Copy>(bytes: &[u8]) -> Result<
 /// # assert_eq!(guarded_transmute_pod_pedantic::<u16>(&[0x0F, 0x0E].le_to_native::<u16>()).unwrap(), 0x0E0F);
 /// # }
 /// ```
-pub fn guarded_transmute_pod_pedantic<T: PodTransmutable + Copy>(bytes: &[u8]) -> Result<T, Error> {
+pub fn guarded_transmute_pod_pedantic<T: PodTransmutable>(bytes: &[u8]) -> Result<T, Error> {
     unsafe { guarded_transmute_pedantic(bytes) }
 }
 

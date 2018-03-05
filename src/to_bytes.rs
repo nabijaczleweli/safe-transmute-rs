@@ -117,6 +117,7 @@ pub unsafe fn guarded_transmute_to_bytes_many<T>(from: &[T]) -> &[u8] {
 /// ```
 /// # use safe_transmute::{PodTransmutable, guarded_transmute_to_bytes_pod};
 /// #[repr(C)]
+/// #[derive(Clone, Copy)]
 /// struct Gene {
 ///     x1: u8,
 ///     x2: u8,
@@ -156,6 +157,7 @@ pub fn guarded_transmute_to_bytes_pod<T: PodTransmutable>(from: &T) -> &[u8] {
 /// ```
 /// # use safe_transmute::{PodTransmutable, guarded_transmute_to_bytes_pod_many};
 /// #[repr(C)]
+/// #[derive(Clone, Copy)]
 /// struct Gene {
 ///     x1: u8,
 ///     x2: u8,
