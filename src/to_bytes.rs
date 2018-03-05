@@ -48,6 +48,11 @@ pub unsafe fn guarded_transmute_to_bytes<T>(from: &T) -> &[u8] {
     slice::from_raw_parts(from as *const T as *const u8, size_of::<T>())
 }
 
+/// Transmute a single instance of an arbitrary type into a mutable slice of its bytes.
+pub unsafe fn guarded_transmute_to_mut_bytes<T>(from: &mut T) -> &mut [u8] {
+    slice::from_raw_parts_mut(from as *mut T as *mut u8, size_of::<T>())
+}
+
 /// Transmute a slice of arbitrary types into a slice of their bytes.
 ///
 /// # Examples
@@ -174,4 +179,8 @@ pub fn guarded_transmute_to_bytes_pod<T: PodTransmutable>(from: &T) -> &[u8] {
 /// ```
 pub fn guarded_transmute_to_bytes_pod_many<T: PodTransmutable>(from: &[T]) -> &[u8] {
     unsafe { guarded_transmute_to_bytes_many(from) }
+}
+
+pub fn guarded_transmute_to_mut_bytes_pod<T: PodTransmutable>(from: &mut T) -> &mut [u8] {
+    unsafe { guarded_transmute_to_mut_bytes(from) }
 }
