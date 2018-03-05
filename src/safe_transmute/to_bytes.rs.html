@@ -28,6 +28,7 @@
     
 
     <nav class="sidebar">
+        <div class="sidebar-menu">&#9776;</div>
         
         
     </nav>
@@ -220,6 +221,8 @@
 <span id="175">175</span>
 <span id="176">176</span>
 <span id="177">177</span>
+<span id="178">178</span>
+<span id="179">179</span>
 </pre><pre class="rust ">
 <span class="doccomment">//! Functions for transmutation *from* a concrete type *to* bytes.</span>
 
@@ -340,6 +343,7 @@
 <span class="doccomment">/// ```</span>
 <span class="doccomment">/// # use safe_transmute::{PodTransmutable, guarded_transmute_to_bytes_pod};</span>
 <span class="doccomment">/// #[repr(C)]</span>
+<span class="doccomment">/// #[derive(Clone, Copy)]</span>
 <span class="doccomment">/// struct Gene {</span>
 <span class="doccomment">///     x1: u8,</span>
 <span class="doccomment">///     x2: u8,</span>
@@ -379,6 +383,7 @@
 <span class="doccomment">/// ```</span>
 <span class="doccomment">/// # use safe_transmute::{PodTransmutable, guarded_transmute_to_bytes_pod_many};</span>
 <span class="doccomment">/// #[repr(C)]</span>
+<span class="doccomment">/// #[derive(Clone, Copy)]</span>
 <span class="doccomment">/// struct Gene {</span>
 <span class="doccomment">///     x1: u8,</span>
 <span class="doccomment">///     x2: u8,</span>

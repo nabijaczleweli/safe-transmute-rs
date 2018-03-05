@@ -28,8 +28,9 @@
     
 
     <nav class="sidebar">
+        <div class="sidebar-menu">&#9776;</div>
         
-        <p class='location'>Trait PodTransmutable</p><div class="block items"><a class="sidebar-title" href="#foreign-impls">Implementations on Foreign Types</a><div class="sidebar-links"><a href="#impl-PodTransmutable">u8</a><a href="#impl-PodTransmutable">i8</a><a href="#impl-PodTransmutable">u16</a><a href="#impl-PodTransmutable">i16</a><a href="#impl-PodTransmutable">u32</a><a href="#impl-PodTransmutable">i32</a><a href="#impl-PodTransmutable">u64</a><a href="#impl-PodTransmutable">i64</a><a href="#impl-PodTransmutable">char</a><a href="#impl-PodTransmutable">f32</a><a href="#impl-PodTransmutable">f64</a></div><a class="sidebar-title" href="#implementors">Implementors</a></div><p class='location'><a href='index.html'>safe_transmute</a></p><script>window.sidebarCurrent = {name: 'PodTransmutable', ty: 'trait', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+        <p class='location'>Trait PodTransmutable</p><div class="sidebar-elems"><div class="block items"><a class="sidebar-title" href="#foreign-impls">Implementations on Foreign Types</a><div class="sidebar-links"><a href="#impl-PodTransmutable">u8</a><a href="#impl-PodTransmutable">i8</a><a href="#impl-PodTransmutable">u16</a><a href="#impl-PodTransmutable">i16</a><a href="#impl-PodTransmutable">u32</a><a href="#impl-PodTransmutable">i32</a><a href="#impl-PodTransmutable">u64</a><a href="#impl-PodTransmutable">i64</a><a href="#impl-PodTransmutable">char</a><a href="#impl-PodTransmutable">f32</a><a href="#impl-PodTransmutable">f64</a></div><a class="sidebar-title" href="#implementors">Implementors</a></div><p class='location'><a href='index.html'>safe_transmute</a></p><script>window.sidebarCurrent = {name: 'PodTransmutable', ty: 'trait', relpath: ''};</script><script defer src="sidebar-items.js"></script></div>
     </nav>
 
     <nav class="sub">
@@ -49,7 +50,7 @@
                        [<span class='inner'>&#x2212;</span>]
                    </a>
                </span><a class='srclink' href='../src/safe_transmute/pod.rs.html#26' title='goto source code'>[src]</a></span></h1>
-<pre class='rust trait'>pub unsafe trait PodTransmutable { }</pre><div class='docblock'><p>Type that can be non-<code>unsafe</code>ly transmuted into</p>
+<pre class='rust trait'>pub unsafe trait PodTransmutable: <a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Copy.html" title="trait core::marker::Copy">Copy</a> { }</pre><div class='docblock'><p>Type that can be non-<code>unsafe</code>ly transmuted into</p>
 
 <p>In most cases this is a <a href="http://eel.is/c++draft/class#10"><em>POD class</em></a>
 or a <a href="http://eel.is/c++draft/class#6"><em>trivially copyable class</em></a>.</p>
@@ -65,7 +66,7 @@ restricted to being <code>0</code> or <code>1</code>, which means that an additi
 
 <h1 id='safety' class='section-header'><a href='#safety'>Safety</a></h1>
 <p>It is only safe to implement <code>PodTransmutable</code> for a type <code>T</code> if it is safe for a slice of any arbitrary data
-<code>&amp;[u8]</code> of length <code>sizeof&lt;T&gt;()</code> to be [<code>transmute()</code>]((<a href="https://doc.rust-lang.org/stable/std/mem/fn.transmute.html)d">https://doc.rust-lang.org/stable/std/mem/fn.transmute.html)d</a>
+<code>&amp;[u8]</code> of length <code>sizeof&lt;T&gt;()</code> to be <a href="https://doc.rust-lang.org/stable/std/mem/fn.transmute.html"><code>transmute()</code></a>d
 to a unit-length <code>&amp;[T]</code>.</p>
 
 <p>Consult the <a href="https://doc.rust-lang.org/nomicon/transmutes.html">Transmutes section</a> of the Nomicon for more details.</p>
