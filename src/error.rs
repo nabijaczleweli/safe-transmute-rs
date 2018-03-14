@@ -21,11 +21,9 @@ pub enum Error {
     /// The given data slice is not properly aligned for the target type.
     /// It would have been properly aligned if `offset` bytes were shifted
     /// (discarded) from the front of the slice.
-    /// 
+    ///
     /// This is currently unused.
-    Unaligned {
-        offset: usize
-    },
+    Unaligned { offset: usize, },
     /// The data contains an invalid value for the target type.
     InvalidValue,
 }

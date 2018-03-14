@@ -95,7 +95,7 @@ use guard::{SingleValueGuard, PermissiveGuard, SingleManyGuard, PedanticGuard, G
 pub mod util;
 pub mod guard;
 
-pub use self::error::{Error, ErrorReason, GuardError};
+pub use self::error::{ErrorReason, GuardError, Error};
 pub use self::to_bytes::{guarded_transmute_to_bytes_pod_many, guarded_transmute_to_bytes_many, guarded_transmute_to_bytes_pod, guarded_transmute_to_bytes};
 pub use self::pod::{PodTransmutable, guarded_transmute_pod_many_permissive, guarded_transmute_pod_vec_permissive, guarded_transmute_pod_many_pedantic,
                     guarded_transmute_pod_vec_pedantic, guarded_transmute_pod_pedantic, guarded_transmute_pod_many, guarded_transmute_pod_vec,

@@ -1,4 +1,4 @@
-use safe_transmute::{ErrorReason, Error, GuardError, guarded_transmute_pod};
+use safe_transmute::{ErrorReason, GuardError, Error, guarded_transmute_pod};
 use self::super::LeToNative;
 
 
@@ -25,7 +25,8 @@ fn just_enough() {
 
 #[test]
 fn too_much() {
-    assert_eq!(guarded_transmute_pod::<u32>(&[0x00, 0x00, 0x00, 0x01, 0x00].le_to_native::<u32>()), Ok(0x01000000));
+    assert_eq!(guarded_transmute_pod::<u32>(&[0x00, 0x00, 0x00, 0x01, 0x00].le_to_native::<u32>()),
+               Ok(0x01000000));
     assert_eq!(guarded_transmute_pod::<u32>(&[0x00, 0x00, 0x00, 0x01, 0x00, 0x00].le_to_native::<u32>()),
                Ok(0x01000000));
     assert_eq!(guarded_transmute_pod::<u32>(&[0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00].le_to_native::<u32>()),

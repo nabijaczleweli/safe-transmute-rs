@@ -4,8 +4,7 @@
 //! behind the `bool` value is neither one.
 
 
-use self::super::{Error, guarded_transmute_many_permissive, guarded_transmute_vec_permissive, guarded_transmute_many_pedantic,
-                  guarded_transmute_vec_pedantic};
+use self::super::{Error, guarded_transmute_many_permissive, guarded_transmute_vec_permissive, guarded_transmute_many_pedantic, guarded_transmute_vec_pedantic};
 use std::mem::size_of;
 
 

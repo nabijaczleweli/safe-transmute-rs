@@ -1,4 +1,4 @@
-use safe_transmute::{ErrorReason, Error, GuardError, guarded_transmute_many_pedantic};
+use safe_transmute::{ErrorReason, GuardError, Error, guarded_transmute_many_pedantic};
 use self::super::LeToNative;
 
 

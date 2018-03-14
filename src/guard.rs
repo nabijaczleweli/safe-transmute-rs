@@ -54,7 +54,7 @@
 //!                reason: ErrorReason::InexactByteCount,
 //!            }));
 //! ```
-//! 
+//!
 //! Regardless of the chosen strategy, guarded transmutation functions will
 //! always ensure that no out of bounds access is attempted, usually by
 //! restricting the output to spatially safe portions of the input.

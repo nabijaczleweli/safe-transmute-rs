@@ -1,4 +1,4 @@
-use safe_transmute::{ErrorReason, Error, GuardError, guarded_transmute_bool_pedantic};
+use safe_transmute::{ErrorReason, GuardError, Error, guarded_transmute_bool_pedantic};
 
 
 #[test]
@@ -13,18 +13,14 @@ fn too_short() {
 
 #[test]
 fn just_enough() {
-    assert_eq!(guarded_transmute_bool_pedantic([0x00, 0x01].as_ref()),
-               Ok([false, true].into_iter().as_slice()));
+    assert_eq!(guarded_transmute_bool_pedantic([0x00, 0x01].as_ref()), Ok([false, true].into_iter().as_slice()));
     assert_eq!(guarded_transmute_bool_pedantic([0x01, 0x01, 0x00, 0x01].as_ref()),
                Ok([true, true, false, true].into_iter().as_slice()));
 }
 
 #[test]
 fn invalid_bytes() {
-    assert_eq!(guarded_transmute_bool_pedantic([0x00, 0x01, 0x02].as_ref()),
-               Err(Error::InvalidValue));
-    assert_eq!(guarded_transmute_bool_pedantic([0x05, 0x01, 0x00].as_ref()),
-               Err(Error::InvalidValue));
-    assert_eq!(guarded_transmute_bool_pedantic([0xFF].as_ref()),
-               Err(Error::InvalidValue));
+    assert_eq!(guarded_transmute_bool_pedantic([0x00, 0x01, 0x02].as_ref()), Err(Error::InvalidValue));
+    assert_eq!(guarded_transmute_bool_pedantic([0x05, 0x01, 0x00].as_ref()), Err(Error::InvalidValue));
+    assert_eq!(guarded_transmute_bool_pedantic([0xFF].as_ref()), Err(Error::InvalidValue));
 }
