@@ -42,7 +42,7 @@ script:
       cargo test --verbose;
     fi
   - if [ "$CLIPPY" ]; then
-      cargo install -qf clippy &&
+      cargo install -f clippy;
       cargo clippy;
     fi
   - if [ "$TRAVIS_TAG" ]; then cargo build --verbose --release; fi
