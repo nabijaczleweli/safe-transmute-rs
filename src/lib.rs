@@ -10,6 +10,10 @@
 //! Other functions in this crate, on the other hand, provide enough safety measures to ensure safety in
 //! all circumstances. This is the case for those found in the `pod` and `bool` modules.
 //!
+//! Take note, however, that alignment is *unaccounted for*: you may, in the course of using this crate,
+//! invoke unaligned access, which some CPUs *may* trap on; that did not, however, happen in any of our tests on
+//! MIPS64 (BE), x86_64 (LE), nor armv6l (LE).
+//!
 //! # Examples
 //!
 //! View bytes as a series of `u16`s:
