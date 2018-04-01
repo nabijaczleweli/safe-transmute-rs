@@ -10,8 +10,11 @@
     <title>safe_transmute - Rust</title>
 
     <link rel="stylesheet" type="text/css" href="../normalize.css">
-    <link rel="stylesheet" type="text/css" href="../rustdoc.css">
-    <link rel="stylesheet" type="text/css" href="../main.css">
+    <link rel="stylesheet" type="text/css" href="../rustdoc.css" id="mainThemeStyle">
+    
+    <link rel="stylesheet" type="text/css" href="../dark.css">
+    <link rel="stylesheet" type="text/css" href="../main.css" id="themeStyle">
+    <script src="../storage.js"></script>
     
 
     
@@ -33,6 +36,13 @@
         <p class='location'>Crate safe_transmute</p><div class="sidebar-elems"><div class="block items"><ul><li><a href="#modules">Modules</a></li><li><a href="#structs">Structs</a></li><li><a href="#enums">Enums</a></li><li><a href="#traits">Traits</a></li><li><a href="#functions">Functions</a></li><li><a href="#types">Type Definitions</a></li></ul></div><p class='location'></p><script>window.sidebarCurrent = {name: 'safe_transmute', ty: 'mod', relpath: '../'};</script></div>
     </nav>
 
+    <div class="theme-picker">
+        <button id="theme-picker" aria-label="Pick another theme!">
+            <img src="../brush.svg" width="18" alt="Pick another theme!">
+        </button>
+        <div id="theme-choices"></div>
+    </div>
+    <script src="../theme.js"></script>
     <nav class="sub">
         <form class="search-form js-only">
             <div class="search-container">
@@ -51,18 +61,15 @@
                    </a>
                </span><a class='srclink' href='../src/safe_transmute/lib.rs.html#1-322' title='goto source code'>[src]</a></span></h1>
 <div class='docblock'><p>This crate contains checked implementations of <code>transmute()</code>.</p>
-
 <p>The base functions in this crate are not inherently safe, but just guarded against common simple mistakes
 (like trying to create an 8-byte type from 7 bytes).
 These functions are exactly as safe as the data passed to them - creating a null pointer,
 for example, is not unsafe in and of itself, but dereferencing it certainly <em>is</em>,
-but they don&#39;t do that (see <a href="https://github.com/nabijaczleweli/safe-transmute-rs/issues/1">here</a>
+but they don't do that (see <a href="https://github.com/nabijaczleweli/safe-transmute-rs/issues/1">here</a>
 for extended discussion).</p>
-
 <p>Other functions in this crate, on the other hand, provide enough safety measures to ensure safety in
 all circumstances. This is the case for those found in the <code>pod</code> and <code>bool</code> modules.</p>
-
-<h1 id='examples' class='section-header'><a href='#examples'>Examples</a></h1>
+<h1 id="examples" class="section-header"><a href="#examples">Examples</a></h1>
 <p>View bytes as a series of <code>u16</code>s:</p>
 
 <pre class="rust rust-example-rendered">
@@ -71,21 +78,18 @@ all circumstances. This is the case for those found in the <code>pod</code> and 
                                            <span class="comment">// Spare byte, unused</span>
                                            <span class="number">0x00</span>])<span class="question-mark">?</span>,
            <span class="kw-2">&amp;</span>[<span class="number">0x0100</span>, <span class="number">0x3412</span>]);</pre>
-
 <p>View all bytes as a series of <code>u16</code>s:</p>
 
 <pre class="rust rust-example-rendered">
 <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">guarded_transmute_many_pedantic</span>::<span class="op">&lt;</span><span class="ident">u16</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span>[<span class="number">0x00</span>, <span class="number">0x01</span>,
                                                     <span class="number">0x12</span>, <span class="number">0x34</span>])<span class="question-mark">?</span>,
            <span class="kw-2">&amp;</span>[<span class="number">0x0100</span>, <span class="number">0x3412</span>]);</pre>
-
 <p>View bytes as an <code>f64</code>:</p>
 
 <pre class="rust rust-example-rendered">
 <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">guarded_transmute</span>::<span class="op">&lt;</span><span class="ident">f64</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span>[<span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span>,
                                       <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x00</span>, <span class="number">0x40</span>])<span class="question-mark">?</span>,
            <span class="number">2.0</span>);</pre>
-
 <p>View a series of <code>u16</code>s as bytes:</p>
 
 <pre class="rust rust-example-rendered">
@@ -99,6 +103,7 @@ all circumstances. This is the case for those found in the <code>pod</code> and 
                                   title='mod safe_transmute::guard'>guard</a></td>
                            <td class='docblock-short'>
                                 <p>The <code>guard</code> module exposes an API for memory boundary checking.</p>
+
                            </td>
                        </tr>
                        <tr class=' module-item'>
@@ -106,6 +111,7 @@ all circumstances. This is the case for those found in the <code>pod</code> and 
                                   title='mod safe_transmute::util'>util</a></td>
                            <td class='docblock-short'>
                                 <p>Module containing various utility functions.</p>
+
                            </td>
                        </tr></table><h2 id='structs' class='section-header'><a href="#structs">Structs</a></h2>
 <table>
@@ -114,6 +120,7 @@ all circumstances. This is the case for those found in the <code>pod</code> and 
                                   title='struct safe_transmute::GuardError'>GuardError</a></td>
                            <td class='docblock-short'>
                                 <p>A transmutation error.</p>
+
                            </td>
                        </tr></table><h2 id='enums' class='section-header'><a href="#enums">Enums</a></h2>
 <table>
@@ -121,7 +128,8 @@ all circumstances. This is the case for those found in the <code>pod</code> and 
                            <td><a class="enum" href="enum.ErrorReason.html"
                                   title='enum safe_transmute::ErrorReason'>ErrorReason</a></td>
                            <td class='docblock-short'>
-                                <p>How the type&#39;s size compares to the received byte count and the transmutation function&#39;s characteristic.</p>
+                                <p>How the type's size compares to the received byte count and the transmutation function's characteristic.</p>
+
                            </td>
                        </tr></table><h2 id='traits' class='section-header'><a href="#traits">Traits</a></h2>
 <table>
@@ -130,6 +138,7 @@ all circumstances. This is the case for those found in the <code>pod</code> and 
                                   title='trait safe_transmute::PodTransmutable'>PodTransmutable</a></td>
                            <td class='docblock-short'>
                                 <p>Type that can be non-<code>unsafe</code>ly transmuted into</p>
+
                            </td>
                        </tr></table><h2 id='functions' class='section-header'><a href="#functions">Functions</a></h2>
 <table>
@@ -138,6 +147,7 @@ all circumstances. This is the case for those found in the <code>pod</code> and 
                                   title='fn safe_transmute::guarded_transmute'>guarded_transmute</a><a title='unsafe function' href='#'><sup>⚠</sup></a></td>
                            <td class='docblock-short'>
                                 <p>Transmute a byte slice into a single instance of a <code>Copy</code>able type.</p>
+
                            </td>
                        </tr>
                        <tr class=' module-item'>
@@ -145,6 +155,7 @@ all circumstances. This is the case for those found in the <code>pod</code> and 
                                   title='fn safe_transmute::guarded_transmute_bool_pedantic'>guarded_transmute_bool_pedantic</a></td>
                            <td class='docblock-short'>
                                 <p>View a byte slice as a slice of boolean values.</p>
+
                            </td>
                        </tr>
                        <tr class=' module-item'>
@@ -152,6 +163,7 @@ all circumstances. This is the case for those found in the <code>pod</code> and 
                                   title='fn safe_transmute::guarded_transmute_bool_permissive'>guarded_transmute_bool_permissive</a></td>
                            <td class='docblock-short'>
                                 <p>View a byte slice as a slice of boolean values.</p>
+
                            </td>
                        </tr>
                        <tr class=' module-item'>
@@ -159,6 +171,7 @@ all circumstances. This is the case for those found in the <code>pod</code> and 
                                   title='fn safe_transmute::guarded_transmute_bool_vec_pedantic'>guarded_transmute_bool_vec_pedantic</a></td>
                            <td class='docblock-short'>
                                 <p>Trasform a byte vector into a vector of bool.</p>
+
                            </td>
                        </tr>
                        <tr class=' module-item'>
@@ -166,6 +179,7 @@ all circumstances. This is the case for those found in the <code>pod</code> and 
                                   title='fn safe_transmute::guarded_transmute_bool_vec_permissive'>guarded_transmute_bool_vec_permissive</a></td>
                            <td class='docblock-short'>
                                 <p>Trasform a byte vector into a vector of bool.</p>
+
                            </td>
                        </tr>
                        <tr class=' module-item'>
@@ -173,6 +187,7 @@ all circumstances. This is the case for those found in the <code>pod</code> and 
                                   title='fn safe_transmute::guarded_transmute_many'>guarded_transmute_many</a><a title='unsafe function' href='#'><sup>⚠</sup></a></td>
                            <td class='docblock-short'>
                                 <p>View a byte slice as a slice of an arbitrary type.</p>
+
                            </td>
                        </tr>
                        <tr class=' module-item'>
@@ -180,6 +195,7 @@ all circumstances. This is the case for those found in the <code>pod</code> and 
                                   title='fn safe_transmute::guarded_transmute_many_pedantic'>guarded_transmute_many_pedantic</a><a title='unsafe function' href='#'><sup>⚠</sup></a></td>
                            <td class='docblock-short'>
                                 <p>View a byte slice as a slice of an arbitrary type.</p>
+
                            </td>
                        </tr>
                        <tr class=' module-item'>
@@ -187,6 +203,7 @@ all circumstances. This is the case for those found in the <code>pod</code> and 
                                   title='fn safe_transmute::guarded_transmute_many_permissive'>guarded_transmute_many_permissive</a><a title='unsafe function' href='#'><sup>⚠</sup></a></td>
                            <td class='docblock-short'>
                                 <p>View a byte slice as a slice of an arbitrary type.</p>
+
                            </td>
                        </tr>
                        <tr class=' module-item'>
@@ -194,6 +211,7 @@ all circumstances. This is the case for those found in the <code>pod</code> and 
                                   title='fn safe_transmute::guarded_transmute_pedantic'>guarded_transmute_pedantic</a><a title='unsafe function' href='#'><sup>⚠</sup></a></td>
                            <td class='docblock-short'>
                                 <p>Transmute a byte slice into a single instance of a <code>Copy</code>able type.</p>
+
                            </td>
                        </tr>
                        <tr class=' module-item'>
@@ -201,6 +219,7 @@ all circumstances. This is the case for those found in the <code>pod</code> and 
                                   title='fn safe_transmute::guarded_transmute_pod'>guarded_transmute_pod</a></td>
                            <td class='docblock-short'>
                                 <p>Transmute a byte slice into a single instance of a POD.</p>
+
                            </td>
                        </tr>
                        <tr class=' module-item'>
@@ -208,6 +227,7 @@ all circumstances. This is the case for those found in the <code>pod</code> and 
                                   title='fn safe_transmute::guarded_transmute_pod_many'>guarded_transmute_pod_many</a></td>
                            <td class='docblock-short'>
                                 <p>Transmute a byte slice into a single instance of a POD.</p>
+
                            </td>
                        </tr>
                        <tr class=' module-item'>
@@ -215,6 +235,7 @@ all circumstances. This is the case for those found in the <code>pod</code> and 
                                   title='fn safe_transmute::guarded_transmute_pod_many_pedantic'>guarded_transmute_pod_many_pedantic</a></td>
                            <td class='docblock-short'>
                                 <p>View a byte slice as a slice of POD.</p>
+
                            </td>
                        </tr>
                        <tr class=' module-item'>
@@ -222,6 +243,7 @@ all circumstances. This is the case for those found in the <code>pod</code> and 
                                   title='fn safe_transmute::guarded_transmute_pod_many_permissive'>guarded_transmute_pod_many_permissive</a></td>
                            <td class='docblock-short'>
                                 <p>View a byte slice as a slice of a POD type.</p>
+
                            </td>
                        </tr>
                        <tr class=' module-item'>
@@ -229,6 +251,7 @@ all circumstances. This is the case for those found in the <code>pod</code> and 
                                   title='fn safe_transmute::guarded_transmute_pod_pedantic'>guarded_transmute_pod_pedantic</a></td>
                            <td class='docblock-short'>
                                 <p>Transmute a byte slice into a single instance of a POD.</p>
+
                            </td>
                        </tr>
                        <tr class=' module-item'>
@@ -236,6 +259,7 @@ all circumstances. This is the case for those found in the <code>pod</code> and 
                                   title='fn safe_transmute::guarded_transmute_pod_vec'>guarded_transmute_pod_vec</a></td>
                            <td class='docblock-short'>
                                 <p>Trasform a byte vector into a vector of POD.</p>
+
                            </td>
                        </tr>
                        <tr class=' module-item'>
@@ -243,6 +267,7 @@ all circumstances. This is the case for those found in the <code>pod</code> and 
                                   title='fn safe_transmute::guarded_transmute_pod_vec_pedantic'>guarded_transmute_pod_vec_pedantic</a></td>
                            <td class='docblock-short'>
                                 <p>Trasform a byte vector into a vector of POD.</p>
+
                            </td>
                        </tr>
                        <tr class=' module-item'>
@@ -250,6 +275,7 @@ all circumstances. This is the case for those found in the <code>pod</code> and 
                                   title='fn safe_transmute::guarded_transmute_pod_vec_permissive'>guarded_transmute_pod_vec_permissive</a></td>
                            <td class='docblock-short'>
                                 <p>Trasform a byte vector into a vector of POD.</p>
+
                            </td>
                        </tr>
                        <tr class=' module-item'>
@@ -257,6 +283,7 @@ all circumstances. This is the case for those found in the <code>pod</code> and 
                                   title='fn safe_transmute::guarded_transmute_to_bytes'>guarded_transmute_to_bytes</a><a title='unsafe function' href='#'><sup>⚠</sup></a></td>
                            <td class='docblock-short'>
                                 <p>Transmute a single instance of an arbitrary type into a slice of its bytes.</p>
+
                            </td>
                        </tr>
                        <tr class=' module-item'>
@@ -264,6 +291,7 @@ all circumstances. This is the case for those found in the <code>pod</code> and 
                                   title='fn safe_transmute::guarded_transmute_to_bytes_many'>guarded_transmute_to_bytes_many</a><a title='unsafe function' href='#'><sup>⚠</sup></a></td>
                            <td class='docblock-short'>
                                 <p>Transmute a slice of arbitrary types into a slice of their bytes.</p>
+
                            </td>
                        </tr>
                        <tr class=' module-item'>
@@ -271,6 +299,7 @@ all circumstances. This is the case for those found in the <code>pod</code> and 
                                   title='fn safe_transmute::guarded_transmute_to_bytes_pod'>guarded_transmute_to_bytes_pod</a></td>
                            <td class='docblock-short'>
                                 <p>Transmute a single instance of a POD type into a slice of its bytes.</p>
+
                            </td>
                        </tr>
                        <tr class=' module-item'>
@@ -278,6 +307,7 @@ all circumstances. This is the case for those found in the <code>pod</code> and 
                                   title='fn safe_transmute::guarded_transmute_to_bytes_pod_many'>guarded_transmute_to_bytes_pod_many</a></td>
                            <td class='docblock-short'>
                                 <p>Transmute a slice of arbitrary types into a slice of their bytes.</p>
+
                            </td>
                        </tr>
                        <tr class=' module-item'>
@@ -285,6 +315,7 @@ all circumstances. This is the case for those found in the <code>pod</code> and 
                                   title='fn safe_transmute::guarded_transmute_vec'>guarded_transmute_vec</a><a title='unsafe function' href='#'><sup>⚠</sup></a></td>
                            <td class='docblock-short'>
                                 <p>Trasform a byte vector into a vector of an arbitrary type.</p>
+
                            </td>
                        </tr>
                        <tr class=' module-item'>
@@ -292,6 +323,7 @@ all circumstances. This is the case for those found in the <code>pod</code> and 
                                   title='fn safe_transmute::guarded_transmute_vec_pedantic'>guarded_transmute_vec_pedantic</a><a title='unsafe function' href='#'><sup>⚠</sup></a></td>
                            <td class='docblock-short'>
                                 <p>Trasform a byte vector into a vector of an arbitrary type.</p>
+
                            </td>
                        </tr>
                        <tr class=' module-item'>
@@ -299,6 +331,7 @@ all circumstances. This is the case for those found in the <code>pod</code> and 
                                   title='fn safe_transmute::guarded_transmute_vec_permissive'>guarded_transmute_vec_permissive</a><a title='unsafe function' href='#'><sup>⚠</sup></a></td>
                            <td class='docblock-short'>
                                 <p>Trasform a byte vector into a vector of an arbitrary type.</p>
+
                            </td>
                        </tr></table><h2 id='types' class='section-header'><a href="#types">Type Definitions</a></h2>
 <table>
@@ -307,6 +340,7 @@ all circumstances. This is the case for those found in the <code>pod</code> and 
                                   title='type safe_transmute::Error'>Error</a></td>
                            <td class='docblock-short'>
                                 <p>Describes possible errors originating from operations in this crate.</p>
+
                            </td>
                        </tr></table></section>
     <section id='search' class="content hidden"></section>
@@ -321,20 +355,22 @@ all circumstances. This is the case for those found in the <code>pod</code> and 
                 <h2>Keyboard Shortcuts</h2>
 
                 <dl>
-                    <dt>?</dt>
+                    <dt><kbd>?</kbd></dt>
                     <dd>Show this help dialog</dd>
-                    <dt>S</dt>
+                    <dt><kbd>S</kbd></dt>
                     <dd>Focus the search field</dd>
-                    <dt>↑</dt>
+                    <dt><kbd>↑</kbd></dt>
                     <dd>Move up in search results</dd>
-                    <dt>↓</dt>
+                    <dt><kbd>↓</kbd></dt>
                     <dd>Move down in search results</dd>
-                    <dt>↹</dt>
+                    <dt><kbd>↹</kbd></dt>
                     <dd>Switch tab</dd>
-                    <dt>&#9166;</dt>
+                    <dt><kbd>&#9166;</kbd></dt>
                     <dd>Go to active search result</dd>
-                    <dt style="width:31px;">+ / -</dt>
-                    <dd>Collapse/expand all sections</dd>
+                    <dt><kbd>+</kbd></dt>
+                    <dd>Expand all sections</dd>
+                    <dt><kbd>-</kbd></dt>
+                    <dd>Collapse all sections</dd>
                 </dl>
             </div>
 
