@@ -1,4 +1,4 @@
-use safe_transmute::{ErrorReason, Error, guarded_transmute_bool_permissive};
+use safe_transmute::{Error, guarded_transmute_bool_permissive};
 
 
 #[test]
@@ -16,21 +16,9 @@ fn just_enough() {
 #[test]
 fn invalid_bytes() {
     assert_eq!(guarded_transmute_bool_permissive([0x00, 0x01, 0x02].as_ref()),
-               Err(Error {
-                   required: 1,
-                   actual: 3,
-                   reason: ErrorReason::InvalidValue,
-               }));
+               Err(Error::InvalidValue));
     assert_eq!(guarded_transmute_bool_permissive([0x05, 0x01, 0x00].as_ref()),
-               Err(Error {
-                   required: 1,
-                   actual: 3,
-                   reason: ErrorReason::InvalidValue,
-               }));
+               Err(Error::InvalidValue));
     assert_eq!(guarded_transmute_bool_permissive([0xFF].as_ref()),
-               Err(Error {
-                   required: 1,
-                   actual: 1,
-                   reason: ErrorReason::InvalidValue,
-               }));
+               Err(Error::InvalidValue));
 }

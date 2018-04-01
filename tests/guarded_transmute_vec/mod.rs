@@ -1,4 +1,4 @@
-use safe_transmute::{ErrorReason, Error, guarded_transmute_vec};
+use safe_transmute::{ErrorReason, Error, GuardError, guarded_transmute_vec};
 use self::super::LeToNative;
 
 
@@ -6,17 +6,17 @@ use self::super::LeToNative;
 fn too_short() {
     unsafe {
         assert_eq!(guarded_transmute_vec::<u16>(vec![]),
-                   Err(Error {
+                   Err(Error::Guard(GuardError {
                        required: 16 / 8,
                        actual: 0,
                        reason: ErrorReason::NotEnoughBytes,
-                   }));
+                   })));
         assert_eq!(guarded_transmute_vec::<u16>(vec![0x00]),
-                   Err(Error {
+                   Err(Error::Guard(GuardError {
                        required: 16 / 8,
                        actual: 1,
                        reason: ErrorReason::NotEnoughBytes,
-                   }));
+                   })));
     }
 }
 

@@ -1,4 +1,4 @@
-use safe_transmute::{ErrorReason, Error, guarded_transmute_pedantic};
+use safe_transmute::{ErrorReason, Error, GuardError, guarded_transmute_pedantic};
 use self::super::LeToNative;
 
 
@@ -6,17 +6,17 @@ use self::super::LeToNative;
 fn too_short() {
     unsafe {
         assert_eq!(guarded_transmute_pedantic::<u32>(&[]),
-                   Err(Error {
+                   Err(Error::Guard(GuardError {
                        required: 32 / 8,
                        actual: 0,
                        reason: ErrorReason::InexactByteCount,
-                   }));
+                   })));
         assert_eq!(guarded_transmute_pedantic::<u32>(&[0x00]),
-                   Err(Error {
+                   Err(Error::Guard(GuardError {
                        required: 32 / 8,
                        actual: 1,
                        reason: ErrorReason::InexactByteCount,
-                   }));
+                   })));
     }
 }
 
@@ -31,10 +31,10 @@ fn just_enough() {
 fn too_much() {
     unsafe {
         assert_eq!(guarded_transmute_pedantic::<u32>(&[0x00, 0x00, 0x00, 0x01, 0x00]),
-                   Err(Error {
+                   Err(Error::Guard(GuardError {
                        required: 32 / 8,
                        actual: 5,
                        reason: ErrorReason::InexactByteCount,
-                   }));
+                   })));
     }
 }

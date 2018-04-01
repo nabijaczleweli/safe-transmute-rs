@@ -54,13 +54,18 @@
 //!                reason: ErrorReason::InexactByteCount,
 //!            }));
 //! ```
+//! 
+//! Regardless of the chosen strategy, guarded transmutation functions will
+//! always ensure that no out of bounds access is attempted, usually by
+//! restricting the output to spatially safe portions of the input.
 
 
 use error::{ErrorReason, GuardError};
 use std::mem::size_of;
 
 
-/// The `Guard` type describes types which define boundary checking strategies.
+/// The trait describes types which define boundary checking strategies.
+/// See the [module-level documentation](./index.html) for more details.
 pub trait Guard {
     /// Check the size of the given byte slice against a particular type.
     ///

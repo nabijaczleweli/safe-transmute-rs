@@ -1,21 +1,21 @@
-use safe_transmute::{ErrorReason, Error, guarded_transmute_pod_many};
+use safe_transmute::{ErrorReason, Error, GuardError, guarded_transmute_pod_many};
 use self::super::LeToNative;
 
 
 #[test]
 fn too_short() {
     assert_eq!(guarded_transmute_pod_many::<u16>(&[]),
-               Err(Error {
+               Err(Error::Guard(GuardError {
                    required: 16 / 8,
                    actual: 0,
                    reason: ErrorReason::NotEnoughBytes,
-               }));
+               })));
     assert_eq!(guarded_transmute_pod_many::<u16>(&[0x00]),
-               Err(Error {
+               Err(Error::Guard(GuardError {
                    required: 16 / 8,
                    actual: 1,
                    reason: ErrorReason::NotEnoughBytes,
-               }));
+               })));
 }
 
 #[test]

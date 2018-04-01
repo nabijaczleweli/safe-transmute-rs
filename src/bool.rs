@@ -4,7 +4,7 @@
 //! behind the `bool` value is neither one.
 
 
-use self::super::{ErrorReason, Error, guarded_transmute_many_permissive, guarded_transmute_vec_permissive, guarded_transmute_many_pedantic,
+use self::super::{Error, guarded_transmute_many_permissive, guarded_transmute_vec_permissive, guarded_transmute_many_pedantic,
                   guarded_transmute_vec_pedantic};
 use std::mem::size_of;
 
@@ -92,7 +92,7 @@ pub fn guarded_transmute_bool_vec_permissive(bytes: Vec<u8>) -> Result<Vec<bool>
     unsafe { Ok(guarded_transmute_vec_permissive(bytes)) }
 }
 
-/// Trasform a byte vector into a vector of bool.
+/// Transform a byte vector into a vector of bool.
 ///
 /// The vector's allocated byte buffer will be reused when possible, and
 /// should not have extraneous data.
@@ -122,10 +122,6 @@ fn check_bool(bytes: &[u8]) -> Result<(), Error> {
     if bytes_are_bool(bytes) {
         Ok(())
     } else {
-        Err(Error {
-            required: size_of::<bool>(),
-            actual: bytes.len(),
-            reason: ErrorReason::InvalidValue,
-        })
+        Err(Error::InvalidValue)
     }
 }
