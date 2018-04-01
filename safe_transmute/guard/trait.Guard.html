@@ -59,10 +59,11 @@
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a class='srclink' href='../../src/safe_transmute/guard.rs.html#64-72' title='goto source code'>[src]</a></span></h1>
+               </span><a class='srclink' href='../../src/safe_transmute/guard.rs.html#69-77' title='goto source code'>[src]</a></span></h1>
 <pre class='rust trait'>pub trait Guard {
     fn <a href='#tymethod.check' class='fnname'>check</a>&lt;T&gt;(v: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.slice.html">&amp;[</a><a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u8.html">u8</a><a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.slice.html">]</a>) -&gt; <a class="enum" href="https://doc.rust-lang.org/nightly/core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.unit.html">()</a>, <a class="struct" href="../../safe_transmute/struct.GuardError.html" title="struct safe_transmute::GuardError">GuardError</a>&gt;;
-}</pre><div class='docblock'><p>The <code>Guard</code> type describes types which define boundary checking strategies.</p>
+}</pre><div class='docblock'><p>The trait describes types which define boundary checking strategies.
+See the <a href="./index.html">module-level documentation</a> for more details.</p>
 </div>
             <h2 id='required-methods' class='small-section-header'>
               Required Methods<a href='#required-methods' class='anchor'></a>
@@ -77,11 +78,11 @@ which specifies the incompatibility is returned.</p>
           Implementors<a href='#implementors' class='anchor'></a>
         </h2>
         <ul class='item-list' id='implementors-list'>
-    <li><div class='out-of-band'><a class='srclink' href='../../src/safe_transmute/guard.rs.html#79-91' title='goto source code'>[src]</a></div><code>impl Guard for <a class="struct" href="../../safe_transmute/guard/struct.SingleValueGuard.html" title="struct safe_transmute::guard::SingleValueGuard">SingleValueGuard</a></code></li>
-<li><div class='out-of-band'><a class='srclink' href='../../src/safe_transmute/guard.rs.html#98-116' title='goto source code'>[src]</a></div><code>impl Guard for <a class="struct" href="../../safe_transmute/guard/struct.PedanticGuard.html" title="struct safe_transmute::guard::PedanticGuard">PedanticGuard</a></code></li>
-<li><div class='out-of-band'><a class='srclink' href='../../src/safe_transmute/guard.rs.html#123-135' title='goto source code'>[src]</a></div><code>impl Guard for <a class="struct" href="../../safe_transmute/guard/struct.AllOrNothingGuard.html" title="struct safe_transmute::guard::AllOrNothingGuard">AllOrNothingGuard</a></code></li>
-<li><div class='out-of-band'><a class='srclink' href='../../src/safe_transmute/guard.rs.html#142-154' title='goto source code'>[src]</a></div><code>impl Guard for <a class="struct" href="../../safe_transmute/guard/struct.SingleManyGuard.html" title="struct safe_transmute::guard::SingleManyGuard">SingleManyGuard</a></code></li>
-<li><div class='out-of-band'><a class='srclink' href='../../src/safe_transmute/guard.rs.html#161-166' title='goto source code'>[src]</a></div><code>impl Guard for <a class="struct" href="../../safe_transmute/guard/struct.PermissiveGuard.html" title="struct safe_transmute::guard::PermissiveGuard">PermissiveGuard</a></code></li>
+    <li><div class='out-of-band'><a class='srclink' href='../../src/safe_transmute/guard.rs.html#84-96' title='goto source code'>[src]</a></div><code>impl Guard for <a class="struct" href="../../safe_transmute/guard/struct.SingleValueGuard.html" title="struct safe_transmute::guard::SingleValueGuard">SingleValueGuard</a></code></li>
+<li><div class='out-of-band'><a class='srclink' href='../../src/safe_transmute/guard.rs.html#103-121' title='goto source code'>[src]</a></div><code>impl Guard for <a class="struct" href="../../safe_transmute/guard/struct.PedanticGuard.html" title="struct safe_transmute::guard::PedanticGuard">PedanticGuard</a></code></li>
+<li><div class='out-of-band'><a class='srclink' href='../../src/safe_transmute/guard.rs.html#128-140' title='goto source code'>[src]</a></div><code>impl Guard for <a class="struct" href="../../safe_transmute/guard/struct.AllOrNothingGuard.html" title="struct safe_transmute::guard::AllOrNothingGuard">AllOrNothingGuard</a></code></li>
+<li><div class='out-of-band'><a class='srclink' href='../../src/safe_transmute/guard.rs.html#147-159' title='goto source code'>[src]</a></div><code>impl Guard for <a class="struct" href="../../safe_transmute/guard/struct.SingleManyGuard.html" title="struct safe_transmute::guard::SingleManyGuard">SingleManyGuard</a></code></li>
+<li><div class='out-of-band'><a class='srclink' href='../../src/safe_transmute/guard.rs.html#166-171' title='goto source code'>[src]</a></div><code>impl Guard for <a class="struct" href="../../safe_transmute/guard/struct.PermissiveGuard.html" title="struct safe_transmute::guard::PermissiveGuard">PermissiveGuard</a></code></li>
 </ul><script type="text/javascript" async
                          src="../../implementors/safe_transmute/guard/trait.Guard.js">
                  </script></section>

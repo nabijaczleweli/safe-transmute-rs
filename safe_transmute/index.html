@@ -33,7 +33,7 @@
     <nav class="sidebar">
         <div class="sidebar-menu">&#9776;</div>
         
-        <p class='location'>Crate safe_transmute</p><div class="sidebar-elems"><div class="block items"><ul><li><a href="#modules">Modules</a></li><li><a href="#structs">Structs</a></li><li><a href="#enums">Enums</a></li><li><a href="#traits">Traits</a></li><li><a href="#functions">Functions</a></li><li><a href="#types">Type Definitions</a></li></ul></div><p class='location'></p><script>window.sidebarCurrent = {name: 'safe_transmute', ty: 'mod', relpath: '../'};</script></div>
+        <p class='location'>Crate safe_transmute</p><div class="sidebar-elems"><div class="block items"><ul><li><a href="#modules">Modules</a></li><li><a href="#structs">Structs</a></li><li><a href="#enums">Enums</a></li><li><a href="#traits">Traits</a></li><li><a href="#functions">Functions</a></li></ul></div><p class='location'></p><script>window.sidebarCurrent = {name: 'safe_transmute', ty: 'mod', relpath: '../'};</script></div>
     </nav>
 
     <div class="theme-picker">
@@ -119,11 +119,20 @@ all circumstances. This is the case for those found in the <code>pod</code> and 
                            <td><a class="struct" href="struct.GuardError.html"
                                   title='struct safe_transmute::GuardError'>GuardError</a></td>
                            <td class='docblock-short'>
-                                <p>A transmutation error.</p>
+                                <p>A slice boundary guard error, usually created by a <a href="./guard/trait.Guard.html"><code>Guard</code></a>.</p>
 
                            </td>
                        </tr></table><h2 id='enums' class='section-header'><a href="#enums">Enums</a></h2>
 <table>
+                       <tr class=' module-item'>
+                           <td><a class="enum" href="enum.Error.html"
+                                  title='enum safe_transmute::Error'>Error</a></td>
+                           <td class='docblock-short'>
+                                <p>A transmutation error. This type describes possible errors originating
+from operations in this crate.</p>
+
+                           </td>
+                       </tr>
                        <tr class=' module-item'>
                            <td><a class="enum" href="enum.ErrorReason.html"
                                   title='enum safe_transmute::ErrorReason'>ErrorReason</a></td>
@@ -170,7 +179,7 @@ all circumstances. This is the case for those found in the <code>pod</code> and 
                            <td><a class="fn" href="fn.guarded_transmute_bool_vec_pedantic.html"
                                   title='fn safe_transmute::guarded_transmute_bool_vec_pedantic'>guarded_transmute_bool_vec_pedantic</a></td>
                            <td class='docblock-short'>
-                                <p>Trasform a byte vector into a vector of bool.</p>
+                                <p>Transform a byte vector into a vector of bool.</p>
 
                            </td>
                        </tr>
@@ -331,15 +340,6 @@ all circumstances. This is the case for those found in the <code>pod</code> and 
                                   title='fn safe_transmute::guarded_transmute_vec_permissive'>guarded_transmute_vec_permissive</a><a title='unsafe function' href='#'><sup>⚠</sup></a></td>
                            <td class='docblock-short'>
                                 <p>Trasform a byte vector into a vector of an arbitrary type.</p>
-
-                           </td>
-                       </tr></table><h2 id='types' class='section-header'><a href="#types">Type Definitions</a></h2>
-<table>
-                       <tr class=' module-item'>
-                           <td><a class="type" href="type.Error.html"
-                                  title='type safe_transmute::Error'>Error</a></td>
-                           <td class='docblock-short'>
-                                <p>Describes possible errors originating from operations in this crate.</p>
 
                            </td>
                        </tr></table></section>
