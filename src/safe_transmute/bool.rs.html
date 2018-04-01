@@ -181,6 +181,10 @@
 <span id="125">125</span>
 <span id="126">126</span>
 <span id="127">127</span>
+<span id="128">128</span>
+<span id="129">129</span>
+<span id="130">130</span>
+<span id="131">131</span>
 </pre><pre class="rust ">
 <span class="doccomment">//! Functions for safe transmutation to `bool`.</span>
 <span class="doccomment">//! Transmuting to `bool&#39; is not undefined behavior if the transmuted value is</span>
@@ -188,7 +192,7 @@
 <span class="doccomment">//! behind the `bool` value is neither one.</span>
 
 
-<span class="kw">use</span> <span class="self">self</span>::<span class="kw">super</span>::{<span class="ident">Error</span>, <span class="ident">guarded_transmute_many_permissive</span>, <span class="ident">guarded_transmute_vec_permissive</span>, <span class="ident">guarded_transmute_many_pedantic</span>,
+<span class="kw">use</span> <span class="self">self</span>::<span class="kw">super</span>::{<span class="ident">ErrorReason</span>, <span class="ident">Error</span>, <span class="ident">guarded_transmute_many_permissive</span>, <span class="ident">guarded_transmute_vec_permissive</span>, <span class="ident">guarded_transmute_many_pedantic</span>,
                   <span class="ident">guarded_transmute_vec_pedantic</span>};
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">mem</span>::<span class="ident">size_of</span>;
 
@@ -276,7 +280,7 @@
     <span class="kw">unsafe</span> { <span class="prelude-val">Ok</span>(<span class="ident">guarded_transmute_vec_permissive</span>(<span class="ident">bytes</span>)) }
 }
 
-<span class="doccomment">/// Transform a byte vector into a vector of bool.</span>
+<span class="doccomment">/// Trasform a byte vector into a vector of bool.</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// The vector&#39;s allocated byte buffer will be reused when possible, and</span>
 <span class="doccomment">/// should not have extraneous data.</span>
@@ -306,7 +310,11 @@
     <span class="kw">if</span> <span class="ident">bytes_are_bool</span>(<span class="ident">bytes</span>) {
         <span class="prelude-val">Ok</span>(())
     } <span class="kw">else</span> {
-        <span class="prelude-val">Err</span>(<span class="ident">Error</span>::<span class="ident">InvalidValue</span>)
+        <span class="prelude-val">Err</span>(<span class="ident">Error</span> {
+            <span class="ident">required</span>: <span class="ident">size_of</span>::<span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span>(),
+            <span class="ident">actual</span>: <span class="ident">bytes</span>.<span class="ident">len</span>(),
+            <span class="ident">reason</span>: <span class="ident">ErrorReason</span>::<span class="ident">InvalidValue</span>,
+        })
     }
 }
 </pre>

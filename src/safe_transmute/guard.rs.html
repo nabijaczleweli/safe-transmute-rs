@@ -220,11 +220,6 @@
 <span id="164">164</span>
 <span id="165">165</span>
 <span id="166">166</span>
-<span id="167">167</span>
-<span id="168">168</span>
-<span id="169">169</span>
-<span id="170">170</span>
-<span id="171">171</span>
 </pre><pre class="rust ">
 <span class="doccomment">//! The `guard` module exposes an API for memory boundary checking.</span>
 <span class="doccomment">//!</span>
@@ -282,18 +277,13 @@
 <span class="doccomment">//!                reason: ErrorReason::InexactByteCount,</span>
 <span class="doccomment">//!            }));</span>
 <span class="doccomment">//! ```</span>
-<span class="doccomment">//! </span>
-<span class="doccomment">//! Regardless of the chosen strategy, guarded transmutation functions will</span>
-<span class="doccomment">//! always ensure that no out of bounds access is attempted, usually by</span>
-<span class="doccomment">//! restricting the output to spatially safe portions of the input.</span>
 
 
 <span class="kw">use</span> <span class="ident">error</span>::{<span class="ident">ErrorReason</span>, <span class="ident">GuardError</span>};
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">mem</span>::<span class="ident">size_of</span>;
 
 
-<span class="doccomment">/// The trait describes types which define boundary checking strategies.</span>
-<span class="doccomment">/// See the [module-level documentation](./index.html) for more details.</span>
+<span class="doccomment">/// The `Guard` type describes types which define boundary checking strategies.</span>
 <span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">Guard</span> {
     <span class="doccomment">/// Check the size of the given byte slice against a particular type.</span>
     <span class="doccomment">///</span>
