@@ -34,7 +34,6 @@ unsafe impl PodTransmutable for u32 {}
 unsafe impl PodTransmutable for i32 {}
 unsafe impl PodTransmutable for u64 {}
 unsafe impl PodTransmutable for i64 {}
-unsafe impl PodTransmutable for char {}
 unsafe impl PodTransmutable for f32 {}
 unsafe impl PodTransmutable for f64 {}
 #[cfg(i128_type)]
