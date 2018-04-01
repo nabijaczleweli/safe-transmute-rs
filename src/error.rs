@@ -43,7 +43,7 @@ impl StdError for Error {
 impl fmt::Display for Error {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match *self {
-            Error::Guard(ref e) => fmt::Display::fmt(e, f),
+            Error::Guard(ref e) => e.fmt(f),
             Error::Unaligned { offset } => write!(f, "{} (off by {} bytes)", self.description(), offset),
             Error::InvalidValue => write!(f, "{}", self.description()),
         }
