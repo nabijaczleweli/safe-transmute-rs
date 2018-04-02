@@ -30,7 +30,7 @@
 //! # run().unwrap();
 //! ```
 //!
-//! [`PermissiveGuard`](struct.PermissiveGuard.html, on the other hand, will accept any memory slice.
+//! [`PermissiveGuard`](struct.PermissiveGuard.html), on the other hand, will accept any memory slice.
 //!
 //! ```
 //! # use safe_transmute::Error;
@@ -65,7 +65,7 @@ use std::mem::size_of;
 
 
 /// The trait describes types which define boundary checking strategies.
-/// See the [module-level documentation](./index.html) for more details.
+/// See the [module-level documentation](index.html) for more details.
 pub trait Guard {
     /// Check the size of the given byte slice against a particular type.
     ///
