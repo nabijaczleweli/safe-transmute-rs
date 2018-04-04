@@ -166,8 +166,6 @@
 <span id="110">110</span>
 <span id="111">111</span>
 <span id="112">112</span>
-<span id="113">113</span>
-<span id="114">114</span>
 </pre><pre class="rust ">
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">error</span>::<span class="ident">Error</span> <span class="kw">as</span> <span class="ident">StdError</span>;
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">fmt</span>;
@@ -192,11 +190,9 @@
     <span class="doccomment">/// The given data slice is not properly aligned for the target type.</span>
     <span class="doccomment">/// It would have been properly aligned if `offset` bytes were shifted</span>
     <span class="doccomment">/// (discarded) from the front of the slice.</span>
-    <span class="doccomment">/// </span>
+    <span class="doccomment">///</span>
     <span class="doccomment">/// This is currently unused.</span>
-    <span class="ident">Unaligned</span> {
-        <span class="ident">offset</span>: <span class="ident">usize</span>
-    },
+    <span class="ident">Unaligned</span> { <span class="ident">offset</span>: <span class="ident">usize</span>, },
     <span class="doccomment">/// The data contains an invalid value for the target type.</span>
     <span class="ident">InvalidValue</span>,
 }

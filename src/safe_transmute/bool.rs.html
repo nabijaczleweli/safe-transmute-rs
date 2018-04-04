@@ -180,7 +180,6 @@
 <span id="124">124</span>
 <span id="125">125</span>
 <span id="126">126</span>
-<span id="127">127</span>
 </pre><pre class="rust ">
 <span class="doccomment">//! Functions for safe transmutation to `bool`.</span>
 <span class="doccomment">//! Transmuting to `bool&#39; is not undefined behavior if the transmuted value is</span>
@@ -188,8 +187,7 @@
 <span class="doccomment">//! behind the `bool` value is neither one.</span>
 
 
-<span class="kw">use</span> <span class="self">self</span>::<span class="kw">super</span>::{<span class="ident">Error</span>, <span class="ident">guarded_transmute_many_permissive</span>, <span class="ident">guarded_transmute_vec_permissive</span>, <span class="ident">guarded_transmute_many_pedantic</span>,
-                  <span class="ident">guarded_transmute_vec_pedantic</span>};
+<span class="kw">use</span> <span class="self">self</span>::<span class="kw">super</span>::{<span class="ident">Error</span>, <span class="ident">guarded_transmute_many_permissive</span>, <span class="ident">guarded_transmute_vec_permissive</span>, <span class="ident">guarded_transmute_many_pedantic</span>, <span class="ident">guarded_transmute_vec_pedantic</span>};
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">mem</span>::<span class="ident">size_of</span>;
 
 
