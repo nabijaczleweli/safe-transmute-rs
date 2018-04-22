@@ -12,3 +12,6 @@ version = "0.8.0"
 authors = ["nabijaczleweli <nabijaczleweli@gmail.com>",
            "Eduardo Pinho <enet4mikeenet@gmail.com>"]
 exclude = ["*.enc"]
+
+[features]
+"test-unaligned" = []

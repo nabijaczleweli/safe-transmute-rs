@@ -42,9 +42,10 @@ fn too_much() {
     }
 }
 
+#[cfg(feature = "test-unaligned")]
 #[cfg(target_endian = "little")]
 #[test]
-fn misaligned_slicing() {
+fn unaligned_slicing() {
     let bytes = &[0xFF, 0x01, 0xEE, 0x02, 0xDD, 0x03, 0xCC];
     unsafe {
         assert_eq!(guarded_transmute_many::<u16>(bytes),
@@ -67,9 +68,10 @@ fn misaligned_slicing() {
 }
 
 
+#[cfg(feature = "test-unaligned")]
 #[cfg(target_endian = "big")]
 #[test]
-fn misaligned_slicing() {
+fn unaligned_slicing() {
     let bytes = &[0xFF, 0x01, 0xEE, 0x02, 0xDD, 0x03, 0xCC];
     unsafe {
         assert_eq!(guarded_transmute_many::<u16>(bytes),
