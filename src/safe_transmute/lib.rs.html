@@ -376,6 +376,10 @@
 <span id="320">320</span>
 <span id="321">321</span>
 <span id="322">322</span>
+<span id="323">323</span>
+<span id="324">324</span>
+<span id="325">325</span>
+<span id="326">326</span>
 </pre><pre class="rust ">
 <span class="doccomment">//! This crate contains checked implementations of `transmute()`.</span>
 <span class="doccomment">//!</span>
@@ -388,6 +392,10 @@
 <span class="doccomment">//!</span>
 <span class="doccomment">//! Other functions in this crate, on the other hand, provide enough safety measures to ensure safety in</span>
 <span class="doccomment">//! all circumstances. This is the case for those found in the `pod` and `bool` modules.</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! Take note, however, that alignment is *unaccounted for*: you may, in the course of using this crate,</span>
+<span class="doccomment">//! invoke unaligned access, which some CPUs *may* trap on; that did not, however, happen in any of our tests on</span>
+<span class="doccomment">//! MIPS64 (BE), x86_64 (LE), nor armv6l (LE).</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! # Examples</span>
 <span class="doccomment">//!</span>
