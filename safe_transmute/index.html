@@ -10,10 +10,11 @@
     <title>safe_transmute - Rust</title>
 
     <link rel="stylesheet" type="text/css" href="../normalize.css">
-    <link rel="stylesheet" type="text/css" href="../rustdoc.css" id="mainThemeStyle">
+    <link rel="stylesheet" type="text/css" href="../rustdoc.css"
+          id="mainThemeStyle">
     
     <link rel="stylesheet" type="text/css" href="../dark.css">
-    <link rel="stylesheet" type="text/css" href="../main.css" id="themeStyle">
+    <link rel="stylesheet" type="text/css" href="../light.css" id="themeStyle">
     <script src="../storage.js"></script>
     
 
@@ -54,13 +55,11 @@
         </form>
     </nav>
 
-    <section id='main' class="content">
-<h1 class='fqn'><span class='in-band'>Crate <a class="mod" href=''>safe_transmute</a></span><span class='out-of-band'><span id='render-detail'>
+    <section id='main' class="content"><h1 class='fqn'><span class='in-band'>Crate <a class="mod" href=''>safe_transmute</a></span><span class='out-of-band'><span id='render-detail'>
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a class='srclink' href='../src/safe_transmute/lib.rs.html#1-326' title='goto source code'>[src]</a></span></h1>
-<div class='docblock'><p>This crate contains checked implementations of <code>transmute()</code>.</p>
+               </span><a class='srclink' href='../src/safe_transmute/lib.rs.html#1-326' title='goto source code'>[src]</a></span></h1><div class='docblock'><p>This crate contains checked implementations of <code>transmute()</code>.</p>
 <p>The base functions in this crate are not inherently safe, but just guarded against common simple mistakes
 (like trying to create an 8-byte type from 7 bytes).
 These functions are exactly as safe as the data passed to them - creating a null pointer,

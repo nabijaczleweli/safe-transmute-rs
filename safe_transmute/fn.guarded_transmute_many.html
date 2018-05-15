@@ -10,10 +10,11 @@
     <title>safe_transmute::guarded_transmute_many - Rust</title>
 
     <link rel="stylesheet" type="text/css" href="../normalize.css">
-    <link rel="stylesheet" type="text/css" href="../rustdoc.css" id="mainThemeStyle">
+    <link rel="stylesheet" type="text/css" href="../rustdoc.css"
+          id="mainThemeStyle">
     
     <link rel="stylesheet" type="text/css" href="../dark.css">
-    <link rel="stylesheet" type="text/css" href="../main.css" id="themeStyle">
+    <link rel="stylesheet" type="text/css" href="../light.css" id="themeStyle">
     <script src="../storage.js"></script>
     
 
@@ -33,7 +34,7 @@
     <nav class="sidebar">
         <div class="sidebar-menu">&#9776;</div>
         
-        <p class='location'><a href='index.html'>safe_transmute</a></p><script>window.sidebarCurrent = {name: 'guarded_transmute_many', ty: 'fn', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+        <div class="sidebar-elems"><p class='location'><a href='index.html'>safe_transmute</a></p><script>window.sidebarCurrent = {name: 'guarded_transmute_many', ty: 'fn', relpath: ''};</script><script defer src="sidebar-items.js"></script></div>
     </nav>
 
     <div class="theme-picker">
@@ -54,13 +55,11 @@
         </form>
     </nav>
 
-    <section id='main' class="content">
-<h1 class='fqn'><span class='in-band'>Function <a href='index.html'>safe_transmute</a>::<wbr><a class="fn" href=''>guarded_transmute_many</a></span><span class='out-of-band'><span id='render-detail'>
+    <section id='main' class="content"><h1 class='fqn'><span class='in-band'>Function <a href='index.html'>safe_transmute</a>::<wbr><a class="fn" href=''>guarded_transmute_many</a></span><span class='out-of-band'><span id='render-detail'>
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a class='srclink' href='../src/safe_transmute/lib.rs.html#181-184' title='goto source code'>[src]</a></span></h1>
-<pre class='rust fn'>pub unsafe fn guarded_transmute_many&lt;T&gt;(bytes: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.slice.html">&amp;[</a><a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u8.html">u8</a><a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.slice.html">]</a>) -&gt; <a class="enum" href="https://doc.rust-lang.org/nightly/core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.slice.html">&amp;[T]</a>, <a class="enum" href="../safe_transmute/enum.Error.html" title="enum safe_transmute::Error">Error</a>&gt;</pre><div class='docblock'><p>View a byte slice as a slice of an arbitrary type.</p>
+               </span><a class='srclink' href='../src/safe_transmute/lib.rs.html#181-184' title='goto source code'>[src]</a></span></h1><pre class='rust fn'>pub unsafe fn guarded_transmute_many&lt;T&gt;(bytes: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.slice.html">&amp;[</a><a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u8.html">u8</a><a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.slice.html">]</a>) -&gt; <a class="enum" href="https://doc.rust-lang.org/nightly/core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.slice.html">&amp;[T]</a>, <a class="enum" href="../safe_transmute/enum.Error.html" title="enum safe_transmute::Error">Error</a>&gt;</pre><div class='docblock'><p>View a byte slice as a slice of an arbitrary type.</p>
 <p>The byte slice must have at least enough bytes to fill a single instance of a type,
 extraneous data is ignored.</p>
 <h1 id="examples" class="section-header"><a href="#examples">Examples</a></h1>
