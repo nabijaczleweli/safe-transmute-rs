@@ -287,6 +287,8 @@
 <span id="230">230</span>
 <span id="231">231</span>
 <span id="232">232</span>
+<span id="233">233</span>
+<span id="234">234</span>
 </pre><pre class="rust ">
 <span class="kw">use</span> <span class="self">self</span>::<span class="kw">super</span>::{<span class="ident">Error</span>, <span class="ident">guarded_transmute_many_permissive</span>, <span class="ident">guarded_transmute_vec_permissive</span>, <span class="ident">guarded_transmute_many_pedantic</span>, <span class="ident">guarded_transmute_vec_pedantic</span>,
                   <span class="ident">guarded_transmute_pedantic</span>, <span class="ident">guarded_transmute_many</span>, <span class="ident">guarded_transmute_vec</span>, <span class="ident">guarded_transmute</span>};
@@ -324,6 +326,8 @@
 <span class="kw">unsafe</span> <span class="kw">impl</span> <span class="ident">PodTransmutable</span> <span class="kw">for</span> <span class="ident">i32</span> {}
 <span class="kw">unsafe</span> <span class="kw">impl</span> <span class="ident">PodTransmutable</span> <span class="kw">for</span> <span class="ident">u64</span> {}
 <span class="kw">unsafe</span> <span class="kw">impl</span> <span class="ident">PodTransmutable</span> <span class="kw">for</span> <span class="ident">i64</span> {}
+<span class="kw">unsafe</span> <span class="kw">impl</span> <span class="ident">PodTransmutable</span> <span class="kw">for</span> <span class="ident">usize</span> {}
+<span class="kw">unsafe</span> <span class="kw">impl</span> <span class="ident">PodTransmutable</span> <span class="kw">for</span> <span class="ident">isize</span> {}
 <span class="kw">unsafe</span> <span class="kw">impl</span> <span class="ident">PodTransmutable</span> <span class="kw">for</span> <span class="ident">f32</span> {}
 <span class="kw">unsafe</span> <span class="kw">impl</span> <span class="ident">PodTransmutable</span> <span class="kw">for</span> <span class="ident">f64</span> {}
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">i128_type</span>)]</span>
