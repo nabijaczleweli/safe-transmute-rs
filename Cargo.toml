@@ -15,3 +15,8 @@ exclude = ["*.enc"]
 
 [features]
 "test-unaligned" = []
+
+[badges]
+
+travis-ci = {repository = "nabijaczleweli/safe-transmute-rs", branch = "master"}
+appveyor = {repository = "nabijaczleweli/safe-transmute-rs", branch = "master"}
