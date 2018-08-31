@@ -96,6 +96,7 @@ pub enum ErrorReason {
     InexactByteCount,
 }
 
+
 impl ErrorReason {
     /// Retrieve a human readable description of the reason.
     pub fn description(self) -> &'static str {

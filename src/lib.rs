@@ -88,6 +88,8 @@
 
 
 #![cfg_attr(not(feature = "std"), no_std)]
+
+
 #[cfg(feature = "std")]
 extern crate core;
 
@@ -106,17 +108,19 @@ pub mod util;
 pub mod guard;
 
 pub use self::error::{ErrorReason, GuardError, Error};
+
 pub use self::to_bytes::{guarded_transmute_to_bytes_pod_many, guarded_transmute_to_bytes_many, guarded_transmute_to_bytes_pod, guarded_transmute_to_bytes};
 #[cfg(feature = "std")]
 pub use self::to_bytes::{guarded_transmute_to_bytes_vec, guarded_transmute_to_bytes_pod_vec};
-pub use self::pod::{PodTransmutable, guarded_transmute_pod_many_permissive, guarded_transmute_pod_many_pedantic,
-                    guarded_transmute_pod_pedantic, guarded_transmute_pod_many, guarded_transmute_pod};
+
+pub use self::pod::{PodTransmutable, guarded_transmute_pod_many_permissive, guarded_transmute_pod_many_pedantic, guarded_transmute_pod_pedantic,
+                    guarded_transmute_pod_many, guarded_transmute_pod};
 #[cfg(feature = "std")]
 pub use self::pod::{guarded_transmute_pod_vec_permissive, guarded_transmute_pod_vec_pedantic, guarded_transmute_pod_vec};
 
-pub use self::bool::{guarded_transmute_bool_permissive, guarded_transmute_bool_pedantic};
 #[cfg(feature = "std")]
 pub use self::bool::{guarded_transmute_bool_vec_permissive, guarded_transmute_bool_vec_pedantic};
+pub use self::bool::{guarded_transmute_bool_permissive, guarded_transmute_bool_pedantic};
 
 
 /// Transmute a byte slice into a single instance of a `Copy`able type.

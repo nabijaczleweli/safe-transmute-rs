@@ -1,5 +1,5 @@
-use self::super::{Error, guarded_transmute_many_permissive, guarded_transmute_many_pedantic, 
-                  guarded_transmute_pedantic, guarded_transmute_many, guarded_transmute};
+use self::super::{Error, guarded_transmute_many_permissive, guarded_transmute_many_pedantic, guarded_transmute_pedantic, guarded_transmute_many,
+                  guarded_transmute};
 #[cfg(feature = "std")]
 use self::super::{guarded_transmute_vec_permissive, guarded_transmute_vec_pedantic, guarded_transmute_vec};
 
@@ -76,6 +76,7 @@ unsafe impl<T: PodTransmutable> PodTransmutable for [T; 29] {}
 unsafe impl<T: PodTransmutable> PodTransmutable for [T; 30] {}
 unsafe impl<T: PodTransmutable> PodTransmutable for [T; 31] {}
 unsafe impl<T: PodTransmutable> PodTransmutable for [T; 32] {}
+
 
 /// Transmute a byte slice into a single instance of a POD.
 ///
