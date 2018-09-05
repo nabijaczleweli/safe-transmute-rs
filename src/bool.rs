@@ -19,15 +19,17 @@ use core::mem::{size_of, transmute};
 #[inline]
 pub fn bytes_are_bool(v: &[u8]) -> bool {
     // TODO make this a static assert once available
-    assert_eq!(size_of::<bool>(), 1);
+    assert_eq!(size_of::<bool>(),
+               1,
+               "unsupported platform due to invalid bool size {}, please report over at https://github.com/nabijaczleweli/safe-transmute-rs/issues/new",
+               size_of::<bool>());
+
     v.iter().cloned().all(byte_is_bool)
 }
 
 #[inline]
 fn byte_is_bool(b: u8) -> bool {
-    unsafe {
-        b == transmute::<_, u8>(false) || b == transmute::<_, u8>(true)
-    }
+    unsafe { b == transmute::<_, u8>(false) || b == transmute::<_, u8>(true) }
 }
 
 /// View a byte slice as a slice of boolean values.
