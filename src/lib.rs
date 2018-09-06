@@ -14,6 +14,9 @@
 //! invoke unaligned access, which some CPUs *may* trap on; that did not, however, happen in any of our tests on
 //! MIPS64 (BE), x86_64 (LE), nor armv6l (LE).
 //!
+//! This crate can be used in a no-`std` environment by disabling the `std` feature through specifying
+//! `default-features = false` on import.
+//!
 //! # Examples
 //!
 //! View bytes as a series of `u16`s:
