@@ -1,4 +1,4 @@
-version: 0.9.0-{build}
+version: 0.10.1-{build}
 
 skip_tags: false
 
@@ -25,7 +25,7 @@ test_script:
   - cargo test --verbose --release
 
 artifacts:
-  - path: cargo-install-update-v0.9.0.exe
+  - path: cargo-install-update-v0.10.1.exe
 
 notifications:
   - provider: Email
