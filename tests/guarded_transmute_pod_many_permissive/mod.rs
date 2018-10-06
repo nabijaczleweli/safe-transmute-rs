@@ -1,15 +1,12 @@
 use safe_transmute::{guarded_transmute_pod_many_permissive, guarded_transmute_to_bytes_pod_many};
 
+
 #[test]
 fn too_short() {
-    assert_eq!(
-        guarded_transmute_pod_many_permissive::<u16>(guarded_transmute_to_bytes_pod_many::<u16>(&[])),
-        Ok([].as_ref())
-    );
-    assert_eq!(
-        guarded_transmute_pod_many_permissive::<u16>(&guarded_transmute_to_bytes_pod_many::<u16>(&[0])[..1]),
-        Ok([].as_ref())
-    );
+    assert_eq!(guarded_transmute_pod_many_permissive::<u16>(guarded_transmute_to_bytes_pod_many::<u16>(&[])),
+               Ok([].as_ref()));
+    assert_eq!(guarded_transmute_pod_many_permissive::<u16>(&guarded_transmute_to_bytes_pod_many::<u16>(&[0])[..1]),
+               Ok([].as_ref()));
 }
 
 #[test]

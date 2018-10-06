@@ -4,6 +4,7 @@
 use core::mem::{transmute, align_of, size_of};
 use super::Error;
 
+
 /// If the specified 32-bit float is a signaling NaN, make it a quiet NaN.
 ///
 /// Based on [`f32::from_bits()`](https://github.com/rust-lang/rust/pull/39271/files#diff-f60977ab00fd9ea9ba7ac918e12a8f42R1279)
@@ -46,9 +47,9 @@ pub fn designalise_f64(f: f64) -> f64 {
 
 /// Check whether the given data slice of `T`s is properly aligned for reading
 /// and writing as a slice of `U`s.
-/// 
+///
 /// # Errors
-/// 
+///
 /// An `Error::Unaligned` error is raised with the number of bytes to discard
 /// from the front in order to make the conversion safe from alignment concerns.
 pub fn check_alignment<T, U>(data: &[T]) -> Result<(), Error> {

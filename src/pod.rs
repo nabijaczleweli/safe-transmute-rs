@@ -1,15 +1,17 @@
 //! Plain data object safe transmute
-//! 
+//!
 //! Functions in this module are guarded from out-of-bounds memory access as well as from unaligned access,
 //! raising errors on both cases. Moreover, only a safe subset of types (which implement
 //! [`PodTransmutable`](trait.PodTransmutable.html)) can be used as the transmute target, thus ensuring
 //! full safety.
+
 
 use self::super::{Error, guarded_transmute_many_permissive, guarded_transmute_many_pedantic, guarded_transmute_pedantic, guarded_transmute_many,
                   guarded_transmute};
 #[cfg(feature = "std")]
 use self::super::{guarded_transmute_vec_permissive, guarded_transmute_vec_pedantic, guarded_transmute_vec};
 use super::util::check_alignment;
+
 
 /// Type that can be non-`unsafe`ly transmuted into
 ///
@@ -92,9 +94,9 @@ unsafe impl<T: PodTransmutable> PodTransmutable for [T; 32] {}
 /// extraneous data is ignored.
 ///
 /// # Errors
-/// 
+///
 /// An error is raised in one of the following situations:
-/// 
+///
 /// - The data does not have a memory alignment compatible with `T`. You will
 ///   have to make a copy anyway, or modify how the data was originally made.
 /// - The data does not have enough bytes for a single value `T`.
@@ -122,9 +124,9 @@ pub fn guarded_transmute_pod<T: PodTransmutable>(bytes: &[u8]) -> Result<T, Erro
 /// The byte slice must have exactly enough bytes to fill a single instance of a type.
 ///
 /// # Errors
-/// 
+///
 /// An error is raised in one of the following situations:
-/// 
+///
 /// - The data does not have a memory alignment compatible with `T`. You will
 ///   have to make a copy anyway, or modify how the data was originally made.
 /// - The data does not have enough bytes for a single value `T`.
@@ -153,9 +155,9 @@ pub fn guarded_transmute_pod_pedantic<T: PodTransmutable>(bytes: &[u8]) -> Resul
 /// The byte slice must have exactly enough bytes to fill a single instance of a type.
 ///
 /// # Errors
-/// 
+///
 /// An error is raised in one of the following situations:
-/// 
+///
 /// - The data does not have a memory alignment compatible with `T`. You will
 ///   have to make a copy anyway, or modify how the data was originally made.
 /// - The data does not have enough bytes for a single value `T`.
@@ -184,9 +186,9 @@ pub fn guarded_transmute_pod_many<T: PodTransmutable>(bytes: &[u8]) -> Result<&[
 /// The resulting slice will have as many instances of a type as will fit, rounded down.
 ///
 /// # Errors
-/// 
+///
 /// An error is raised in one of the following situations:
-/// 
+///
 /// - The data does not have a memory alignment compatible with `T`. You will
 ///   have to make a copy anyway, or modify how the data was originally made.
 ///
@@ -207,9 +209,9 @@ pub fn guarded_transmute_pod_many_permissive<T: PodTransmutable>(bytes: &[u8]) -
 /// and should not have extraneous data.
 ///
 /// # Errors
-/// 
+///
 /// An error is raised in one of the following situations:
-/// 
+///
 /// - The data does not have a memory alignment compatible with `T`. You will
 ///   have to make a copy anyway, or modify how the data was originally made.
 /// - The data does not have enough bytes for a single value `T`.
@@ -240,9 +242,9 @@ pub fn guarded_transmute_pod_many_pedantic<T: PodTransmutable>(bytes: &[u8]) -> 
 /// Extraneous data is ignored.
 ///
 /// # Errors
-/// 
+///
 /// An error is raised in one of the following situations:
-/// 
+///
 /// - The data does not have a memory alignment compatible with `T`. You will
 ///   have to make a copy anyway, or modify how the data was originally made.
 /// - The data does not have enough bytes for a single value `T`.
@@ -281,9 +283,9 @@ pub fn guarded_transmute_pod_vec<T: PodTransmutable>(bytes: Vec<u8>) -> Result<V
 /// Extraneous data is ignored.
 ///
 /// # Errors
-/// 
+///
 /// An error is raised in one of the following situations:
-/// 
+///
 /// - The data does not have a memory alignment compatible with `T`. You will
 ///   have to make a copy anyway, or modify how the data was originally made.
 ///
@@ -319,14 +321,14 @@ pub fn guarded_transmute_pod_vec_permissive<T: PodTransmutable>(bytes: Vec<u8>) 
 /// should not have extraneous data.
 ///
 /// # Errors
-/// 
+///
 /// An error is raised in one of the following situations:
-/// 
+///
 /// - The data does not have a memory alignment compatible with `T`. You will
 ///   have to make a copy anyway, or modify how the data was originally made.
 /// - The data does not have enough bytes for a single value `T`.
 /// - The last chunk of the size of `T` is not large enough for a value, leaving extraneous bytes.
-/// 
+///
 /// # Examples
 ///
 /// ```no_run

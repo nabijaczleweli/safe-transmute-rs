@@ -98,9 +98,9 @@ mod error;
 mod to_bytes;
 
 use core::slice;
-use core::mem::size_of;
 #[cfg(feature = "std")]
 use core::mem::forget;
+use core::mem::size_of;
 use guard::{SingleValueGuard, PermissiveGuard, SingleManyGuard, PedanticGuard, Guard};
 
 pub mod util;
@@ -110,7 +110,7 @@ pub use self::error::{ErrorReason, GuardError, Error};
 
 pub use self::to_bytes::{guarded_transmute_to_bytes_pod_many, guarded_transmute_to_bytes_many, guarded_transmute_to_bytes_pod, guarded_transmute_to_bytes};
 #[cfg(feature = "std")]
-pub use self::to_bytes::{guarded_transmute_to_bytes_vec, guarded_transmute_to_bytes_pod_vec};
+pub use self::to_bytes::{guarded_transmute_to_bytes_pod_vec, guarded_transmute_to_bytes_vec};
 
 pub use self::pod::{PodTransmutable, guarded_transmute_pod_many_permissive, guarded_transmute_pod_many_pedantic, guarded_transmute_pod_pedantic,
                     guarded_transmute_pod_many, guarded_transmute_pod};

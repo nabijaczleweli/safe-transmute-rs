@@ -1,8 +1,9 @@
 use safe_transmute::util;
-use core::{f32, f64};
 use core::mem::align_of;
 #[cfg(feature = "std")]
 use super::aligned_vec;
+use core::{f32, f64};
+
 
 #[test]
 fn designalise_f32() {
@@ -44,7 +45,7 @@ fn smoke_check_alignment_from_8() {
 
 #[cfg(feature = "std")]
 #[test]
-fn test_aligned_vec() {
+fn aligned_vec() {
     let data: &[u8] = &[0xFF, 0xFF, 0x03, 0x00];
     let vec = aligned_vec::<u32>(data);
     assert_eq!((vec.as_ptr() as usize) % align_of::<u32>(), 0);

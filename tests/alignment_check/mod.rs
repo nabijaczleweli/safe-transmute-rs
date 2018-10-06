@@ -1,6 +1,5 @@
-use safe_transmute::guarded_transmute_pod_many;
-use safe_transmute::guarded_transmute_to_bytes_pod_many;
-use safe_transmute::Error;
+use safe_transmute::{Error, guarded_transmute_to_bytes_pod_many, guarded_transmute_pod_many};
+
 
 #[test]
 fn unaligned_slicing_integers() {
@@ -29,4 +28,3 @@ fn unaligned_slicing_integers() {
         assert_eq!(guarded_transmute_pod_many::<u64>(&bytes[i..]), Err(Error::Unaligned { offset: 8 - i }));
     }
 }
-

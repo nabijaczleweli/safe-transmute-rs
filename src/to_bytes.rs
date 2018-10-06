@@ -2,9 +2,9 @@
 
 
 use self::super::PodTransmutable;
+use core::mem::size_of;
 #[cfg(feature = "std")]
 use core::mem::forget;
-use core::mem::size_of;
 use core::slice;
 
 
