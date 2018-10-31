@@ -43,6 +43,38 @@ unsafe impl PodTransmutable for u128 {}
 #[cfg(i128_type)]
 unsafe impl PodTransmutable for i128 {}
 
+unsafe impl<T: PodTransmutable> PodTransmutable for [T; 1] {}
+unsafe impl<T: PodTransmutable> PodTransmutable for [T; 2] {}
+unsafe impl<T: PodTransmutable> PodTransmutable for [T; 3] {}
+unsafe impl<T: PodTransmutable> PodTransmutable for [T; 4] {}
+unsafe impl<T: PodTransmutable> PodTransmutable for [T; 5] {}
+unsafe impl<T: PodTransmutable> PodTransmutable for [T; 6] {}
+unsafe impl<T: PodTransmutable> PodTransmutable for [T; 7] {}
+unsafe impl<T: PodTransmutable> PodTransmutable for [T; 8] {}
+unsafe impl<T: PodTransmutable> PodTransmutable for [T; 9] {}
+unsafe impl<T: PodTransmutable> PodTransmutable for [T; 10] {}
+unsafe impl<T: PodTransmutable> PodTransmutable for [T; 11] {}
+unsafe impl<T: PodTransmutable> PodTransmutable for [T; 12] {}
+unsafe impl<T: PodTransmutable> PodTransmutable for [T; 13] {}
+unsafe impl<T: PodTransmutable> PodTransmutable for [T; 14] {}
+unsafe impl<T: PodTransmutable> PodTransmutable for [T; 15] {}
+unsafe impl<T: PodTransmutable> PodTransmutable for [T; 16] {}
+unsafe impl<T: PodTransmutable> PodTransmutable for [T; 17] {}
+unsafe impl<T: PodTransmutable> PodTransmutable for [T; 18] {}
+unsafe impl<T: PodTransmutable> PodTransmutable for [T; 19] {}
+unsafe impl<T: PodTransmutable> PodTransmutable for [T; 20] {}
+unsafe impl<T: PodTransmutable> PodTransmutable for [T; 21] {}
+unsafe impl<T: PodTransmutable> PodTransmutable for [T; 22] {}
+unsafe impl<T: PodTransmutable> PodTransmutable for [T; 23] {}
+unsafe impl<T: PodTransmutable> PodTransmutable for [T; 24] {}
+unsafe impl<T: PodTransmutable> PodTransmutable for [T; 25] {}
+unsafe impl<T: PodTransmutable> PodTransmutable for [T; 26] {}
+unsafe impl<T: PodTransmutable> PodTransmutable for [T; 27] {}
+unsafe impl<T: PodTransmutable> PodTransmutable for [T; 28] {}
+unsafe impl<T: PodTransmutable> PodTransmutable for [T; 29] {}
+unsafe impl<T: PodTransmutable> PodTransmutable for [T; 30] {}
+unsafe impl<T: PodTransmutable> PodTransmutable for [T; 31] {}
+unsafe impl<T: PodTransmutable> PodTransmutable for [T; 32] {}
 
 /// Transmute a byte slice into a single instance of a POD.
 ///
