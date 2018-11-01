@@ -1,3 +1,6 @@
+//! Detectable and recoverable-from transmutation precondition errors.
+
+
 #[cfg(feature = "std")]
 use std::error::Error as StdError;
 use core::fmt;
