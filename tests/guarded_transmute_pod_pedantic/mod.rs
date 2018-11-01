@@ -1,4 +1,4 @@
-use safe_transmute::{Error, ErrorReason, GuardError, safe_transmute_to_bytes, safe_transmute_one_pedantic};
+use safe_transmute::{ErrorReason, GuardError, Error, safe_transmute_one_pedantic, safe_transmute_to_bytes};
 
 
 #[test]

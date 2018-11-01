@@ -1,4 +1,4 @@
-use safe_transmute::{ErrorReason, GuardError, Error, safe_transmute_to_bytes, safe_transmute_many, SingleManyGuard};
+use safe_transmute::{SingleManyGuard, ErrorReason, GuardError, Error, safe_transmute_to_bytes, safe_transmute_many};
 
 #[test]
 fn too_short() {

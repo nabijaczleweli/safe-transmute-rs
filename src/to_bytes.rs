@@ -1,7 +1,7 @@
 //! Functions for transmutation *from* a concrete type *to* bytes.
 
 
-use crate::PodTransmutable;
+use self::super::PodTransmutable;
 use core::mem::size_of;
 #[cfg(feature = "std")]
 use core::mem::forget;
@@ -173,9 +173,9 @@ pub fn guarded_transmute_to_bytes_pod<T: PodTransmutable>(from: &T) -> &[u8] {
 /// unsafe impl PodTransmutable for Gene {}
 ///
 /// assert_eq!(safe_transmute_to_bytes(&[Gene {
-///                                              x1: 0x42,
-///                                              x2: 0x69,
-///                                           },
+///                                          x1: 0x42,
+///                                          x2: 0x69,
+///                                      },
 ///                                      Gene {
 ///                                          x1: 0x12,
 ///                                          x2: 0x48,
@@ -188,7 +188,7 @@ pub fn safe_transmute_to_bytes<T: PodTransmutable>(from: &[T]) -> &[u8] {
 
 /// Transmute a slice of arbitrary types into a slice of their bytes.
 #[deprecated(since = "0.11.0", note = "use `safe_transmute_to_bytes()` instead")]
-pub fn guarded_transmute_to_bytes_pod_many<T: PodTransmutable>(from: &[T]) -> &[u8]{
+pub fn guarded_transmute_to_bytes_pod_many<T: PodTransmutable>(from: &[T]) -> &[u8] {
     safe_transmute_to_bytes(from)
 }
 
@@ -226,12 +226,12 @@ pub fn guarded_transmute_to_bytes_pod_many<T: PodTransmutable>(from: &[T]) -> &[
 ///
 /// # unsafe {
 /// assert_eq!(guarded_transmute_to_bytes_vec(vec![Gene {
-///                                                 x1: 0x42,
-///                                                 x2: 0x69,
+///                                                    x1: 0x42,
+///                                                    x2: 0x69,
 ///                                                },
 ///                                                Gene {
-///                                                 x1: 0x12,
-///                                                 x2: 0x48,
+///                                                    x1: 0x12,
+///                                                    x2: 0x48,
 ///                                                }]),
 ///            vec![0x42, 0x69, 0x12, 0x48]);
 /// # }

@@ -1,7 +1,7 @@
 #![cfg(feature = "std")]
 
 
-use safe_transmute::{Error, ErrorReason, GuardError, safe_transmute_vec, SingleManyGuard};
+use safe_transmute::{SingleManyGuard, ErrorReason, GuardError, Error, safe_transmute_vec};
 use self::super::{LeToNative, aligned_vec};
 
 #[test]

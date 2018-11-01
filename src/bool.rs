@@ -1,16 +1,16 @@
 //! Functions for safe transmutation to `bool`.
-//! 
+//!
 //! Transmuting to `bool` is not undefined behavior if the transmuted value is
 //! either 0 or 1. These functions will return an error if the integer value
 //! behind the `bool` value is neither one.
 
 
-use crate::base::guarded_transmute_many;
-use crate::guard::{Guard, PedanticGuard, PermissiveGuard};
-use crate::Error;
+use self::super::guard::{PermissiveGuard, PedanticGuard, Guard};
+use self::super::base::guarded_transmute_many;
 #[cfg(feature = "std")]
-use crate::base::guarded_transmute_vec;
-use core::mem::{size_of, transmute};
+use self::super::base::guarded_transmute_vec;
+use core::mem::{transmute, size_of};
+use self::super::Error;
 
 
 /// Makes sure that the bytes represent a sequence of valid boolean values.
@@ -35,11 +35,21 @@ fn byte_is_bool(b: u8) -> bool {
     unsafe { b == transmute::<_, u8>(false) || b == transmute::<_, u8>(true) }
 }
 
-fn guarded_transmute_bool<G: Guard>(bytes: &[u8]) -> Result<&[bool], Error>
-{
+fn guarded_transmute_bool<G: Guard>(bytes: &[u8]) -> Result<&[bool], Error> {
     check_bool(bytes)?;
     unsafe { guarded_transmute_many::<_, G>(bytes) }
 }
+
+/// Helper function for returning an error if any of the bytes does not make a
+/// valid `bool`.
+fn check_bool(bytes: &[u8]) -> Result<(), Error> {
+    if bytes_are_bool(bytes) {
+        Ok(())
+    } else {
+        Err(Error::InvalidValue)
+    }
+}
+
 
 /// View a byte slice as a slice of boolean values.
 ///
@@ -170,14 +180,4 @@ pub fn safe_transmute_bool_vec_pedantic(bytes: Vec<u8>) -> Result<Vec<bool>, Err
 #[deprecated(since = "0.11.0", note = "use `safe_transmute_bool_vec_pedantic()` instead")]
 pub fn guarded_transmute_bool_vec_pedantic(bytes: Vec<u8>) -> Result<Vec<bool>, Error> {
     safe_transmute_bool_vec_pedantic(bytes)
-}
-
-/// Helper function for returning an error if any of the bytes does not make a
-/// valid `bool`.
-fn check_bool(bytes: &[u8]) -> Result<(), Error> {
-    if bytes_are_bool(bytes) {
-        Ok(())
-    } else {
-        Err(Error::InvalidValue)
-    }
 }

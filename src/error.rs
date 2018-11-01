@@ -58,6 +58,7 @@ impl From<UnalignedError> for Error {
     }
 }
 
+
 /// A slice boundary guard error, usually created by a [`Guard`](./guard/trait.Guard.html).
 ///
 /// # Examples
@@ -98,17 +99,6 @@ pub enum ErrorReason {
 }
 
 
-impl ErrorReason {
-    /// Retrieve a human readable description of the reason.
-    pub fn description(self) -> &'static str {
-        match self {
-            ErrorReason::NotEnoughBytes => "Not enough bytes to fill type",
-            ErrorReason::TooManyBytes => "Too many bytes for type",
-            ErrorReason::InexactByteCount => "Not exactly the amount of bytes for type",
-        }
-    }
-}
-
 #[cfg(feature = "std")]
 impl StdError for GuardError {
     fn description(&self) -> &str {
@@ -122,8 +112,20 @@ impl fmt::Display for GuardError {
     }
 }
 
+impl ErrorReason {
+    /// Retrieve a human readable description of the reason.
+    pub fn description(self) -> &'static str {
+        match self {
+            ErrorReason::NotEnoughBytes => "Not enough bytes to fill type",
+            ErrorReason::TooManyBytes => "Too many bytes for type",
+            ErrorReason::InexactByteCount => "Not exactly the amount of bytes for type",
+        }
+    }
+}
+
+
 /// Unaligned memory access error.
-/// 
+///
 /// Returned when the given data slice or vector is not properly aligned for the
 /// target type. It would have been properly aligned if `offset` bytes were
 /// shifted (discarded) from the front of the slice.

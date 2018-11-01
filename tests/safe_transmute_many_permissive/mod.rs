@@ -3,8 +3,7 @@ use safe_transmute::{safe_transmute_many_permissive, safe_transmute_to_bytes};
 
 #[test]
 fn too_short() {
-    assert_eq!(safe_transmute_many_permissive::<u16>(safe_transmute_to_bytes::<u16>(&[])),
-               Ok([].as_ref()));
+    assert_eq!(safe_transmute_many_permissive::<u16>(safe_transmute_to_bytes::<u16>(&[])), Ok([].as_ref()));
     assert_eq!(safe_transmute_many_permissive::<u16>(&safe_transmute_to_bytes::<u16>(&[0])[..1]),
                Ok([].as_ref()));
 }

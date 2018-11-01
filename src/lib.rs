@@ -1,10 +1,10 @@
 //! This crate contains checked implementations of transmutation procedures, some of which
 //! ensure memory safety.
-//! 
+//!
 //! ## Crate outline
-//! 
+//!
 //! The following modules are available:
-//! 
+//!
 //! - The functions in the [`base`](base/index.html) module are not inherently
 //!   safe, but just protected against out of boundary access (like trying to
 //!   create an 8-byte type from 7 bytes). These functions are as safe as
@@ -19,7 +19,7 @@
 //!   value for a given type. The functions in this module are safer than
 //!   [`base`](base/index.html), but still do not prevent unaligned memory access.
 //! - [`to_bytes`](to_bytes/index.html) enables the opposite operation of
-//!   reintepreting values as bytes. 
+//!   reintepreting values as bytes.
 //! - The [`bool`](bool/index.html) module ensures safe transmutation of bytes
 //!   to boolean values and vice versa.
 //! - At the root of this crate, there are transmutation functions with enough
@@ -59,9 +59,9 @@
 //! assert_eq!(safe_transmute_many_pedantic::<u16>(
 //!     &[0x00, 0x01,
 //! # /*
-//!     0x12, 0x34])?,
+//!       0x12, 0x34])?,
 //! # */
-//! #   0x12, 0x34].le_to_native::<u16>()).unwrap(),
+//! #     0x12, 0x34].le_to_native::<u16>()).unwrap(),
 //!     &[0x0100, 0x3412]);
 //! # }
 //! ```
@@ -119,25 +119,27 @@ pub mod pod;
 pub mod util;
 pub mod to_bytes;
 
-pub use crate::full::*;
+pub use self::full::{safe_transmute_many_permissive, safe_transmute_vec_permissive, safe_transmute_many_pedantic, safe_transmute_one_pedantic,
+                     safe_transmute_vec_pedantic, safe_transmute_many, safe_transmute_one, safe_transmute_vec};
 
-pub use crate::guard::{SingleValueGuard, PermissiveGuard, SingleManyGuard, PedanticGuard, Guard};
-pub use crate::error::{ErrorReason, GuardError, Error};
-pub use crate::pod::PodTransmutable;
 
-pub use crate::to_bytes::{safe_transmute_to_bytes, safe_transmute_one_to_bytes};
+pub use self::guard::{SingleValueGuard, PermissiveGuard, SingleManyGuard, PedanticGuard, Guard};
+pub use self::error::{ErrorReason, GuardError, Error};
+pub use self::pod::PodTransmutable;
+
+pub use self::to_bytes::{safe_transmute_one_to_bytes, safe_transmute_to_bytes};
 #[cfg(feature = "std")]
-pub use crate::to_bytes::safe_transmute_to_bytes_vec;
+pub use self::to_bytes::safe_transmute_to_bytes_vec;
 
 #[cfg(feature = "std")]
-pub use crate::bool::{safe_transmute_bool_vec_permissive, safe_transmute_bool_vec_pedantic};
-pub use crate::bool::{safe_transmute_bool_permissive, safe_transmute_bool_pedantic};
+pub use self::bool::{safe_transmute_bool_vec_permissive, safe_transmute_bool_vec_pedantic};
+pub use self::bool::{safe_transmute_bool_permissive, safe_transmute_bool_pedantic};
 
 // Re-exports of deprecated functions, to be removed in 0.12.0 or later
 #[allow(deprecated)]
-pub use crate::to_bytes::{guarded_transmute_to_bytes_pod_many, guarded_transmute_to_bytes_pod};
+pub use self::to_bytes::{guarded_transmute_to_bytes_pod_many, guarded_transmute_to_bytes_pod};
 #[cfg(feature = "std")]
 #[allow(deprecated)]
-pub use crate::to_bytes::guarded_transmute_to_bytes_pod_vec;
+pub use self::to_bytes::guarded_transmute_to_bytes_pod_vec;
 #[allow(deprecated)]
-pub use crate::bool::{guarded_transmute_bool_permissive, guarded_transmute_bool_pedantic};
+pub use self::bool::{guarded_transmute_bool_permissive, guarded_transmute_bool_pedantic};

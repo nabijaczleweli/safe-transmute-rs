@@ -2,12 +2,15 @@
 //!
 //! The functions in this module are very unsafe and their use is not
 //! recommended unless you *really* know what you are doing.
-use crate::error::Error;
-use crate::guard::{Guard, SingleManyGuard, SingleValueGuard, PermissiveGuard};
+
+
+use self::super::guard::{SingleValueGuard, PermissiveGuard, SingleManyGuard, Guard};
+use self::super::error::Error;
+use core::mem::size_of;
 #[cfg(feature = "std")]
 use core::mem::forget;
-use core::mem::size_of;
 use core::slice;
+
 
 /// Convert a byte slice into a single instance of a `Copy`able type.
 ///
@@ -20,7 +23,7 @@ use core::slice;
 ///   the slice data must be properly aligned for accessing the value of type `T`.
 /// - The byte data needs to correspond to a valid `T` value.
 ///
-/// Failure to fulfill any of the requirements above results in undefined
+/// Failure to fulfill any of the requirements above may result in undefined
 /// behavior.
 ///
 /// # Errors
@@ -59,7 +62,7 @@ pub unsafe fn from_bytes<T: Copy>(bytes: &[u8]) -> Result<T, Error> {
 ///   the slice data must be properly aligned for accessing the value of type `T`.
 /// - The byte data needs to correspond to a valid `T` value.
 ///
-/// Failure to fulfill any of the requirements above results in undefined
+/// Failure to fulfill any of the requirements above may result in undefined
 /// behavior.
 ///
 /// # Errors
@@ -103,7 +106,7 @@ pub unsafe fn from_bytes_pedantic<T: Copy>(bytes: &[u8]) -> Result<T, Error> {
 ///   values. Types `T` with a `Drop` implementation are unlikely to be safe
 ///   in this regard.
 ///
-/// Failure to fulfill any of the requirements above results in undefined
+/// Failure to fulfill any of the requirements above may result in undefined
 /// behavior.
 ///
 /// # Errors
@@ -150,7 +153,7 @@ pub unsafe fn guarded_transmute_many<T, G: Guard>(bytes: &[u8]) -> Result<&[T], 
 ///   values. Types `T` with a `Drop` implementation are unlikely to be safe
 ///   in this regard.
 ///
-/// Failure to fulfill any of the requirements above results in undefined
+/// Failure to fulfill any of the requirements above may result in undefined
 /// behavior.
 ///
 /// # Examples
@@ -189,7 +192,7 @@ pub unsafe fn guarded_transmute_many_permissive<T>(bytes: &[u8]) -> &[T] {
 ///   values. Types `T` with a `Drop` implementation are unlikely to be safe
 ///   in this regard.
 ///
-/// Failure to fulfill any of the requirements above results in undefined
+/// Failure to fulfill any of the requirements above may result in undefined
 /// behavior.
 ///
 /// # Examples
@@ -198,7 +201,6 @@ pub unsafe fn guarded_transmute_many_permissive<T>(bytes: &[u8]) -> &[T] {
 /// # use safe_transmute::guard::PermissiveGuard;
 /// # use safe_transmute::base::guarded_transmute_vec;
 /// # include!("../tests/test_util/le_to_native.rs");
-///
 /// # fn main() {
 /// // Little-endian
 /// unsafe {
@@ -213,7 +215,8 @@ pub unsafe fn guarded_transmute_many_permissive<T>(bytes: &[u8]) -> &[T] {
 ///     assert_eq!(
 ///         guarded_transmute_vec::<u32, PermissiveGuard>(vec![0x04, 0x00, 0x00, 0x00, 0xED])?,
 /// # */
-/// # assert_eq!(guarded_transmute_vec::<u32, PermissiveGuard>(vec![0x04, 0x00, 0x00, 0x00, 0xED].le_to_native::<u32>()).unwrap(),
+/// # assert_eq!(guarded_transmute_vec::<u32, PermissiveGuard>(
+/// #                vec![0x04, 0x00, 0x00, 0x00, 0xED].le_to_native::<u32>()).unwrap(),
 ///         vec![0x0000_0004]
 ///     );
 ///     assert_eq!(guarded_transmute_vec::<u16, PermissiveGuard>(vec![0xED]), Ok(vec![]));
@@ -242,7 +245,7 @@ pub unsafe fn guarded_transmute_vec<T, G: Guard>(mut bytes: Vec<u8>) -> Result<V
 ///   values. Types `T` with a `Drop` implementation are unlikely to be safe
 ///   in this regard.
 ///
-/// Failure to fulfill any of the requirements above results in undefined
+/// Failure to fulfill any of the requirements above may result in undefined
 /// behavior.
 ///
 /// # Examples
@@ -250,7 +253,6 @@ pub unsafe fn guarded_transmute_vec<T, G: Guard>(mut bytes: Vec<u8>) -> Result<V
 /// ```no_run
 /// # use safe_transmute::base::guarded_transmute_vec_permissive;
 /// # include!("../tests/test_util/le_to_native.rs");
-///
 /// # fn main() {
 /// // Little-endian
 /// unsafe {

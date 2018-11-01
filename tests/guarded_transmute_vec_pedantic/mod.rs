@@ -1,7 +1,7 @@
 #![cfg(feature = "std")]
 
 
-use safe_transmute::{ErrorReason, GuardError, Error, PedanticGuard};
+use safe_transmute::{PedanticGuard, ErrorReason, GuardError, Error};
 use safe_transmute::base::guarded_transmute_vec;
 use self::super::LeToNative;
 

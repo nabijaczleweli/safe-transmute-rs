@@ -1,8 +1,8 @@
 #![cfg(feature = "std")]
 
 
-use self::super::{LeToNative, aligned_vec};
 use safe_transmute::safe_transmute_vec_permissive;
+use self::super::{LeToNative, aligned_vec};
 
 
 #[test]

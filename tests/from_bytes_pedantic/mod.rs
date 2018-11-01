@@ -24,8 +24,7 @@ fn too_short() {
 #[test]
 fn just_enough() {
     unsafe {
-        assert_eq!(from_bytes_pedantic::<u32>(&[0x00, 0x00, 0x00, 0x01].le_to_native::<u32>()),
-                   Ok(0x0100_0000));
+        assert_eq!(from_bytes_pedantic::<u32>(&[0x00, 0x00, 0x00, 0x01].le_to_native::<u32>()), Ok(0x0100_0000));
     }
 }
 

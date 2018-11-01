@@ -4,18 +4,19 @@
 //! well as from unaligned access, returning errors on both cases. Moreover,
 //! only a [`PodTransmutable`](trait.PodTransmutable.html)) can be used as the
 //! transmute target, thus ensuring full safety.
-//! 
+//!
 //! Unless this was previously imposed by certain means, the functions in this
 //! module may arbitrarily fail due to unaligned memory access. It is up to the
 //! user of this crate to make the receiving data well aligned for the intended
 //! target type.
 
-use crate::Error;
-use crate::guard::{Guard, PedanticGuard, PermissiveGuard, SingleValueGuard};
+
+use self::super::pod::{PodTransmutable, guarded_transmute_pod_many, guarded_transmute_pod};
+use self::super::guard::{SingleValueGuard, PermissiveGuard, PedanticGuard, Guard};
+use self::super::Error;
 #[cfg(feature = "std")]
-use crate::pod::{guarded_transmute_pod_vec};
-use crate::pod::{PodTransmutable, guarded_transmute_pod, guarded_transmute_pod_many};
-use crate::align::check_alignment;
+use self::super::pod::guarded_transmute_pod_vec;
+use self::super::align::check_alignment;
 
 
 /// Transmute a byte slice into a single instance of a POD.
@@ -118,7 +119,7 @@ pub fn safe_transmute_many<T: PodTransmutable, G: Guard>(bytes: &[u8]) -> Result
 ///
 /// - The data does not have a memory alignment compatible with `T`. You will
 ///   have to make a copy anyway, or modify how the data was originally made.
-/// 
+///
 /// # Examples
 ///
 /// ```no_run

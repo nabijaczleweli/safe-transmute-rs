@@ -1,6 +1,9 @@
 //! Alignment checking primitives.
-use crate::error::UnalignedError;
+
+
 use core::mem::{align_of, size_of};
+use self::super::error::UnalignedError;
+
 
 /// Check whether the given data slice of `T`s is properly aligned for reading
 /// and writing as a slice of `U`s.

@@ -54,7 +54,7 @@
 //!                reason: ErrorReason::InexactByteCount,
 //!            }));
 //! ```
-//! 
+//!
 //! # Note
 //!
 //! Regardless of the chosen strategy, guarded transmutation functions will

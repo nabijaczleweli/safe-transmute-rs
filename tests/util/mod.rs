@@ -1,5 +1,5 @@
-use safe_transmute::util;
 use safe_transmute::align::check_alignment;
+use safe_transmute::util;
 use core::mem::align_of;
 #[cfg(feature = "std")]
 use super::aligned_vec;

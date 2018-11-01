@@ -3,18 +3,18 @@
 //! Functions in this module are guarded from out-of-bounds memory access and
 //! from unsafe transmutation target types through the use of the
 //! [`PodTransmutable`](trait.PodTransmutable.html)) trait.
-//! 
+//!
 //! However, they are still not entirely safe because the source data may not
 //! be correctly aligned for reading and writing a value of the target type.
 //! The effects of this range from less performance (e.g. x86) to trapping or
 //! address flooring (e.g. ARM), but this is undefined behavior nonetheless.
 
 
-use crate::Error;
+use self::super::guard::{PermissiveGuard, PedanticGuard, Guard};
+use self::super::base::{guarded_transmute_many, from_bytes};
 #[cfg(feature = "std")]
-use crate::base::guarded_transmute_vec;
-use crate::base::{guarded_transmute_many, from_bytes};
-use crate::guard::{Guard, PedanticGuard, PermissiveGuard};
+use self::super::base::guarded_transmute_vec;
+use self::super::Error;
 
 
 /// Type that can be non-`unsafe`ly transmuted into
@@ -107,11 +107,11 @@ unsafe impl<T: PodTransmutable> PodTransmutable for [T; 32] {}
 /// - The data does not have enough bytes for a single value `T`.
 ///
 /// # Safety
-/// 
+///
 /// This function invokes undefined behavior if the data does not have a memory
 /// alignment compatible with `T`. If this cannot be ensured, you will have to
 /// make a copy of the data, or change how it was originally made.
-/// 
+///
 /// # Examples
 ///
 /// ```no_run
@@ -145,7 +145,7 @@ pub unsafe fn guarded_transmute_pod<T: PodTransmutable>(bytes: &[u8]) -> Result<
 /// - The data has more bytes than those required to produce a single value `T`.
 ///
 /// # Safety
-/// 
+///
 /// This function invokes undefined behavior if the data does not have a memory
 /// alignment compatible with `T`. If this cannot be ensured, you will have to
 /// make a copy of the data, or change how it was originally made.
@@ -181,7 +181,7 @@ pub unsafe fn guarded_transmute_pod_pedantic<T: PodTransmutable>(bytes: &[u8]) -
 /// - The data does not have enough bytes for a single value `T`.
 ///
 /// # Safety
-/// 
+///
 /// This function invokes undefined behavior if the data does not have a memory
 /// alignment compatible with `T`. If this cannot be ensured, you will have to
 /// make a copy of the data, or change how it was originally made.
@@ -237,7 +237,7 @@ pub unsafe fn guarded_transmute_pod_many_pedantic<T: PodTransmutable>(bytes: &[u
 /// - The data does not have enough bytes for a single value `T`.
 ///
 /// # Safety
-/// 
+///
 /// This function invokes undefined behavior if the data does not have a memory
 /// alignment compatible with `T`. If this cannot be ensured, you will have to
 /// make a copy of the data, or change how it was originally made.
@@ -254,12 +254,14 @@ pub unsafe fn guarded_transmute_pod_many_pedantic<T: PodTransmutable>(bytes: &[u
 /// # /*
 ///     assert_eq!(guarded_transmute_pod_vec::<u16, SingleManyGuard>(vec![0x00, 0x01, 0x00, 0x02])?,
 /// # */
-/// #   assert_eq!(guarded_transmute_pod_vec::<u16, SingleManyGuard>(vec![0x00, 0x01, 0x00, 0x02].le_to_native::<u16>()).unwrap(),
+/// #   assert_eq!(guarded_transmute_pod_vec::<u16, SingleManyGuard>(
+/// #                  vec![0x00, 0x01, 0x00, 0x02].le_to_native::<u16>()).unwrap(),
 ///            vec![0x0100, 0x0200]);
 /// # /*
 ///     assert_eq!(guarded_transmute_pod_vec::<u32, SingleManyGuard>(vec![0x04, 0x00, 0x00, 0x00, 0xED])?,
 /// # */
-/// #   assert_eq!(guarded_transmute_pod_vec::<u32, SingleManyGuard>(vec![0x04, 0x00, 0x00, 0x00, 0xED].le_to_native::<u32>()).unwrap(),
+/// #   assert_eq!(guarded_transmute_pod_vec::<u32, SingleManyGuard>(
+/// #                  vec![0x04, 0x00, 0x00, 0x00, 0xED].le_to_native::<u32>()).unwrap(),
 ///            vec![0x0000_0004]);
 ///
 ///     assert!(guarded_transmute_pod_vec::<i16, SingleManyGuard>(vec![0xED]).is_err());
@@ -288,7 +290,7 @@ pub unsafe fn guarded_transmute_pod_vec_permissive<T: PodTransmutable>(bytes: Ve
 /// should not have extraneous data.
 ///
 /// # Safety
-/// 
+///
 /// This function invokes undefined behavior if the data does not have a memory
 /// alignment compatible with `T`. If this cannot be ensured, you will have to
 /// make a copy of the data, or change how it was originally made.
