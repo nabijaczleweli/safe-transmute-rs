@@ -119,8 +119,9 @@ pub mod pod;
 pub mod util;
 pub mod to_bytes;
 
-pub use self::full::{safe_transmute_many_permissive, safe_transmute_vec_permissive, safe_transmute_many_pedantic, safe_transmute_one_pedantic,
-                     safe_transmute_vec_pedantic, safe_transmute_many, safe_transmute_one, safe_transmute_vec};
+pub use self::full::{safe_transmute_many_permissive, safe_transmute_many_pedantic, safe_transmute_one_pedantic, safe_transmute_many, safe_transmute_one};
+#[cfg(feature = "std")]
+pub use self::full::{safe_transmute_vec_permissive, safe_transmute_vec_pedantic, safe_transmute_vec};
 
 
 pub use self::guard::{SingleValueGuard, PermissiveGuard, SingleManyGuard, PedanticGuard, Guard};
