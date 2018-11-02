@@ -19,6 +19,15 @@ use self::super::Error;
 ///
 /// This shouldn't happen on all currently supported platforms, but this
 /// function panics if the size of `bool` isn't 1.
+///
+/// # Examples
+///
+/// ```
+/// # use safe_transmute::bool::bytes_are_bool;
+/// assert!(bytes_are_bool(&[false as u8, true as u8]));
+///
+/// assert!(!bytes_are_bool(&[(false as u8 + true as u8) * 2]));
+/// ```
 #[inline]
 pub fn bytes_are_bool(v: &[u8]) -> bool {
     // TODO make this a static assert once available
