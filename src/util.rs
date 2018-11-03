@@ -1,9 +1,6 @@
 //! Module containing various utility functions.
 
 
-use core::{f32, u32};
-
-
 /// If the specified 32-bit float is a signaling NaN, make it a quiet NaN.
 ///
 /// Based on an old version of
