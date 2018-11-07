@@ -1,5 +1,5 @@
 use safe_transmute::util;
-use std::{f32, f64};
+use core::{f32, f64};
 
 
 #[test]

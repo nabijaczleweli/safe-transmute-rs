@@ -4,8 +4,10 @@
 //! behind the `bool` value is neither one.
 
 
-use self::super::{Error, guarded_transmute_many_permissive, guarded_transmute_vec_permissive, guarded_transmute_many_pedantic, guarded_transmute_vec_pedantic};
-use std::mem::size_of;
+use self::super::{Error, guarded_transmute_many_permissive, guarded_transmute_many_pedantic};
+#[cfg(feature = "std")]
+use self::super::{guarded_transmute_vec_permissive, guarded_transmute_vec_pedantic};
+use core::mem::size_of;
 
 
 /// Makes sure that the bytes represent a sequence of valid boolean values. It is done
@@ -86,6 +88,7 @@ pub fn guarded_transmute_bool_pedantic(bytes: &[u8]) -> Result<&[bool], Error> {
 /// # }
 /// # run().unwrap()
 /// ```
+#[cfg(feature = "std")]
 pub fn guarded_transmute_bool_vec_permissive(bytes: Vec<u8>) -> Result<Vec<bool>, Error> {
     check_bool(&bytes)?;
     unsafe { Ok(guarded_transmute_vec_permissive(bytes)) }
@@ -111,6 +114,7 @@ pub fn guarded_transmute_bool_vec_permissive(bytes: Vec<u8>) -> Result<Vec<bool>
 /// # }
 /// # run().unwrap()
 /// ```
+#[cfg(feature = "std")]
 pub fn guarded_transmute_bool_vec_pedantic(bytes: Vec<u8>) -> Result<Vec<bool>, Error> {
     check_bool(&bytes)?;
     unsafe { guarded_transmute_vec_pedantic(bytes) }

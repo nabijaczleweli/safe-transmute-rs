@@ -2,8 +2,8 @@
 
 
 use self::super::PodTransmutable;
-use std::mem::size_of;
-use std::slice;
+use core::mem::size_of;
+use core::slice;
 
 
 /// Transmute a single instance of an arbitrary type into a slice of its bytes.

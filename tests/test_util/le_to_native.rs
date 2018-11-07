@@ -1,5 +1,5 @@
 #[cfg(target_endian = "big")]
-use std::mem::size_of;
+use core::mem::size_of;
 
 
 /// Verify: http://play.integer32.com/?gist=4cd795d6f45898c876a754cd3f3c2aaa&version=stable
@@ -22,6 +22,7 @@ impl<'a> LeToNative for &'a mut [u8] {
     }
 }
 
+#[cfg(feature = "std")]
 impl LeToNative for Vec<u8> {
     #[cfg(target_endian = "little")]
     fn le_to_native<T: Sized>(self) -> Self {

@@ -61,7 +61,7 @@
 
 
 use error::{ErrorReason, GuardError};
-use std::mem::size_of;
+use core::mem::size_of;
 
 
 /// The trait describes types which define boundary checking strategies.

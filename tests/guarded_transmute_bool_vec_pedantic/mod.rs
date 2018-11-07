@@ -1,3 +1,4 @@
+#![cfg(feature = "std")]
 use safe_transmute::{ErrorReason, GuardError, Error, guarded_transmute_bool_vec_pedantic};
 
 

@@ -1,3 +1,4 @@
+#![cfg(feature = "std")]
 use safe_transmute::{ErrorReason, GuardError, Error, guarded_transmute_pod_vec};
 use self::super::LeToNative;
 

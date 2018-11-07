@@ -87,13 +87,19 @@
 //! ```
 
 
+#![cfg_attr(not(feature = "std"), no_std)]
+#[cfg(feature = "std")]
+extern crate core;
+
 mod pod;
 mod bool;
 mod error;
 mod to_bytes;
 
-use std::slice;
-use std::mem::{size_of, forget};
+use core::slice;
+use core::mem::size_of;
+#[cfg(feature = "std")]
+use core::mem::forget;
 use guard::{SingleValueGuard, PermissiveGuard, SingleManyGuard, PedanticGuard, Guard};
 
 pub mod util;
@@ -101,11 +107,14 @@ pub mod guard;
 
 pub use self::error::{ErrorReason, GuardError, Error};
 pub use self::to_bytes::{guarded_transmute_to_bytes_pod_many, guarded_transmute_to_bytes_many, guarded_transmute_to_bytes_pod, guarded_transmute_to_bytes};
-pub use self::pod::{PodTransmutable, guarded_transmute_pod_many_permissive, guarded_transmute_pod_vec_permissive, guarded_transmute_pod_many_pedantic,
-                    guarded_transmute_pod_vec_pedantic, guarded_transmute_pod_pedantic, guarded_transmute_pod_many, guarded_transmute_pod_vec,
-                    guarded_transmute_pod};
-pub use self::bool::{guarded_transmute_bool_vec_permissive, guarded_transmute_bool_vec_pedantic, guarded_transmute_bool_permissive,
-                     guarded_transmute_bool_pedantic};
+pub use self::pod::{PodTransmutable, guarded_transmute_pod_many_permissive, guarded_transmute_pod_many_pedantic,
+                    guarded_transmute_pod_pedantic, guarded_transmute_pod_many, guarded_transmute_pod};
+#[cfg(feature = "std")]
+pub use self::pod::{guarded_transmute_pod_vec_permissive, guarded_transmute_pod_vec_pedantic, guarded_transmute_pod_vec};
+
+pub use self::bool::{guarded_transmute_bool_permissive, guarded_transmute_bool_pedantic};
+#[cfg(feature = "std")]
+pub use self::bool::{guarded_transmute_bool_vec_permissive, guarded_transmute_bool_vec_pedantic};
 
 
 /// Transmute a byte slice into a single instance of a `Copy`able type.
@@ -255,6 +264,7 @@ pub unsafe fn guarded_transmute_many_pedantic<T>(bytes: &[u8]) -> Result<&[T], E
 /// # }
 /// # }
 /// ```
+#[cfg(feature = "std")]
 pub unsafe fn guarded_transmute_vec<T>(bytes: Vec<u8>) -> Result<Vec<T>, Error> {
     SingleManyGuard::check::<T>(&bytes)?;
     Ok(guarded_transmute_vec_permissive(bytes))
@@ -288,6 +298,7 @@ pub unsafe fn guarded_transmute_vec<T>(bytes: Vec<u8>) -> Result<Vec<T>, Error> 
 /// # }
 /// # }
 /// ```
+#[cfg(feature = "std")]
 pub unsafe fn guarded_transmute_vec_permissive<T>(mut bytes: Vec<u8>) -> Vec<T> {
     PermissiveGuard::check::<T>(&bytes).unwrap();
     let ptr = bytes.as_mut_ptr();
@@ -320,6 +331,7 @@ pub unsafe fn guarded_transmute_vec_permissive<T>(mut bytes: Vec<u8>) -> Vec<T> 
 /// # }
 /// # }
 /// ```
+#[cfg(feature = "std")]
 pub unsafe fn guarded_transmute_vec_pedantic<T>(bytes: Vec<u8>) -> Result<Vec<T>, Error> {
     PedanticGuard::check::<T>(&bytes)?;
     Ok(guarded_transmute_vec_permissive(bytes))

@@ -5,7 +5,7 @@ documentation = "https://cdn.rawgit.com/nabijaczleweli/safe-transmute-rs/doc/saf
 repository = "https://github.com/nabijaczleweli/safe-transmute-rs"
 readme = "README.md"
 keywords = ["safe", "transmute", "checked"]
-categories = ["rust-patterns", "memory-management"]
+categories = ["rust-patterns", "memory-management", "no-std"]
 license = "MIT"
 # Remember to also update in appveyor.yml
 version = "0.9.0"
@@ -14,4 +14,6 @@ authors = ["nabijaczleweli <nabijaczleweli@gmail.com>",
 exclude = ["*.enc"]
 
 [features]
+default = ["std"]
+"std" = []
 "test-unaligned" = []

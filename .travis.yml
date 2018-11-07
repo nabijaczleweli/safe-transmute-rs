@@ -18,6 +18,9 @@ matrix:
       rust: stable
       services: docker
       sudo: required
+    - env: LANGUAGE=Rust CARGO_DEFAULT_FEATURES=--no-default-features
+      language: rust
+      rust: stable
 
   allow_failures:
     - rust: beta
@@ -37,9 +40,9 @@ before_script:
 script:
   - cargo build --verbose
   - if [ ! -z "$CROSS_TARGET" ]; then
-      cross test --verbose --target $CROSS_TARGET --features test-unaligned;
+      cross test --verbose --target $CROSS_TARGET $CARGO_DEFAULT_FEATURES --features test-unaligned;
     else
-      cargo test --verbose --features test-unaligned;
+      cargo test --verbose $CARGO_DEFAULT_FEATURES --features test-unaligned;
     fi
   - if [ "$CLIPPY" ]; then
       cargo install -f clippy;

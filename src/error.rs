@@ -1,5 +1,6 @@
+#[cfg(feature = "std")]
 use std::error::Error as StdError;
-use std::fmt;
+use core::fmt;
 
 
 /// A transmutation error. This type describes possible errors originating
@@ -28,6 +29,7 @@ pub enum Error {
     InvalidValue,
 }
 
+#[cfg(feature = "std")]
 impl StdError for Error {
     fn description(&self) -> &str {
         match *self {
@@ -42,8 +44,8 @@ impl fmt::Display for Error {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match *self {
             Error::Guard(ref e) => e.fmt(f),
-            Error::Unaligned { offset } => write!(f, "{} (off by {} bytes)", self.description(), offset),
-            Error::InvalidValue => write!(f, "{}", self.description()),
+            Error::Unaligned { offset } => write!(f, "Unaligned data slice (off by {} bytes)", offset),
+            Error::InvalidValue => f.write_str("Invalid target value"),
         }
     }
 }
@@ -94,10 +96,10 @@ pub enum ErrorReason {
     InexactByteCount,
 }
 
-
-impl StdError for GuardError {
-    fn description(&self) -> &str {
-        match self.reason {
+impl ErrorReason {
+    /// Retrieve a human readable description of the reason.
+    pub fn description(self) -> &'static str {
+        match self {
             ErrorReason::NotEnoughBytes => "Not enough bytes to fill type",
             ErrorReason::TooManyBytes => "Too many bytes for type",
             ErrorReason::InexactByteCount => "Not exactly the amount of bytes for type",
@@ -105,8 +107,15 @@ impl StdError for GuardError {
     }
 }
 
+#[cfg(feature = "std")]
+impl StdError for GuardError {
+    fn description(&self) -> &str {
+        self.reason.description()
+    }
+}
+
 impl fmt::Display for GuardError {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{} (required: {}, actual: {})", self.description(), self.required, self.actual)
+        write!(f, "{} (required: {}, actual: {})", self.reason.description(), self.required, self.actual)
     }
 }

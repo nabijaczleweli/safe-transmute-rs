@@ -1,6 +1,7 @@
-use self::super::{Error, guarded_transmute_many_permissive, guarded_transmute_vec_permissive, guarded_transmute_many_pedantic, guarded_transmute_vec_pedantic,
-                  guarded_transmute_pedantic, guarded_transmute_many, guarded_transmute_vec, guarded_transmute};
-
+use self::super::{Error, guarded_transmute_many_permissive, guarded_transmute_many_pedantic, 
+                  guarded_transmute_pedantic, guarded_transmute_many, guarded_transmute};
+#[cfg(feature = "std")]
+use self::super::{guarded_transmute_vec_permissive, guarded_transmute_vec_pedantic, guarded_transmute_vec};
 
 /// Type that can be non-`unsafe`ly transmuted into
 ///
@@ -205,6 +206,7 @@ pub fn guarded_transmute_pod_many_pedantic<T: PodTransmutable>(bytes: &[u8]) -> 
 /// assert!(guarded_transmute_pod_vec::<i16>(vec![0xED]).is_err());
 /// # }
 /// ```
+#[cfg(feature = "std")]
 pub fn guarded_transmute_pod_vec<T: PodTransmutable>(bytes: Vec<u8>) -> Result<Vec<T>, Error> {
     unsafe { guarded_transmute_vec(bytes) }
 }
@@ -235,6 +237,7 @@ pub fn guarded_transmute_pod_vec<T: PodTransmutable>(bytes: Vec<u8>) -> Result<V
 /// assert_eq!(guarded_transmute_pod_vec_permissive::<u16>(vec![0xED]), vec![]);
 /// # }
 /// ```
+#[cfg(feature = "std")]
 pub fn guarded_transmute_pod_vec_permissive<T: PodTransmutable>(bytes: Vec<u8>) -> Vec<T> {
     unsafe { guarded_transmute_vec_permissive(bytes) }
 }
@@ -261,6 +264,7 @@ pub fn guarded_transmute_pod_vec_permissive<T: PodTransmutable>(bytes: Vec<u8>) 
 ///           .is_err());
 /// # }
 /// ```
+#[cfg(feature = "std")]
 pub fn guarded_transmute_pod_vec_pedantic<T: PodTransmutable>(bytes: Vec<u8>) -> Result<Vec<T>, Error> {
     unsafe { guarded_transmute_vec_pedantic(bytes) }
 }

@@ -1,7 +1,7 @@
 //! Module containing various utility functions.
 
 
-use std::mem::transmute;
+use core::mem::transmute;
 
 
 /// If the specified 32-bit float is a signaling NaN, make it a quiet NaN.
