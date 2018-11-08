@@ -107,6 +107,8 @@ pub mod guard;
 
 pub use self::error::{ErrorReason, GuardError, Error};
 pub use self::to_bytes::{guarded_transmute_to_bytes_pod_many, guarded_transmute_to_bytes_many, guarded_transmute_to_bytes_pod, guarded_transmute_to_bytes};
+#[cfg(feature = "std")]
+pub use self::to_bytes::{guarded_transmute_to_bytes_vec, guarded_transmute_to_bytes_pod_vec};
 pub use self::pod::{PodTransmutable, guarded_transmute_pod_many_permissive, guarded_transmute_pod_many_pedantic,
                     guarded_transmute_pod_pedantic, guarded_transmute_pod_many, guarded_transmute_pod};
 #[cfg(feature = "std")]
