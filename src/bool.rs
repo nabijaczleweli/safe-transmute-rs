@@ -10,21 +10,11 @@ use self::super::{guarded_transmute_vec_permissive, guarded_transmute_vec_pedant
 use core::mem::size_of;
 
 
-/// Makes sure that the bytes represent a sequence of valid boolean values. It is done
-/// this way because the language does not guarantee that `bool` is 1-byte sized.
+/// Makes sure that the bytes represent a sequence of valid boolean values.
 #[inline]
 pub fn bytes_are_bool(v: &[u8]) -> bool {
-    let bool_size = size_of::<bool>();
-    v.chunks(bool_size)
-        .filter(|c| c.len() == bool_size)
-        .all(|c| {
-            let (rest, lsb) = if cfg!(target_endian = "little") {
-                (&c[1..], c)
-            } else {
-                c.split_at(bool_size - 1)
-            };
-            lsb[0] <= 1 && rest.iter().all(|&x| x == 0)
-        })
+    assert_eq!(size_of::<bool>(), 1);
+    v.iter().all(|&x| x <= 1)
 }
 
 /// View a byte slice as a slice of boolean values.
