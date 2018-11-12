@@ -264,10 +264,15 @@
 <span id="264">264</span>
 <span id="265">265</span>
 <span id="266">266</span>
+<span id="267">267</span>
+<span id="268">268</span>
+<span id="269">269</span>
+<span id="270">270</span>
 </pre><pre class="rust ">
-<span class="kw">use</span> <span class="self">self</span>::<span class="kw">super</span>::{<span class="ident">Error</span>, <span class="ident">guarded_transmute_many_permissive</span>, <span class="ident">guarded_transmute_vec_permissive</span>, <span class="ident">guarded_transmute_many_pedantic</span>, <span class="ident">guarded_transmute_vec_pedantic</span>,
-                  <span class="ident">guarded_transmute_pedantic</span>, <span class="ident">guarded_transmute_many</span>, <span class="ident">guarded_transmute_vec</span>, <span class="ident">guarded_transmute</span>};
-
+<span class="kw">use</span> <span class="self">self</span>::<span class="kw">super</span>::{<span class="ident">Error</span>, <span class="ident">guarded_transmute_many_permissive</span>, <span class="ident">guarded_transmute_many_pedantic</span>, 
+                  <span class="ident">guarded_transmute_pedantic</span>, <span class="ident">guarded_transmute_many</span>, <span class="ident">guarded_transmute</span>};
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;std&quot;</span>)]</span>
+<span class="kw">use</span> <span class="self">self</span>::<span class="kw">super</span>::{<span class="ident">guarded_transmute_vec_permissive</span>, <span class="ident">guarded_transmute_vec_pedantic</span>, <span class="ident">guarded_transmute_vec</span>};
 
 <span class="doccomment">/// Type that can be non-`unsafe`ly transmuted into</span>
 <span class="doccomment">///</span>
@@ -472,6 +477,7 @@
 <span class="doccomment">/// assert!(guarded_transmute_pod_vec::&lt;i16&gt;(vec![0xED]).is_err());</span>
 <span class="doccomment">/// # }</span>
 <span class="doccomment">/// ```</span>
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;std&quot;</span>)]</span>
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">guarded_transmute_pod_vec</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">PodTransmutable</span><span class="op">&gt;</span>(<span class="ident">bytes</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>, <span class="ident">Error</span><span class="op">&gt;</span> {
     <span class="kw">unsafe</span> { <span class="ident">guarded_transmute_vec</span>(<span class="ident">bytes</span>) }
 }
@@ -502,6 +508,7 @@
 <span class="doccomment">/// assert_eq!(guarded_transmute_pod_vec_permissive::&lt;u16&gt;(vec![0xED]), vec![]);</span>
 <span class="doccomment">/// # }</span>
 <span class="doccomment">/// ```</span>
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;std&quot;</span>)]</span>
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">guarded_transmute_pod_vec_permissive</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">PodTransmutable</span><span class="op">&gt;</span>(<span class="ident">bytes</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
     <span class="kw">unsafe</span> { <span class="ident">guarded_transmute_vec_permissive</span>(<span class="ident">bytes</span>) }
 }
@@ -528,6 +535,7 @@
 <span class="doccomment">///           .is_err());</span>
 <span class="doccomment">/// # }</span>
 <span class="doccomment">/// ```</span>
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;std&quot;</span>)]</span>
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">guarded_transmute_pod_vec_pedantic</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">PodTransmutable</span><span class="op">&gt;</span>(<span class="ident">bytes</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>, <span class="ident">Error</span><span class="op">&gt;</span> {
     <span class="kw">unsafe</span> { <span class="ident">guarded_transmute_vec_pedantic</span>(<span class="ident">bytes</span>) }
 }
