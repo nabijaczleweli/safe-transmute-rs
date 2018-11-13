@@ -336,6 +336,12 @@
 <span id="336">336</span>
 <span id="337">337</span>
 <span id="338">338</span>
+<span id="339">339</span>
+<span id="340">340</span>
+<span id="341">341</span>
+<span id="342">342</span>
+<span id="343">343</span>
+<span id="344">344</span>
 </pre><pre class="rust ">
 <span class="doccomment">//! This crate contains checked implementations of `transmute()`.</span>
 <span class="doccomment">//!</span>
@@ -427,6 +433,8 @@
 
 
 <span class="attribute">#![<span class="ident">cfg_attr</span>(<span class="ident">not</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;std&quot;</span>), <span class="ident">no_std</span>)]</span>
+
+
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;std&quot;</span>)]</span>
 <span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">core</span>;
 
@@ -445,15 +453,19 @@
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">guard</span>;
 
 <span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span>::<span class="ident">error</span>::{<span class="ident">ErrorReason</span>, <span class="ident">GuardError</span>, <span class="ident">Error</span>};
+
 <span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span>::<span class="ident">to_bytes</span>::{<span class="ident">guarded_transmute_to_bytes_pod_many</span>, <span class="ident">guarded_transmute_to_bytes_many</span>, <span class="ident">guarded_transmute_to_bytes_pod</span>, <span class="ident">guarded_transmute_to_bytes</span>};
-<span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span>::<span class="ident">pod</span>::{<span class="ident">PodTransmutable</span>, <span class="ident">guarded_transmute_pod_many_permissive</span>, <span class="ident">guarded_transmute_pod_many_pedantic</span>,
-                    <span class="ident">guarded_transmute_pod_pedantic</span>, <span class="ident">guarded_transmute_pod_many</span>, <span class="ident">guarded_transmute_pod</span>};
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;std&quot;</span>)]</span>
+<span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span>::<span class="ident">to_bytes</span>::{<span class="ident">guarded_transmute_to_bytes_vec</span>, <span class="ident">guarded_transmute_to_bytes_pod_vec</span>};
+
+<span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span>::<span class="ident">pod</span>::{<span class="ident">PodTransmutable</span>, <span class="ident">guarded_transmute_pod_many_permissive</span>, <span class="ident">guarded_transmute_pod_many_pedantic</span>, <span class="ident">guarded_transmute_pod_pedantic</span>,
+                    <span class="ident">guarded_transmute_pod_many</span>, <span class="ident">guarded_transmute_pod</span>};
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;std&quot;</span>)]</span>
 <span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span>::<span class="ident">pod</span>::{<span class="ident">guarded_transmute_pod_vec_permissive</span>, <span class="ident">guarded_transmute_pod_vec_pedantic</span>, <span class="ident">guarded_transmute_pod_vec</span>};
 
-<span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span>::<span class="ident">bool</span>::{<span class="ident">guarded_transmute_bool_permissive</span>, <span class="ident">guarded_transmute_bool_pedantic</span>};
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;std&quot;</span>)]</span>
 <span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span>::<span class="ident">bool</span>::{<span class="ident">guarded_transmute_bool_vec_permissive</span>, <span class="ident">guarded_transmute_bool_vec_pedantic</span>};
+<span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span>::<span class="ident">bool</span>::{<span class="ident">guarded_transmute_bool_permissive</span>, <span class="ident">guarded_transmute_bool_pedantic</span>};
 
 
 <span class="doccomment">/// Transmute a byte slice into a single instance of a `Copy`able type.</span>
