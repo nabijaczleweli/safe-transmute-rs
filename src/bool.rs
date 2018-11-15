@@ -11,8 +11,14 @@ use core::mem::size_of;
 
 
 /// Makes sure that the bytes represent a sequence of valid boolean values.
+///
+/// # Panic
+///
+/// This shouldn't happen on all currently supported platforms, but the
+/// function panics if the size of `bool` is not 1. 
 #[inline]
 pub fn bytes_are_bool(v: &[u8]) -> bool {
+    // TODO make this a static assert once it's available
     assert_eq!(size_of::<bool>(), 1);
     v.iter().all(|&x| x <= 1)
 }
