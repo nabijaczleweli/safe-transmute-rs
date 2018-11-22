@@ -7,7 +7,7 @@
 use self::super::{Error, guarded_transmute_many_permissive, guarded_transmute_many_pedantic};
 #[cfg(feature = "std")]
 use self::super::{guarded_transmute_vec_permissive, guarded_transmute_vec_pedantic};
-use core::mem::size_of;
+use core::mem::{size_of, transmute};
 
 
 /// Makes sure that the bytes represent a sequence of valid boolean values.
@@ -20,7 +20,14 @@ use core::mem::size_of;
 pub fn bytes_are_bool(v: &[u8]) -> bool {
     // TODO make this a static assert once available
     assert_eq!(size_of::<bool>(), 1);
-    v.iter().all(|&x| x <= 1)
+    v.iter().cloned().all(byte_is_bool)
+}
+
+#[inline]
+fn byte_is_bool(b: u8) -> bool {
+    unsafe {
+        b == transmute::<_, u8>(false) || b == transmute::<_, u8>(true)
+    }
 }
 
 /// View a byte slice as a slice of boolean values.
