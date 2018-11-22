@@ -342,6 +342,9 @@
 <span id="342">342</span>
 <span id="343">343</span>
 <span id="344">344</span>
+<span id="345">345</span>
+<span id="346">346</span>
+<span id="347">347</span>
 </pre><pre class="rust ">
 <span class="doccomment">//! This crate contains checked implementations of `transmute()`.</span>
 <span class="doccomment">//!</span>
@@ -358,6 +361,9 @@
 <span class="doccomment">//! Take note, however, that alignment is *unaccounted for*: you may, in the course of using this crate,</span>
 <span class="doccomment">//! invoke unaligned access, which some CPUs *may* trap on; that did not, however, happen in any of our tests on</span>
 <span class="doccomment">//! MIPS64 (BE), x86_64 (LE), nor armv6l (LE).</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! This crate can be used in a no-`std` environment by disabling the `std` feature through specifying</span>
+<span class="doccomment">//! `default-features = false` on import.</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! # Examples</span>
 <span class="doccomment">//!</span>
