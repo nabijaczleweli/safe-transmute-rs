@@ -131,6 +131,8 @@
 <span id="131">131</span>
 <span id="132">132</span>
 <span id="133">133</span>
+<span id="134">134</span>
+<span id="135">135</span>
 </pre><pre class="rust ">
 <span class="doccomment">//! Functions for safe transmutation to `bool`.</span>
 <span class="doccomment">//! Transmuting to `bool&#39; is not undefined behavior if the transmuted value is</span>
@@ -153,15 +155,17 @@
 <span class="attribute">#[<span class="ident">inline</span>]</span>
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">bytes_are_bool</span>(<span class="ident">v</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>]) <span class="op">-&gt;</span> <span class="ident">bool</span> {
     <span class="comment">// TODO make this a static assert once available</span>
-    <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">size_of</span>::<span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span>(), <span class="number">1</span>);
+    <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">size_of</span>::<span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span>(),
+               <span class="number">1</span>,
+               <span class="string">&quot;unsupported platform due to invalid bool size {}, please report over at https://github.com/nabijaczleweli/safe-transmute-rs/issues/new&quot;</span>,
+               <span class="ident">size_of</span>::<span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span>());
+
     <span class="ident">v</span>.<span class="ident">iter</span>().<span class="ident">cloned</span>().<span class="ident">all</span>(<span class="ident">byte_is_bool</span>)
 }
 
 <span class="attribute">#[<span class="ident">inline</span>]</span>
 <span class="kw">fn</span> <span class="ident">byte_is_bool</span>(<span class="ident">b</span>: <span class="ident">u8</span>) <span class="op">-&gt;</span> <span class="ident">bool</span> {
-    <span class="kw">unsafe</span> {
-        <span class="ident">b</span> <span class="op">==</span> <span class="ident">transmute</span>::<span class="op">&lt;</span><span class="kw">_</span>, <span class="ident">u8</span><span class="op">&gt;</span>(<span class="bool-val">false</span>) <span class="op">||</span> <span class="ident">b</span> <span class="op">==</span> <span class="ident">transmute</span>::<span class="op">&lt;</span><span class="kw">_</span>, <span class="ident">u8</span><span class="op">&gt;</span>(<span class="bool-val">true</span>)
-    }
+    <span class="kw">unsafe</span> { <span class="ident">b</span> <span class="op">==</span> <span class="ident">transmute</span>::<span class="op">&lt;</span><span class="kw">_</span>, <span class="ident">u8</span><span class="op">&gt;</span>(<span class="bool-val">false</span>) <span class="op">||</span> <span class="ident">b</span> <span class="op">==</span> <span class="ident">transmute</span>::<span class="op">&lt;</span><span class="kw">_</span>, <span class="ident">u8</span><span class="op">&gt;</span>(<span class="bool-val">true</span>) }
 }
 
 <span class="doccomment">/// View a byte slice as a slice of boolean values.</span>
