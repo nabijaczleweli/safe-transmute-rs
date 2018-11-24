@@ -162,7 +162,7 @@ pub fn guarded_transmute_pod_many<T: PodTransmutable>(bytes: &[u8]) -> Result<&[
 ///
 /// ```
 /// # use safe_transmute::guarded_transmute_pod_many_permissive;
-/// assert_eq!(guarded_transmute_pod_many_permissive::<u16>(&[0x00]), &[]);
+/// assert_eq!(guarded_transmute_pod_many_permissive::<u16>(&[0x00]), Ok([].as_ref()));
 /// ```
 pub fn guarded_transmute_pod_many_permissive<T: PodTransmutable>(bytes: &[u8]) -> Result<&[T], Error> {
     check_alignment::<_, T>(&bytes)?;
@@ -243,13 +243,13 @@ pub fn guarded_transmute_pod_vec<T: PodTransmutable>(bytes: Vec<u8>) -> Result<V
 /// assert_eq!(guarded_transmute_pod_vec_permissive::<u16>(vec![0x00, 0x01, 0x00, 0x02]),
 /// # */
 /// # assert_eq!(guarded_transmute_pod_vec_permissive::<u16>(vec![0x00, 0x01, 0x00, 0x02].le_to_native::<u16>()),
-///            vec![0x0100, 0x0200]);
+///            Ok(vec![0x0100, 0x0200]));
 /// # /*
 /// assert_eq!(guarded_transmute_pod_vec_permissive::<u32>(vec![0x04, 0x00, 0x00, 0x00, 0xED]),
 /// # */
 /// # assert_eq!(guarded_transmute_pod_vec_permissive::<u32>(vec![0x04, 0x00, 0x00, 0x00, 0xED].le_to_native::<u32>()),
-///            vec![0x00000004]);
-/// assert_eq!(guarded_transmute_pod_vec_permissive::<u16>(vec![0xED]), vec![]);
+///            Ok(vec![0x00000004]));
+/// assert_eq!(guarded_transmute_pod_vec_permissive::<u16>(vec![0xED]), Ok(vec![]));
 /// # }
 /// ```
 #[cfg(feature = "std")]
