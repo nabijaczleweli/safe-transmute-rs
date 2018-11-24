@@ -314,7 +314,7 @@ pub unsafe fn guarded_transmute_vec_permissive<T>(mut bytes: Vec<u8>) -> Vec<T> 
     let capacity = bytes.capacity() / size_of::<T>();
     let len = bytes.len() / size_of::<T>();
     forget(bytes);
-    Vec::from_raw_parts(ptr as *mut T, capacity, len)
+    Vec::from_raw_parts(ptr as *mut T, len, capacity)
 }
 
 /// Trasform a byte vector into a vector of an arbitrary type.
