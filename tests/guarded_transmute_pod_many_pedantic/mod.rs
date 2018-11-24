@@ -1,43 +1,57 @@
-use safe_transmute::{ErrorReason, GuardError, Error, guarded_transmute_pod_many_pedantic};
-use self::super::LeToNative;
-
+use safe_transmute::{guarded_transmute_pod_many_pedantic, guarded_transmute_to_bytes_pod_many, Error, ErrorReason, GuardError};
 
 #[test]
 fn too_short() {
-    assert_eq!(guarded_transmute_pod_many_pedantic::<u16>(&[]),
-               Err(Error::Guard(GuardError {
-                   required: 16 / 8,
-                   actual: 0,
-                   reason: ErrorReason::NotEnoughBytes,
-               })));
-    assert_eq!(guarded_transmute_pod_many_pedantic::<u16>(&[0x00]),
-               Err(Error::Guard(GuardError {
-                   required: 16 / 8,
-                   actual: 1,
-                   reason: ErrorReason::NotEnoughBytes,
-               })));
+    assert_eq!(
+        guarded_transmute_pod_many_pedantic::<u16>(guarded_transmute_to_bytes_pod_many::<u16>(&[])),
+        Err(Error::Guard(GuardError {
+            required: 16 / 8,
+            actual: 0,
+            reason: ErrorReason::NotEnoughBytes,
+        }))
+    );
+    assert_eq!(
+        guarded_transmute_pod_many_pedantic::<u16>(&guarded_transmute_to_bytes_pod_many::<u16>(&[0])[..1]),
+        Err(Error::Guard(GuardError {
+            required: 16 / 8,
+            actual: 1,
+            reason: ErrorReason::NotEnoughBytes,
+        }))
+    );
 }
 
 #[test]
 fn just_enough() {
-    assert_eq!(guarded_transmute_pod_many_pedantic::<u16>(&[0x00, 0x01].le_to_native::<u16>()),
-               Ok([0x0100u16].into_iter().as_slice()));
-    assert_eq!(guarded_transmute_pod_many_pedantic::<u16>(&[0x00, 0x01, 0x00, 0x02].le_to_native::<u16>()),
-               Ok([0x0100u16, 0x0200u16].into_iter().as_slice()));
+    let words: &[u16] = &[0x01000, 0x02000];
+    let bytes = guarded_transmute_to_bytes_pod_many(words);
+    assert_eq!(
+        guarded_transmute_pod_many_pedantic::<u16>(&bytes[..2]),
+        Ok(&words[..1])
+    );
+    assert_eq!(
+        guarded_transmute_pod_many_pedantic::<u16>(bytes),
+        Ok(words)
+    );
 }
 
 #[test]
 fn too_much() {
-    assert_eq!(guarded_transmute_pod_many_pedantic::<u16>(&[0x00, 0x01, 0x00]),
-               Err(Error::Guard(GuardError {
-                   required: 16 / 8,
-                   actual: 3,
-                   reason: ErrorReason::InexactByteCount,
-               })));
-    assert_eq!(guarded_transmute_pod_many_pedantic::<u16>(&[0x00, 0x01, 0x00, 0x02, 0x00]),
-               Err(Error::Guard(GuardError {
-                   required: 16 / 8,
-                   actual: 5,
-                   reason: ErrorReason::InexactByteCount,
-               })));
+    let words: &[u16] = &[0x01000, 0x02000, 0x0300];
+    let bytes = guarded_transmute_to_bytes_pod_many(words);
+    assert_eq!(
+        guarded_transmute_pod_many_pedantic::<u16>(&bytes[..3]),
+        Err(Error::Guard(GuardError {
+            required: 16 / 8,
+            actual: 3,
+            reason: ErrorReason::InexactByteCount,
+        }))
+    );
+    assert_eq!(
+        guarded_transmute_pod_many_pedantic::<u16>(&bytes[..5]),
+        Err(Error::Guard(GuardError {
+            required: 16 / 8,
+            actual: 5,
+            reason: ErrorReason::InexactByteCount,
+        }))
+    );
 }
