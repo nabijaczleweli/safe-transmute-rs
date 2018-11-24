@@ -28,3 +28,4 @@ mod guarded_transmute_bool_vec_pedantic;
 mod guarded_transmute_bool_vec_permissive;
 
 include!("test_util/le_to_native.rs");
+include!("test_util/aligned_vec.rs");
