@@ -1,7 +1,15 @@
+//! Plain data object safe transmute
+//! 
+//! Functions in this module are guarded from out-of-bounds memory access as well as from unaligned access,
+//! raising errors on both cases. Moreover, only a safe subset of types (which implement
+//! [`PodTransmutable`](trait.PodTransmutable.html)) can be used as the transmute target, thus ensuring
+//! full safety.
+
 use self::super::{Error, guarded_transmute_many_permissive, guarded_transmute_many_pedantic, guarded_transmute_pedantic, guarded_transmute_many,
                   guarded_transmute};
 #[cfg(feature = "std")]
 use self::super::{guarded_transmute_vec_permissive, guarded_transmute_vec_pedantic, guarded_transmute_vec};
+use super::util::check_alignment;
 
 /// Type that can be non-`unsafe`ly transmuted into
 ///
@@ -97,6 +105,7 @@ unsafe impl<T: PodTransmutable> PodTransmutable for [T; 32] {}
 /// # }
 /// ```
 pub fn guarded_transmute_pod<T: PodTransmutable>(bytes: &[u8]) -> Result<T, Error> {
+    check_alignment::<_, T>(bytes)?;
     unsafe { guarded_transmute(bytes) }
 }
 
@@ -118,6 +127,7 @@ pub fn guarded_transmute_pod<T: PodTransmutable>(bytes: &[u8]) -> Result<T, Erro
 /// # }
 /// ```
 pub fn guarded_transmute_pod_pedantic<T: PodTransmutable>(bytes: &[u8]) -> Result<T, Error> {
+    check_alignment::<_, T>(bytes)?;
     unsafe { guarded_transmute_pedantic(bytes) }
 }
 
@@ -140,6 +150,7 @@ pub fn guarded_transmute_pod_pedantic<T: PodTransmutable>(bytes: &[u8]) -> Resul
 /// # }
 /// ```
 pub fn guarded_transmute_pod_many<T: PodTransmutable>(bytes: &[u8]) -> Result<&[T], Error> {
+    check_alignment::<_, T>(bytes)?;
     unsafe { guarded_transmute_many(bytes) }
 }
 
@@ -153,8 +164,9 @@ pub fn guarded_transmute_pod_many<T: PodTransmutable>(bytes: &[u8]) -> Result<&[
 /// # use safe_transmute::guarded_transmute_pod_many_permissive;
 /// assert_eq!(guarded_transmute_pod_many_permissive::<u16>(&[0x00]), &[]);
 /// ```
-pub fn guarded_transmute_pod_many_permissive<T: PodTransmutable>(bytes: &[u8]) -> &[T] {
-    unsafe { guarded_transmute_many_permissive(bytes) }
+pub fn guarded_transmute_pod_many_permissive<T: PodTransmutable>(bytes: &[u8]) -> Result<&[T], Error> {
+    check_alignment::<_, T>(&bytes)?;
+    unsafe { Ok(guarded_transmute_many_permissive(bytes)) }
 }
 
 /// View a byte slice as a slice of POD.
@@ -177,6 +189,7 @@ pub fn guarded_transmute_pod_many_permissive<T: PodTransmutable>(bytes: &[u8]) -
 /// # }
 /// ```
 pub fn guarded_transmute_pod_many_pedantic<T: PodTransmutable>(bytes: &[u8]) -> Result<&[T], Error> {
+    check_alignment::<_, T>(bytes)?;
     unsafe { guarded_transmute_many_pedantic(bytes) }
 }
 
@@ -209,6 +222,7 @@ pub fn guarded_transmute_pod_many_pedantic<T: PodTransmutable>(bytes: &[u8]) -> 
 /// ```
 #[cfg(feature = "std")]
 pub fn guarded_transmute_pod_vec<T: PodTransmutable>(bytes: Vec<u8>) -> Result<Vec<T>, Error> {
+    check_alignment::<_, T>(&bytes)?;
     unsafe { guarded_transmute_vec(bytes) }
 }
 
@@ -239,8 +253,9 @@ pub fn guarded_transmute_pod_vec<T: PodTransmutable>(bytes: Vec<u8>) -> Result<V
 /// # }
 /// ```
 #[cfg(feature = "std")]
-pub fn guarded_transmute_pod_vec_permissive<T: PodTransmutable>(bytes: Vec<u8>) -> Vec<T> {
-    unsafe { guarded_transmute_vec_permissive(bytes) }
+pub fn guarded_transmute_pod_vec_permissive<T: PodTransmutable>(bytes: Vec<u8>) -> Result<Vec<T>, Error> {
+    check_alignment::<_, T>(&bytes)?;
+    unsafe { Ok(guarded_transmute_vec_permissive(bytes)) }
 }
 
 /// Trasform a byte vector into a vector of POD.
@@ -267,5 +282,6 @@ pub fn guarded_transmute_pod_vec_permissive<T: PodTransmutable>(bytes: Vec<u8>) 
 /// ```
 #[cfg(feature = "std")]
 pub fn guarded_transmute_pod_vec_pedantic<T: PodTransmutable>(bytes: Vec<u8>) -> Result<Vec<T>, Error> {
+    check_alignment::<_, T>(&bytes)?;
     unsafe { guarded_transmute_vec_pedantic(bytes) }
 }
