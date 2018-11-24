@@ -40,9 +40,9 @@ before_script:
 script:
   - cargo build --verbose
   - if [ ! -z "$CROSS_TARGET" ]; then
-      cross test --verbose --target $CROSS_TARGET $CARGO_DEFAULT_FEATURES --features test-unaligned;
+      cross test --verbose --target $CROSS_TARGET $CARGO_DEFAULT_FEATURES;
     else
-      cargo test --verbose $CARGO_DEFAULT_FEATURES --features test-unaligned;
+      cargo test --verbose $CARGO_DEFAULT_FEATURES;
     fi
   - if [ "$CLIPPY" ]; then
       cargo install -f clippy;
