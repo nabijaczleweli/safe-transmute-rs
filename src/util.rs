@@ -55,10 +55,10 @@ pub fn check_alignment<T, U>(data: &[T]) -> Result<(), Error> {
     // !!! this could probably become more efficient once `ptr::align_offset`
     // is stabilized (#44488)
     let ptr = data.as_ptr();
-    let offset = ptr as usize % align_of::<T>();
+    let offset = ptr as usize % align_of::<U>();
     if offset > 0 {
         // reverse the offset (from "bytes to insert" to "bytes to remove")
-        Err(Error::Unaligned { offset: size_of::<T>() - offset })
+        Err(Error::Unaligned { offset: size_of::<U>() - offset })
     } else {
         Ok(())
     }
