@@ -2,6 +2,7 @@
 /// with `T` at creation time.
 ///
 /// Do not modify the vector, or this assurance is gone.
+#[cfg(feature = "std")]
 fn aligned_vec<T>(bytes: &[u8]) -> Vec<u8> {
     use std::mem::{align_of, forget, size_of};
     let vec_len_offset = bytes.len() % size_of::<T>();
@@ -20,6 +21,7 @@ fn aligned_vec<T>(bytes: &[u8]) -> Vec<u8> {
     }
 }
 
+#[cfg(feature = "std")]
 #[test]
 fn test_aligned_vec() {
     assert_eq!(aligned_vec::<u16>([].as_ref()), vec![]);

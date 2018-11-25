@@ -67,7 +67,7 @@ pub fn check_alignment<T, U>(data: &[T]) -> Result<(), Error> {
 #[cfg(test)]
 mod tests {
     use super::check_alignment;
-    use std::mem::align_of;
+    use core::mem::align_of;
 
     #[test]
     fn smoke_check_alignment_from_4() {
