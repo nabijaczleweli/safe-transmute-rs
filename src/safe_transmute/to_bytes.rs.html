@@ -513,7 +513,7 @@
     <span class="kw">let</span> <span class="ident">len</span> <span class="op">=</span> <span class="ident">from</span>.<span class="ident">len</span>() <span class="op">*</span> <span class="ident">size_of</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>();
     <span class="kw">let</span> <span class="ident">ptr</span> <span class="op">=</span> <span class="ident">from</span>.<span class="ident">as_mut_ptr</span>();
     <span class="ident">forget</span>(<span class="ident">from</span>);
-    <span class="ident">Vec</span>::<span class="ident">from_raw_parts</span>(<span class="ident">ptr</span> <span class="kw">as</span> <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">u8</span>, <span class="ident">capacity</span>, <span class="ident">len</span>)
+    <span class="ident">Vec</span>::<span class="ident">from_raw_parts</span>(<span class="ident">ptr</span> <span class="kw">as</span> <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">u8</span>, <span class="ident">len</span>, <span class="ident">capacity</span>)
 }
 
 <span class="doccomment">/// Transmute a vector of POD types into a vector of their bytes,</span>
