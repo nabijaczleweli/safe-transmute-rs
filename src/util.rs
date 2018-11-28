@@ -52,7 +52,7 @@ pub fn designalise_f64(f: f64) -> f64 {
 /// An `Error::Unaligned` error is raised with the number of bytes to discard
 /// from the front in order to make the conversion safe from alignment concerns.
 pub fn check_alignment<T, U>(data: &[T]) -> Result<(), Error> {
-    // !!! this could probably become more efficient once `ptr::align_offset`
+    // TODO this could probably become more efficient once `ptr::align_offset`
     // is stabilized (#44488)
     let ptr = data.as_ptr();
     let offset = ptr as usize % align_of::<U>();
