@@ -1,8 +1,3 @@
-#![cfg_attr(not(feature = "std"), no_std)]
-#[cfg(feature = "std")]
-extern crate core;
-extern crate safe_transmute;
-
 use safe_transmute::guarded_transmute_pod_many;
 use safe_transmute::guarded_transmute_to_bytes_pod_many;
 use safe_transmute::Error;

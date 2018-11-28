@@ -6,6 +6,7 @@ extern crate safe_transmute;
 
 
 mod util;
+mod alignment_check;
 mod guarded_transmute;
 mod guarded_transmute_many;
 mod guarded_transmute_pedantic;
