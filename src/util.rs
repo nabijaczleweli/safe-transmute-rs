@@ -63,33 +63,3 @@ pub fn check_alignment<T, U>(data: &[T]) -> Result<(), Error> {
         Ok(())
     }
 }
-
-#[cfg(test)]
-mod tests {
-    use super::check_alignment;
-    use core::mem::align_of;
-
-    #[test]
-    fn smoke_check_alignment_from_4() {
-        let x: [i32; 5] = [0x5555_5555; 5];
-        assert_eq!(align_of::<[i32; 5]>(), 4);
-        assert_eq!(check_alignment::<_, u8>(&x[..]), Ok(()));
-        assert_eq!(check_alignment::<_, i8>(&x[..]), Ok(()));
-        assert_eq!(check_alignment::<_, u16>(&x[..]), Ok(()));
-        assert_eq!(check_alignment::<_, i16>(&x[..]), Ok(()));
-        assert_eq!(check_alignment::<_, u32>(&x[..]), Ok(()));
-    }
-
-    #[test]
-    fn smoke_check_alignment_from_8() {
-        let x: [i64; 5] = [0x5555_5555_5555_5555; 5];
-        assert_eq!(align_of::<[i64; 5]>(), 8);
-        assert_eq!(check_alignment::<_, u8>(&x[..]), Ok(()));
-        assert_eq!(check_alignment::<_, i8>(&x[..]), Ok(()));
-        assert_eq!(check_alignment::<_, u16>(&x[..]), Ok(()));
-        assert_eq!(check_alignment::<_, i16>(&x[..]), Ok(()));
-        assert_eq!(check_alignment::<_, u32>(&x[..]), Ok(()));
-        assert_eq!(check_alignment::<_, i32>(&x[..]), Ok(()));
-        assert_eq!(check_alignment::<_, u64>(&x[..]), Ok(()));
-    }
-}
