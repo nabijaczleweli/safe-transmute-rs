@@ -44,7 +44,7 @@ pub fn designalise_f64(f: f64) -> f64 {
     unsafe { transmute(f) }
 }
 
-/// Check wheter the given data slice of `T`s is properly aligned for reading
+/// Check whether the given data slice of `T`s is properly aligned for reading
 /// and writing as a slice of `U`s.
 /// 
 /// # Errors
