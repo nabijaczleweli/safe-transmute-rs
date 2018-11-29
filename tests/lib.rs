@@ -4,6 +4,11 @@ extern crate core;
 
 extern crate safe_transmute;
 
+#[cfg(feature = "std")]
+use core::mem::{align_of, forget, size_of};
+#[cfg(all(target_endian = "big", not(feature = "std")))]
+use core::mem::size_of;
+
 
 mod util;
 mod alignment_check;

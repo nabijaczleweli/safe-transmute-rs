@@ -1,7 +1,3 @@
-#[cfg(target_endian = "big")]
-use core::mem::size_of;
-
-
 /// Verify: http://play.integer32.com/?gist=4cd795d6f45898c876a754cd3f3c2aaa&version=stable
 trait LeToNative {
     fn le_to_native<T: Sized>(self) -> Self;

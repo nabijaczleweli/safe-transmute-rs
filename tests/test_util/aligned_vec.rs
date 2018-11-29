@@ -1,6 +1,3 @@
-#[cfg(feature = "std")]
-use std::mem::{align_of, forget, size_of};
-
 /// Create a new vector that is sure to have an alignment compatible
 /// with `T` at creation time.
 ///
