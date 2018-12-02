@@ -3,14 +3,15 @@
 //! Transmuting to `bool` is not undefined behavior if the transmuted value is
 //! either 0 or 1. These functions will return an error if the integer value
 //! behind the `bool` value is neither one.
-//! 
+//!
 //! # Note
-//! 
+//!
 //! Currently, these functions only work on systems in which the size of `bool`
 //! is exactly 1 (which are all platforms supported by Rust at the time of
 //! writing). In the event that you find a platform with an unexpected `bool`
 //! size, please report at the project's
 //! [issue tracker](https://github.com/nabijaczleweli/safe-transmute-rs/issues/new).
+
 
 use self::super::guard::{PermissiveGuard, PedanticGuard, Guard};
 use self::super::base::guarded_transmute_many;
@@ -33,6 +34,7 @@ use self::super::Error;
 #[inline]
 pub fn bytes_are_bool(v: &[u8]) -> bool {
     let _bool_must_be_1_byte_pls_report = transmute::<bool, u8>;
+
     v.iter().cloned().all(byte_is_bool)
 }
 
