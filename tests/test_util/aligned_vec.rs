@@ -19,16 +19,3 @@ fn aligned_vec<T>(bytes: &[u8]) -> Vec<u8> {
         vec
     }
 }
-
-#[cfg(feature = "std")]
-#[test]
-fn test_aligned_vec() {
-    assert_eq!(aligned_vec::<u16>([].as_ref()), vec![]);
-    assert_eq!(aligned_vec::<i32>([].as_ref()), vec![]);
-    assert_eq!(aligned_vec::<u64>([].as_ref()), vec![]);
-
-    assert_eq!(aligned_vec::<u64>([0].as_ref()), vec![0]);
-    assert_eq!(aligned_vec::<u32>([1, 2].as_ref()), vec![1, 2]);
-    assert_eq!(aligned_vec::<u64>([1, 2, 3].as_ref()), vec![1, 2, 3]);
-    assert_eq!(aligned_vec::<u64>([0xAA; 20].as_ref()), vec![0xAA; 20]);
-}

@@ -1,7 +1,7 @@
 use safe_transmute::util;
 use core::{f32, f64};
 use core::mem::align_of;
-
+use super::aligned_vec;
 
 #[test]
 fn designalise_f32() {
@@ -39,4 +39,17 @@ fn smoke_check_alignment_from_8() {
     assert_eq!(util::check_alignment::<_, u32>(&x[..]), Ok(()));
     assert_eq!(util::check_alignment::<_, i32>(&x[..]), Ok(()));
     assert_eq!(util::check_alignment::<_, u64>(&x[..]), Ok(()));
+}
+
+#[cfg(feature = "std")]
+#[test]
+fn test_aligned_vec() {
+    assert_eq!(aligned_vec::<u16>([].as_ref()), vec![]);
+    assert_eq!(aligned_vec::<i32>([].as_ref()), vec![]);
+    assert_eq!(aligned_vec::<u64>([].as_ref()), vec![]);
+
+    assert_eq!(aligned_vec::<u64>([0].as_ref()), vec![0]);
+    assert_eq!(aligned_vec::<u32>([1, 2].as_ref()), vec![1, 2]);
+    assert_eq!(aligned_vec::<u64>([1, 2, 3].as_ref()), vec![1, 2, 3]);
+    assert_eq!(aligned_vec::<u64>([0xAA; 20].as_ref()), vec![0xAA; 20]);
 }
