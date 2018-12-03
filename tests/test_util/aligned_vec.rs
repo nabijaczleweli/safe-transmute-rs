@@ -1,7 +1,16 @@
-/// Create a new vector that is sure to have an alignment compatible
-/// with `T` at creation time.
+/// Create a new vector that contains the given bytes and is sure to have a
+/// memory alignment compatible with `T` at creation time.
 ///
 /// Do not modify the vector, or this assurance is gone.
+/// 
+/// # Examples
+/// 
+/// ```
+/// let data: &[u8] = &[0xFF, 0xFF, 0x03, 0x00];
+/// let vev = aligned_vec::<u32>(data);
+/// // the vector's data is guaranteed to be aligned for access as a u32
+/// assert_eq!((vec.as_ptr() as usize) % align_of::<u32>(), 0);
+/// ```
 #[cfg(feature = "std")]
 fn aligned_vec<T>(bytes: &[u8]) -> Vec<u8> {
     let vec_len_offset = bytes.len() % size_of::<T>();
