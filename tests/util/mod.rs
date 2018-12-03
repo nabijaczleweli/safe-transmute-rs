@@ -1,6 +1,7 @@
 use safe_transmute::util;
 use core::{f32, f64};
 use core::mem::align_of;
+#[cfg(feature = "std")]
 use super::aligned_vec;
 
 #[test]
