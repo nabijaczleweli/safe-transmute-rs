@@ -13,6 +13,8 @@
 /// ```
 #[cfg(feature = "std")]
 fn aligned_vec<T>(bytes: &[u8]) -> Vec<u8> {
+    use core::mem::{align_of, forget, size_of};
+
     let vec_len_offset = bytes.len() % size_of::<T>();
     let vec_len = bytes.len() / size_of::<T>();
     let capacity = if vec_len_offset > 0 { vec_len + 1 } else { vec_len };
