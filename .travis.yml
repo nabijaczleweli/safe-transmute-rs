@@ -36,6 +36,9 @@ before_script:
       rustup target add $CROSS_TARGET;
       cargo install cross --force;
     fi
+  - if [ "$CLIPPY" ]; then
+      rustup component add clippy-preview;
+    fi
 
 script:
   - cargo build --verbose
@@ -45,7 +48,6 @@ script:
       cargo test --verbose $CARGO_DEFAULT_FEATURES;
     fi
   - if [ "$CLIPPY" ]; then
-      cargo install -f clippy;
       cargo clippy;
     fi
   - if [ "$TRAVIS_TAG" ]; then cargo build --verbose --release; fi
