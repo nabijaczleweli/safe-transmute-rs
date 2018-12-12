@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `src/lib.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>lib.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../dark.css"><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script src="../../storage.js"></script></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../theme.js"></script><nav class="sub"><form class="search-form js-only"><div class="search-container"><input class="search-input" name="search" autocomplete="off" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><a id="settings-menu" href="../../settings.html"><img src="../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">  1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `src/lib.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>lib.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../dark.css"><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script src="../../storage.js"></script></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../theme.js"></script><nav class="sub"><form class="search-form js-only"><div class="search-container"><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><a id="settings-menu" href="../../settings.html"><img src="../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">  1</span>
 <span id="2">  2</span>
 <span id="3">  3</span>
 <span id="4">  4</span>
@@ -341,10 +341,6 @@
 <span id="341">341</span>
 <span id="342">342</span>
 <span id="343">343</span>
-<span id="344">344</span>
-<span id="345">345</span>
-<span id="346">346</span>
-<span id="347">347</span>
 </pre><pre class="rust ">
 <span class="doccomment">//! This crate contains checked implementations of `transmute()`.</span>
 <span class="doccomment">//!</span>
@@ -357,10 +353,6 @@
 <span class="doccomment">//!</span>
 <span class="doccomment">//! Other functions in this crate, on the other hand, provide enough safety measures to ensure safety in</span>
 <span class="doccomment">//! all circumstances. This is the case for those found in the `pod` and `bool` modules.</span>
-<span class="doccomment">//!</span>
-<span class="doccomment">//! Take note, however, that alignment is *unaccounted for*: you may, in the course of using this crate,</span>
-<span class="doccomment">//! invoke unaligned access, which some CPUs *may* trap on; that did not, however, happen in any of our tests on</span>
-<span class="doccomment">//! MIPS64 (BE), x86_64 (LE), nor armv6l (LE).</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! This crate can be used in a no-`std` environment by disabling the `std` feature through specifying</span>
 <span class="doccomment">//! `default-features = false` on import.</span>
@@ -450,9 +442,9 @@
 <span class="kw">mod</span> <span class="ident">to_bytes</span>;
 
 <span class="kw">use</span> <span class="ident">core</span>::<span class="ident">slice</span>;
-<span class="kw">use</span> <span class="ident">core</span>::<span class="ident">mem</span>::<span class="ident">size_of</span>;
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;std&quot;</span>)]</span>
 <span class="kw">use</span> <span class="ident">core</span>::<span class="ident">mem</span>::<span class="ident">forget</span>;
+<span class="kw">use</span> <span class="ident">core</span>::<span class="ident">mem</span>::<span class="ident">size_of</span>;
 <span class="kw">use</span> <span class="ident">guard</span>::{<span class="ident">SingleValueGuard</span>, <span class="ident">PermissiveGuard</span>, <span class="ident">SingleManyGuard</span>, <span class="ident">PedanticGuard</span>, <span class="ident">Guard</span>};
 
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">util</span>;
@@ -462,7 +454,7 @@
 
 <span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span>::<span class="ident">to_bytes</span>::{<span class="ident">guarded_transmute_to_bytes_pod_many</span>, <span class="ident">guarded_transmute_to_bytes_many</span>, <span class="ident">guarded_transmute_to_bytes_pod</span>, <span class="ident">guarded_transmute_to_bytes</span>};
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;std&quot;</span>)]</span>
-<span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span>::<span class="ident">to_bytes</span>::{<span class="ident">guarded_transmute_to_bytes_vec</span>, <span class="ident">guarded_transmute_to_bytes_pod_vec</span>};
+<span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span>::<span class="ident">to_bytes</span>::{<span class="ident">guarded_transmute_to_bytes_pod_vec</span>, <span class="ident">guarded_transmute_to_bytes_vec</span>};
 
 <span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span>::<span class="ident">pod</span>::{<span class="ident">PodTransmutable</span>, <span class="ident">guarded_transmute_pod_many_permissive</span>, <span class="ident">guarded_transmute_pod_many_pedantic</span>, <span class="ident">guarded_transmute_pod_pedantic</span>,
                     <span class="ident">guarded_transmute_pod_many</span>, <span class="ident">guarded_transmute_pod</span>};

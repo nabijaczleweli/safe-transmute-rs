@@ -1,1 +1,1 @@
-initSidebarItems({"fn":[["designalise_f32","If the specified 32-bit float is a signaling NaN, make it a quiet NaN."],["designalise_f64","If the specified 64-bit float is a signaling NaN, make it a quiet NaN."]]});
+initSidebarItems({"fn":[["check_alignment","Check whether the given data slice of `T`s is properly aligned for reading and writing as a slice of `U`s."],["designalise_f32","If the specified 32-bit float is a signaling NaN, make it a quiet NaN."],["designalise_f64","If the specified 64-bit float is a signaling NaN, make it a quiet NaN."]]});

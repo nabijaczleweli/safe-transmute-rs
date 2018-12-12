@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `src/pod.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>pod.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../dark.css"><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script src="../../storage.js"></script></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../theme.js"></script><nav class="sub"><form class="search-form js-only"><div class="search-container"><input class="search-input" name="search" autocomplete="off" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><a id="settings-menu" href="../../settings.html"><img src="../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">  1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `src/pod.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>pod.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../dark.css"><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script src="../../storage.js"></script></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../theme.js"></script><nav class="sub"><form class="search-form js-only"><div class="search-container"><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><a id="settings-menu" href="../../settings.html"><img src="../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">  1</span>
 <span id="2">  2</span>
 <span id="3">  3</span>
 <span id="4">  4</span>
@@ -269,11 +269,103 @@
 <span id="269">269</span>
 <span id="270">270</span>
 <span id="271">271</span>
+<span id="272">272</span>
+<span id="273">273</span>
+<span id="274">274</span>
+<span id="275">275</span>
+<span id="276">276</span>
+<span id="277">277</span>
+<span id="278">278</span>
+<span id="279">279</span>
+<span id="280">280</span>
+<span id="281">281</span>
+<span id="282">282</span>
+<span id="283">283</span>
+<span id="284">284</span>
+<span id="285">285</span>
+<span id="286">286</span>
+<span id="287">287</span>
+<span id="288">288</span>
+<span id="289">289</span>
+<span id="290">290</span>
+<span id="291">291</span>
+<span id="292">292</span>
+<span id="293">293</span>
+<span id="294">294</span>
+<span id="295">295</span>
+<span id="296">296</span>
+<span id="297">297</span>
+<span id="298">298</span>
+<span id="299">299</span>
+<span id="300">300</span>
+<span id="301">301</span>
+<span id="302">302</span>
+<span id="303">303</span>
+<span id="304">304</span>
+<span id="305">305</span>
+<span id="306">306</span>
+<span id="307">307</span>
+<span id="308">308</span>
+<span id="309">309</span>
+<span id="310">310</span>
+<span id="311">311</span>
+<span id="312">312</span>
+<span id="313">313</span>
+<span id="314">314</span>
+<span id="315">315</span>
+<span id="316">316</span>
+<span id="317">317</span>
+<span id="318">318</span>
+<span id="319">319</span>
+<span id="320">320</span>
+<span id="321">321</span>
+<span id="322">322</span>
+<span id="323">323</span>
+<span id="324">324</span>
+<span id="325">325</span>
+<span id="326">326</span>
+<span id="327">327</span>
+<span id="328">328</span>
+<span id="329">329</span>
+<span id="330">330</span>
+<span id="331">331</span>
+<span id="332">332</span>
+<span id="333">333</span>
+<span id="334">334</span>
+<span id="335">335</span>
+<span id="336">336</span>
+<span id="337">337</span>
+<span id="338">338</span>
+<span id="339">339</span>
+<span id="340">340</span>
+<span id="341">341</span>
+<span id="342">342</span>
+<span id="343">343</span>
+<span id="344">344</span>
+<span id="345">345</span>
+<span id="346">346</span>
+<span id="347">347</span>
+<span id="348">348</span>
+<span id="349">349</span>
+<span id="350">350</span>
+<span id="351">351</span>
+<span id="352">352</span>
+<span id="353">353</span>
 </pre><pre class="rust ">
+<span class="doccomment">//! Plain data object safe transmute</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! Functions in this module are guarded from out-of-bounds memory access as well as from unaligned access,</span>
+<span class="doccomment">//! raising errors on both cases. Moreover, only a safe subset of types (which implement</span>
+<span class="doccomment">//! [`PodTransmutable`](trait.PodTransmutable.html)) can be used as the transmute target, thus ensuring</span>
+<span class="doccomment">//! full safety.</span>
+
+
 <span class="kw">use</span> <span class="self">self</span>::<span class="kw">super</span>::{<span class="ident">Error</span>, <span class="ident">guarded_transmute_many_permissive</span>, <span class="ident">guarded_transmute_many_pedantic</span>, <span class="ident">guarded_transmute_pedantic</span>, <span class="ident">guarded_transmute_many</span>,
                   <span class="ident">guarded_transmute</span>};
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;std&quot;</span>)]</span>
 <span class="kw">use</span> <span class="self">self</span>::<span class="kw">super</span>::{<span class="ident">guarded_transmute_vec_permissive</span>, <span class="ident">guarded_transmute_vec_pedantic</span>, <span class="ident">guarded_transmute_vec</span>};
+<span class="kw">use</span> <span class="kw">super</span>::<span class="ident">util</span>::<span class="ident">check_alignment</span>;
+
 
 <span class="doccomment">/// Type that can be non-`unsafe`ly transmuted into</span>
 <span class="doccomment">///</span>
@@ -355,9 +447,17 @@
 <span class="doccomment">/// The byte slice must have at least enough bytes to fill a single instance of a type,</span>
 <span class="doccomment">/// extraneous data is ignored.</span>
 <span class="doccomment">///</span>
+<span class="doccomment">/// # Errors</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// An error is raised in one of the following situations:</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// - The data does not have a memory alignment compatible with `T`. You will</span>
+<span class="doccomment">///   have to make a copy anyway, or modify how the data was originally made.</span>
+<span class="doccomment">/// - The data does not have enough bytes for a single value `T`.</span>
+<span class="doccomment">///</span>
 <span class="doccomment">/// # Examples</span>
 <span class="doccomment">///</span>
-<span class="doccomment">/// ```</span>
+<span class="doccomment">/// ```no_run</span>
 <span class="doccomment">/// # use safe_transmute::guarded_transmute_pod;</span>
 <span class="doccomment">/// # include!(&quot;../tests/test_util/le_to_native.rs&quot;);</span>
 <span class="doccomment">/// # fn main() {</span>
@@ -369,6 +469,7 @@
 <span class="doccomment">/// # }</span>
 <span class="doccomment">/// ```</span>
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">guarded_transmute_pod</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">PodTransmutable</span><span class="op">&gt;</span>(<span class="ident">bytes</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>]) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">Error</span><span class="op">&gt;</span> {
+    <span class="ident">check_alignment</span>::<span class="op">&lt;</span><span class="kw">_</span>, <span class="ident">T</span><span class="op">&gt;</span>(<span class="ident">bytes</span>)<span class="question-mark">?</span>;
     <span class="kw">unsafe</span> { <span class="ident">guarded_transmute</span>(<span class="ident">bytes</span>) }
 }
 
@@ -376,9 +477,18 @@
 <span class="doccomment">///</span>
 <span class="doccomment">/// The byte slice must have exactly enough bytes to fill a single instance of a type.</span>
 <span class="doccomment">///</span>
+<span class="doccomment">/// # Errors</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// An error is raised in one of the following situations:</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// - The data does not have a memory alignment compatible with `T`. You will</span>
+<span class="doccomment">///   have to make a copy anyway, or modify how the data was originally made.</span>
+<span class="doccomment">/// - The data does not have enough bytes for a single value `T`.</span>
+<span class="doccomment">/// - The data has more bytes than those required to produce a single value `T`.</span>
+<span class="doccomment">///</span>
 <span class="doccomment">/// # Examples</span>
 <span class="doccomment">///</span>
-<span class="doccomment">/// ```</span>
+<span class="doccomment">/// ```no_run</span>
 <span class="doccomment">/// # use safe_transmute::guarded_transmute_pod_pedantic;</span>
 <span class="doccomment">/// # include!(&quot;../tests/test_util/le_to_native.rs&quot;);</span>
 <span class="doccomment">/// # fn main() {</span>
@@ -390,6 +500,7 @@
 <span class="doccomment">/// # }</span>
 <span class="doccomment">/// ```</span>
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">guarded_transmute_pod_pedantic</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">PodTransmutable</span><span class="op">&gt;</span>(<span class="ident">bytes</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>]) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">Error</span><span class="op">&gt;</span> {
+    <span class="ident">check_alignment</span>::<span class="op">&lt;</span><span class="kw">_</span>, <span class="ident">T</span><span class="op">&gt;</span>(<span class="ident">bytes</span>)<span class="question-mark">?</span>;
     <span class="kw">unsafe</span> { <span class="ident">guarded_transmute_pedantic</span>(<span class="ident">bytes</span>) }
 }
 
@@ -397,9 +508,17 @@
 <span class="doccomment">///</span>
 <span class="doccomment">/// The byte slice must have exactly enough bytes to fill a single instance of a type.</span>
 <span class="doccomment">///</span>
+<span class="doccomment">/// # Errors</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// An error is raised in one of the following situations:</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// - The data does not have a memory alignment compatible with `T`. You will</span>
+<span class="doccomment">///   have to make a copy anyway, or modify how the data was originally made.</span>
+<span class="doccomment">/// - The data does not have enough bytes for a single value `T`.</span>
+<span class="doccomment">///</span>
 <span class="doccomment">/// # Examples</span>
 <span class="doccomment">///</span>
-<span class="doccomment">/// ```</span>
+<span class="doccomment">/// ```no_run</span>
 <span class="doccomment">/// # use safe_transmute::guarded_transmute_pod_many;</span>
 <span class="doccomment">/// # include!(&quot;../tests/test_util/le_to_native.rs&quot;);</span>
 <span class="doccomment">/// # fn main() {</span>
@@ -412,6 +531,7 @@
 <span class="doccomment">/// # }</span>
 <span class="doccomment">/// ```</span>
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">guarded_transmute_pod_many</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">PodTransmutable</span><span class="op">&gt;</span>(<span class="ident">bytes</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>]) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="kw-2">&amp;</span>[<span class="ident">T</span>], <span class="ident">Error</span><span class="op">&gt;</span> {
+    <span class="ident">check_alignment</span>::<span class="op">&lt;</span><span class="kw">_</span>, <span class="ident">T</span><span class="op">&gt;</span>(<span class="ident">bytes</span>)<span class="question-mark">?</span>;
     <span class="kw">unsafe</span> { <span class="ident">guarded_transmute_many</span>(<span class="ident">bytes</span>) }
 }
 
@@ -419,14 +539,22 @@
 <span class="doccomment">///</span>
 <span class="doccomment">/// The resulting slice will have as many instances of a type as will fit, rounded down.</span>
 <span class="doccomment">///</span>
+<span class="doccomment">/// # Errors</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// An error is raised in one of the following situations:</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// - The data does not have a memory alignment compatible with `T`. You will</span>
+<span class="doccomment">///   have to make a copy anyway, or modify how the data was originally made.</span>
+<span class="doccomment">///</span>
 <span class="doccomment">/// # Examples</span>
 <span class="doccomment">///</span>
-<span class="doccomment">/// ```</span>
+<span class="doccomment">/// ```no_run</span>
 <span class="doccomment">/// # use safe_transmute::guarded_transmute_pod_many_permissive;</span>
-<span class="doccomment">/// assert_eq!(guarded_transmute_pod_many_permissive::&lt;u16&gt;(&amp;[0x00]), &amp;[]);</span>
+<span class="doccomment">/// assert_eq!(guarded_transmute_pod_many_permissive::&lt;u16&gt;(&amp;[0x00]), Ok([].as_ref()));</span>
 <span class="doccomment">/// ```</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">guarded_transmute_pod_many_permissive</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">PodTransmutable</span><span class="op">&gt;</span>(<span class="ident">bytes</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>]) <span class="op">-&gt;</span> <span class="kw-2">&amp;</span>[<span class="ident">T</span>] {
-    <span class="kw">unsafe</span> { <span class="ident">guarded_transmute_many_permissive</span>(<span class="ident">bytes</span>) }
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">guarded_transmute_pod_many_permissive</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">PodTransmutable</span><span class="op">&gt;</span>(<span class="ident">bytes</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>]) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="kw-2">&amp;</span>[<span class="ident">T</span>], <span class="ident">Error</span><span class="op">&gt;</span> {
+    <span class="ident">check_alignment</span>::<span class="op">&lt;</span><span class="kw">_</span>, <span class="ident">T</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="ident">bytes</span>)<span class="question-mark">?</span>;
+    <span class="kw">unsafe</span> { <span class="prelude-val">Ok</span>(<span class="ident">guarded_transmute_many_permissive</span>(<span class="ident">bytes</span>)) }
 }
 
 <span class="doccomment">/// View a byte slice as a slice of POD.</span>
@@ -434,9 +562,17 @@
 <span class="doccomment">/// The byte slice must have at least enough bytes to fill a single instance of a type,</span>
 <span class="doccomment">/// and should not have extraneous data.</span>
 <span class="doccomment">///</span>
+<span class="doccomment">/// # Errors</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// An error is raised in one of the following situations:</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// - The data does not have a memory alignment compatible with `T`. You will</span>
+<span class="doccomment">///   have to make a copy anyway, or modify how the data was originally made.</span>
+<span class="doccomment">/// - The data does not have enough bytes for a single value `T`.</span>
+<span class="doccomment">///</span>
 <span class="doccomment">/// # Examples</span>
 <span class="doccomment">///</span>
-<span class="doccomment">/// ```</span>
+<span class="doccomment">/// ```no_run</span>
 <span class="doccomment">/// # use safe_transmute::guarded_transmute_pod_many_pedantic;</span>
 <span class="doccomment">/// # include!(&quot;../tests/test_util/le_to_native.rs&quot;);</span>
 <span class="doccomment">/// # fn main() {</span>
@@ -449,6 +585,7 @@
 <span class="doccomment">/// # }</span>
 <span class="doccomment">/// ```</span>
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">guarded_transmute_pod_many_pedantic</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">PodTransmutable</span><span class="op">&gt;</span>(<span class="ident">bytes</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>]) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="kw-2">&amp;</span>[<span class="ident">T</span>], <span class="ident">Error</span><span class="op">&gt;</span> {
+    <span class="ident">check_alignment</span>::<span class="op">&lt;</span><span class="kw">_</span>, <span class="ident">T</span><span class="op">&gt;</span>(<span class="ident">bytes</span>)<span class="question-mark">?</span>;
     <span class="kw">unsafe</span> { <span class="ident">guarded_transmute_many_pedantic</span>(<span class="ident">bytes</span>) }
 }
 
@@ -458,9 +595,17 @@
 <span class="doccomment">/// should have at least enough bytes to fill a single instance of a type.</span>
 <span class="doccomment">/// Extraneous data is ignored.</span>
 <span class="doccomment">///</span>
+<span class="doccomment">/// # Errors</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// An error is raised in one of the following situations:</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// - The data does not have a memory alignment compatible with `T`. You will</span>
+<span class="doccomment">///   have to make a copy anyway, or modify how the data was originally made.</span>
+<span class="doccomment">/// - The data does not have enough bytes for a single value `T`.</span>
+<span class="doccomment">///</span>
 <span class="doccomment">/// # Examples</span>
 <span class="doccomment">///</span>
-<span class="doccomment">/// ```</span>
+<span class="doccomment">/// ```no_run</span>
 <span class="doccomment">/// # use safe_transmute::guarded_transmute_pod_vec;</span>
 <span class="doccomment">/// # include!(&quot;../tests/test_util/le_to_native.rs&quot;);</span>
 <span class="doccomment">/// # fn main() {</span>
@@ -481,6 +626,7 @@
 <span class="doccomment">/// ```</span>
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;std&quot;</span>)]</span>
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">guarded_transmute_pod_vec</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">PodTransmutable</span><span class="op">&gt;</span>(<span class="ident">bytes</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>, <span class="ident">Error</span><span class="op">&gt;</span> {
+    <span class="ident">check_alignment</span>::<span class="op">&lt;</span><span class="kw">_</span>, <span class="ident">T</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="ident">bytes</span>)<span class="question-mark">?</span>;
     <span class="kw">unsafe</span> { <span class="ident">guarded_transmute_vec</span>(<span class="ident">bytes</span>) }
 }
 
@@ -490,9 +636,16 @@
 <span class="doccomment">/// have as many instances of a type as will fit, rounded down.</span>
 <span class="doccomment">/// Extraneous data is ignored.</span>
 <span class="doccomment">///</span>
+<span class="doccomment">/// # Errors</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// An error is raised in one of the following situations:</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// - The data does not have a memory alignment compatible with `T`. You will</span>
+<span class="doccomment">///   have to make a copy anyway, or modify how the data was originally made.</span>
+<span class="doccomment">///</span>
 <span class="doccomment">/// # Examples</span>
 <span class="doccomment">///</span>
-<span class="doccomment">/// ```</span>
+<span class="doccomment">/// ```no_run</span>
 <span class="doccomment">/// # use safe_transmute::guarded_transmute_pod_vec_permissive;</span>
 <span class="doccomment">/// # include!(&quot;../tests/test_util/le_to_native.rs&quot;);</span>
 <span class="doccomment">/// # fn main() {</span>
@@ -501,18 +654,19 @@
 <span class="doccomment">/// assert_eq!(guarded_transmute_pod_vec_permissive::&lt;u16&gt;(vec![0x00, 0x01, 0x00, 0x02]),</span>
 <span class="doccomment">/// # */</span>
 <span class="doccomment">/// # assert_eq!(guarded_transmute_pod_vec_permissive::&lt;u16&gt;(vec![0x00, 0x01, 0x00, 0x02].le_to_native::&lt;u16&gt;()),</span>
-<span class="doccomment">///            vec![0x0100, 0x0200]);</span>
+<span class="doccomment">///            Ok(vec![0x0100, 0x0200]));</span>
 <span class="doccomment">/// # /*</span>
 <span class="doccomment">/// assert_eq!(guarded_transmute_pod_vec_permissive::&lt;u32&gt;(vec![0x04, 0x00, 0x00, 0x00, 0xED]),</span>
 <span class="doccomment">/// # */</span>
 <span class="doccomment">/// # assert_eq!(guarded_transmute_pod_vec_permissive::&lt;u32&gt;(vec![0x04, 0x00, 0x00, 0x00, 0xED].le_to_native::&lt;u32&gt;()),</span>
-<span class="doccomment">///            vec![0x00000004]);</span>
-<span class="doccomment">/// assert_eq!(guarded_transmute_pod_vec_permissive::&lt;u16&gt;(vec![0xED]), vec![]);</span>
+<span class="doccomment">///            Ok(vec![0x00000004]));</span>
+<span class="doccomment">/// assert_eq!(guarded_transmute_pod_vec_permissive::&lt;u16&gt;(vec![0xED]), Ok(vec![]));</span>
 <span class="doccomment">/// # }</span>
 <span class="doccomment">/// ```</span>
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;std&quot;</span>)]</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">guarded_transmute_pod_vec_permissive</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">PodTransmutable</span><span class="op">&gt;</span>(<span class="ident">bytes</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
-    <span class="kw">unsafe</span> { <span class="ident">guarded_transmute_vec_permissive</span>(<span class="ident">bytes</span>) }
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">guarded_transmute_pod_vec_permissive</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">PodTransmutable</span><span class="op">&gt;</span>(<span class="ident">bytes</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>, <span class="ident">Error</span><span class="op">&gt;</span> {
+    <span class="ident">check_alignment</span>::<span class="op">&lt;</span><span class="kw">_</span>, <span class="ident">T</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="ident">bytes</span>)<span class="question-mark">?</span>;
+    <span class="kw">unsafe</span> { <span class="prelude-val">Ok</span>(<span class="ident">guarded_transmute_vec_permissive</span>(<span class="ident">bytes</span>)) }
 }
 
 <span class="doccomment">/// Trasform a byte vector into a vector of POD.</span>
@@ -520,9 +674,18 @@
 <span class="doccomment">/// The vector&#39;s allocated byte buffer will be reused when possible, and</span>
 <span class="doccomment">/// should not have extraneous data.</span>
 <span class="doccomment">///</span>
+<span class="doccomment">/// # Errors</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// An error is raised in one of the following situations:</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// - The data does not have a memory alignment compatible with `T`. You will</span>
+<span class="doccomment">///   have to make a copy anyway, or modify how the data was originally made.</span>
+<span class="doccomment">/// - The data does not have enough bytes for a single value `T`.</span>
+<span class="doccomment">/// - The last chunk of the size of `T` is not large enough for a value, leaving extraneous bytes.</span>
+<span class="doccomment">///</span>
 <span class="doccomment">/// # Examples</span>
 <span class="doccomment">///</span>
-<span class="doccomment">/// ```</span>
+<span class="doccomment">/// ```no_run</span>
 <span class="doccomment">/// # use safe_transmute::guarded_transmute_pod_vec_pedantic;</span>
 <span class="doccomment">/// # include!(&quot;../tests/test_util/le_to_native.rs&quot;);</span>
 <span class="doccomment">/// # fn main() {</span>
@@ -539,6 +702,7 @@
 <span class="doccomment">/// ```</span>
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;std&quot;</span>)]</span>
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">guarded_transmute_pod_vec_pedantic</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">PodTransmutable</span><span class="op">&gt;</span>(<span class="ident">bytes</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>, <span class="ident">Error</span><span class="op">&gt;</span> {
+    <span class="ident">check_alignment</span>::<span class="op">&lt;</span><span class="kw">_</span>, <span class="ident">T</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="ident">bytes</span>)<span class="question-mark">?</span>;
     <span class="kw">unsafe</span> { <span class="ident">guarded_transmute_vec_pedantic</span>(<span class="ident">bytes</span>) }
 }
 </pre>
