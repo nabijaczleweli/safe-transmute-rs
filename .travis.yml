@@ -37,7 +37,7 @@ before_script:
       cargo install cross --force;
     fi
   - if [ "$CLIPPY" ]; then
-      rustup component add clippy-preview;
+      CLIPPY_INSTALLED=0 && (rustup component add clippy-preview || cargo install --git https://github.com/rust-lang/rust-clippy clippy -f) && CLIPPY_INSTALLED=1;
     fi
 
 script:
@@ -47,7 +47,7 @@ script:
     else
       cargo test --verbose $CARGO_DEFAULT_FEATURES;
     fi
-  - if [ "$CLIPPY" ]; then
+  - if [ "$CLIPPY_INSTALLED" == 1 ]; then
       cargo clippy;
     fi
   - if [ "$TRAVIS_TAG" ]; then cargo build --verbose --release; fi
