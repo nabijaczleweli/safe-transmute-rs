@@ -19,7 +19,7 @@ fn too_short() {
 
 #[test]
 fn just_enough() {
-    let words: &[u16] = &[0x01000, 0x02000];
+    let words: &[u16] = &[0x1000, 0x2000];
     let bytes = guarded_transmute_to_bytes_pod_many(words);
     assert_eq!(guarded_transmute_pod_many_pedantic::<u16>(&bytes[..2]), Ok(&words[..1]));
     assert_eq!(guarded_transmute_pod_many_pedantic::<u16>(bytes), Ok(words));
@@ -27,7 +27,7 @@ fn just_enough() {
 
 #[test]
 fn too_much() {
-    let words: &[u16] = &[0x01000, 0x02000, 0x0300];
+    let words: &[u16] = &[0x1000, 0x2000, 0x300];
     let bytes = guarded_transmute_to_bytes_pod_many(words);
     assert_eq!(guarded_transmute_pod_many_pedantic::<u16>(&bytes[..3]),
                Err(Error::Guard(GuardError {

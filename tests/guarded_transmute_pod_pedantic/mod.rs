@@ -20,7 +20,7 @@ fn too_short() {
 #[test]
 fn just_enough() {
     assert_eq!(guarded_transmute_pod_pedantic::<u32>(&guarded_transmute_to_bytes_pod_many::<u32>(&[0x0100_0000])),
-               Ok(0x01000000));
+               Ok(0x0100_0000));
 }
 
 #[test]

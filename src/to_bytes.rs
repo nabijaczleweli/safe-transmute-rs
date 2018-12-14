@@ -19,7 +19,7 @@ use core::slice;
 /// # include!("../tests/test_util/le_to_native.rs");
 /// # fn main() {
 /// # unsafe {
-/// assert_eq!(guarded_transmute_to_bytes(&0x01234567),
+/// assert_eq!(guarded_transmute_to_bytes(&0x0123_4567),
 /// # /*
 ///            &[0x67, 0x45, 0x23, 0x01]);
 /// # */
@@ -106,7 +106,7 @@ pub unsafe fn guarded_transmute_to_bytes_many<T>(from: &[T]) -> &[u8] {
 /// # use safe_transmute::guarded_transmute_to_bytes_pod;
 /// # include!("../tests/test_util/le_to_native.rs");
 /// # fn main() {
-/// assert_eq!(guarded_transmute_to_bytes_pod(&0x01234567),
+/// assert_eq!(guarded_transmute_to_bytes_pod(&0x0123_4567),
 /// # /*
 ///            &[0x67, 0x45, 0x23, 0x01]);
 /// # */

@@ -11,7 +11,7 @@ fn unaligned_slicing_integers() {
     assert_eq!(guarded_transmute_pod_many::<u16>(&bytes[2..]), Ok(&words[1..]));
     assert_eq!(guarded_transmute_pod_many::<u16>(&bytes[3..]), Err(Error::Unaligned { offset: 1 }));
 
-    let words = [0x02EE01FF, 0x04CC03DD, 0x06AA05BB];
+    let words = [0x02EE_01FF, 0x04CC_03DD, 0x06AA_05BB];
     let bytes = guarded_transmute_to_bytes_pod_many(&words);
 
     assert_eq!(guarded_transmute_pod_many::<u32>(bytes), Ok(words.as_ref()));
@@ -21,7 +21,7 @@ fn unaligned_slicing_integers() {
     assert_eq!(guarded_transmute_pod_many::<u32>(&bytes[4..]), Ok(&words[1..]));
     assert_eq!(guarded_transmute_pod_many::<u32>(&bytes[5..]), Err(Error::Unaligned { offset: 3 }));
 
-    let words = [0x02EE01FF_04CC03DD];
+    let words = [0x02EE_01FF_04CC_03DD];
     let bytes = guarded_transmute_to_bytes_pod_many(&words);
     assert_eq!(guarded_transmute_pod_many::<u64>(bytes), Ok(words.as_ref()));
     for i in 1..8 {

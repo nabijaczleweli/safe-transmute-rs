@@ -24,7 +24,7 @@ fn too_short() {
 fn just_enough() {
     unsafe {
         assert_eq!(guarded_transmute_pedantic::<u32>(&[0x00, 0x00, 0x00, 0x01].le_to_native::<u32>()),
-                   Ok(0x01000000));
+                   Ok(0x0100_0000));
     }
 }
 
