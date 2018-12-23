@@ -463,9 +463,9 @@
 <span class="doccomment">/// # fn main() {</span>
 <span class="doccomment">/// // Little-endian</span>
 <span class="doccomment">/// # /*</span>
-<span class="doccomment">/// assert_eq!(guarded_transmute_pod::&lt;u32&gt;(&amp;[0x00, 0x00, 0x00, 0x01])?, 0x01000000);</span>
+<span class="doccomment">/// assert_eq!(guarded_transmute_pod::&lt;u32&gt;(&amp;[0x00, 0x00, 0x00, 0x01])?, 0x0100_0000);</span>
 <span class="doccomment">/// # */</span>
-<span class="doccomment">/// # assert_eq!(guarded_transmute_pod::&lt;u32&gt;(&amp;[0x00, 0x00, 0x00, 0x01].le_to_native::&lt;u32&gt;()).unwrap(), 0x01000000);</span>
+<span class="doccomment">/// # assert_eq!(guarded_transmute_pod::&lt;u32&gt;(&amp;[0x00, 0x00, 0x00, 0x01].le_to_native::&lt;u32&gt;()).unwrap(), 0x0100_0000);</span>
 <span class="doccomment">/// # }</span>
 <span class="doccomment">/// ```</span>
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">guarded_transmute_pod</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">PodTransmutable</span><span class="op">&gt;</span>(<span class="ident">bytes</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>]) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">Error</span><span class="op">&gt;</span> {
@@ -619,7 +619,7 @@
 <span class="doccomment">/// assert_eq!(guarded_transmute_pod_vec::&lt;u32&gt;(vec![0x04, 0x00, 0x00, 0x00, 0xED])?,</span>
 <span class="doccomment">/// # */</span>
 <span class="doccomment">/// # assert_eq!(guarded_transmute_pod_vec::&lt;u32&gt;(vec![0x04, 0x00, 0x00, 0x00, 0xED].le_to_native::&lt;u32&gt;()).unwrap(),</span>
-<span class="doccomment">///            vec![0x00000004]);</span>
+<span class="doccomment">///            vec![0x0000_0004]);</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// assert!(guarded_transmute_pod_vec::&lt;i16&gt;(vec![0xED]).is_err());</span>
 <span class="doccomment">/// # }</span>
@@ -659,7 +659,7 @@
 <span class="doccomment">/// assert_eq!(guarded_transmute_pod_vec_permissive::&lt;u32&gt;(vec![0x04, 0x00, 0x00, 0x00, 0xED]),</span>
 <span class="doccomment">/// # */</span>
 <span class="doccomment">/// # assert_eq!(guarded_transmute_pod_vec_permissive::&lt;u32&gt;(vec![0x04, 0x00, 0x00, 0x00, 0xED].le_to_native::&lt;u32&gt;()),</span>
-<span class="doccomment">///            Ok(vec![0x00000004]));</span>
+<span class="doccomment">///            Ok(vec![0x0000_0004]));</span>
 <span class="doccomment">/// assert_eq!(guarded_transmute_pod_vec_permissive::&lt;u16&gt;(vec![0xED]), Ok(vec![]));</span>
 <span class="doccomment">/// # }</span>
 <span class="doccomment">/// ```</span>

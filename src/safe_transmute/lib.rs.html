@@ -480,9 +480,9 @@
 <span class="doccomment">/// // Little-endian</span>
 <span class="doccomment">/// # unsafe {</span>
 <span class="doccomment">/// # /*</span>
-<span class="doccomment">/// assert_eq!(guarded_transmute::&lt;u32&gt;(&amp;[0x00, 0x00, 0x00, 0x01])?, 0x01000000);</span>
+<span class="doccomment">/// assert_eq!(guarded_transmute::&lt;u32&gt;(&amp;[0x00, 0x00, 0x00, 0x01])?, 0x0100_0000);</span>
 <span class="doccomment">/// # */</span>
-<span class="doccomment">/// # assert_eq!(guarded_transmute::&lt;u32&gt;(&amp;[0x00, 0x00, 0x00, 0x01].le_to_native::&lt;u32&gt;()).unwrap(), 0x01000000);</span>
+<span class="doccomment">/// # assert_eq!(guarded_transmute::&lt;u32&gt;(&amp;[0x00, 0x00, 0x00, 0x01].le_to_native::&lt;u32&gt;()).unwrap(), 0x0100_0000);</span>
 <span class="doccomment">/// # }</span>
 <span class="doccomment">/// # }</span>
 <span class="doccomment">/// ```</span>
@@ -607,7 +607,7 @@
 <span class="doccomment">/// assert_eq!(guarded_transmute_vec::&lt;u32&gt;(vec![0x04, 0x00, 0x00, 0x00, 0xED])?,</span>
 <span class="doccomment">/// # */</span>
 <span class="doccomment">/// # assert_eq!(guarded_transmute_vec::&lt;u32&gt;(vec![0x04, 0x00, 0x00, 0x00, 0xED].le_to_native::&lt;u32&gt;()).unwrap(),</span>
-<span class="doccomment">///            vec![0x00000004]);</span>
+<span class="doccomment">///            vec![0x0000_0004]);</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// assert!(guarded_transmute_vec::&lt;i16&gt;(vec![0xED]).is_err());</span>
 <span class="doccomment">/// # }</span>
@@ -642,7 +642,7 @@
 <span class="doccomment">/// assert_eq!(guarded_transmute_vec_permissive::&lt;u32&gt;(vec![0x04, 0x00, 0x00, 0x00, 0xED]),</span>
 <span class="doccomment">/// # */</span>
 <span class="doccomment">/// # assert_eq!(guarded_transmute_vec_permissive::&lt;u32&gt;(vec![0x04, 0x00, 0x00, 0x00, 0xED].le_to_native::&lt;u32&gt;()),</span>
-<span class="doccomment">///            vec![0x00000004]);</span>
+<span class="doccomment">///            vec![0x0000_0004]);</span>
 <span class="doccomment">/// assert_eq!(guarded_transmute_vec_permissive::&lt;u16&gt;(vec![0xED]), vec![]);</span>
 <span class="doccomment">/// # }</span>
 <span class="doccomment">/// # }</span>

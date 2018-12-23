@@ -301,7 +301,7 @@
 <span class="doccomment">/// # include!(&quot;../tests/test_util/le_to_native.rs&quot;);</span>
 <span class="doccomment">/// # fn main() {</span>
 <span class="doccomment">/// # unsafe {</span>
-<span class="doccomment">/// assert_eq!(guarded_transmute_to_bytes(&amp;0x01234567),</span>
+<span class="doccomment">/// assert_eq!(guarded_transmute_to_bytes(&amp;0x0123_4567),</span>
 <span class="doccomment">/// # /*</span>
 <span class="doccomment">///            &amp;[0x67, 0x45, 0x23, 0x01]);</span>
 <span class="doccomment">/// # */</span>
@@ -388,7 +388,7 @@
 <span class="doccomment">/// # use safe_transmute::guarded_transmute_to_bytes_pod;</span>
 <span class="doccomment">/// # include!(&quot;../tests/test_util/le_to_native.rs&quot;);</span>
 <span class="doccomment">/// # fn main() {</span>
-<span class="doccomment">/// assert_eq!(guarded_transmute_to_bytes_pod(&amp;0x01234567),</span>
+<span class="doccomment">/// assert_eq!(guarded_transmute_to_bytes_pod(&amp;0x0123_4567),</span>
 <span class="doccomment">/// # /*</span>
 <span class="doccomment">///            &amp;[0x67, 0x45, 0x23, 0x01]);</span>
 <span class="doccomment">/// # */</span>
