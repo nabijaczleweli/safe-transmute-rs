@@ -1,4 +1,4 @@
-use safe_transmute::guarded_transmute_many_permissive;
+use safe_transmute::base::guarded_transmute_many_permissive;
 use self::super::LeToNative;
 
 

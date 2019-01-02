@@ -1,4 +1,5 @@
 use safe_transmute::util;
+use safe_transmute::align::check_alignment;
 use core::mem::align_of;
 #[cfg(feature = "std")]
 use super::aligned_vec;
@@ -23,24 +24,24 @@ fn designalise_f64() {
 fn smoke_check_alignment_from_4() {
     let x: [i32; 5] = [0x5555_5555; 5];
     assert_eq!(align_of::<[i32; 5]>(), 4);
-    assert_eq!(util::check_alignment::<_, u8>(&x[..]), Ok(()));
-    assert_eq!(util::check_alignment::<_, i8>(&x[..]), Ok(()));
-    assert_eq!(util::check_alignment::<_, u16>(&x[..]), Ok(()));
-    assert_eq!(util::check_alignment::<_, i16>(&x[..]), Ok(()));
-    assert_eq!(util::check_alignment::<_, u32>(&x[..]), Ok(()));
+    assert_eq!(check_alignment::<_, u8>(&x[..]), Ok(()));
+    assert_eq!(check_alignment::<_, i8>(&x[..]), Ok(()));
+    assert_eq!(check_alignment::<_, u16>(&x[..]), Ok(()));
+    assert_eq!(check_alignment::<_, i16>(&x[..]), Ok(()));
+    assert_eq!(check_alignment::<_, u32>(&x[..]), Ok(()));
 }
 
 #[test]
 fn smoke_check_alignment_from_8() {
     let x: [i64; 5] = [0x5555_5555_5555_5555; 5];
     assert_eq!(align_of::<[i64; 5]>(), 8);
-    assert_eq!(util::check_alignment::<_, u8>(&x[..]), Ok(()));
-    assert_eq!(util::check_alignment::<_, i8>(&x[..]), Ok(()));
-    assert_eq!(util::check_alignment::<_, u16>(&x[..]), Ok(()));
-    assert_eq!(util::check_alignment::<_, i16>(&x[..]), Ok(()));
-    assert_eq!(util::check_alignment::<_, u32>(&x[..]), Ok(()));
-    assert_eq!(util::check_alignment::<_, i32>(&x[..]), Ok(()));
-    assert_eq!(util::check_alignment::<_, u64>(&x[..]), Ok(()));
+    assert_eq!(check_alignment::<_, u8>(&x[..]), Ok(()));
+    assert_eq!(check_alignment::<_, i8>(&x[..]), Ok(()));
+    assert_eq!(check_alignment::<_, u16>(&x[..]), Ok(()));
+    assert_eq!(check_alignment::<_, i16>(&x[..]), Ok(()));
+    assert_eq!(check_alignment::<_, u32>(&x[..]), Ok(()));
+    assert_eq!(check_alignment::<_, i32>(&x[..]), Ok(()));
+    assert_eq!(check_alignment::<_, u64>(&x[..]), Ok(()));
 }
 
 #[cfg(feature = "std")]

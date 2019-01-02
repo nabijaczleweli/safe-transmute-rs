@@ -1,8 +1,7 @@
 //! Module containing various utility functions.
 
 
-use core::mem::{transmute, align_of, size_of};
-use super::Error;
+use core::mem::transmute;
 
 
 /// If the specified 32-bit float is a signaling NaN, make it a quiet NaN.
@@ -45,24 +44,4 @@ pub fn designalise_f64(f: f64) -> f64 {
     }
 
     f64::from_bits(f)
-}
-
-/// Check whether the given data slice of `T`s is properly aligned for reading
-/// and writing as a slice of `U`s.
-///
-/// # Errors
-///
-/// An `Error::Unaligned` error is raised with the number of bytes to discard
-/// from the front in order to make the conversion safe from alignment concerns.
-pub fn check_alignment<T, U>(data: &[T]) -> Result<(), Error> {
-    // TODO this could probably become more efficient once `ptr::align_offset`
-    // is stabilized (#44488)
-    let ptr = data.as_ptr();
-    let offset = ptr as usize % align_of::<U>();
-    if offset > 0 {
-        // reverse the offset (from "bytes to insert" to "bytes to remove")
-        Err(Error::Unaligned { offset: size_of::<U>() - offset })
-    } else {
-        Ok(())
-    }
 }

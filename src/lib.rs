@@ -1,69 +1,87 @@
-//! This crate contains checked implementations of `transmute()`.
+//! This crate contains checked implementations of transmutation procedures, some of which
+//! ensure memory safety.
+//! 
+//! ## Crate outline
+//! 
+//! The following modules are available:
+//! 
+//! - The functions in the [`base`](base/index.html) module are not inherently
+//! safe, but just protected against out of boundary access (like trying to
+//! create an 8-byte type from 7 bytes). These functions are as safe as
+//! the data passed to them: any attempt of transmuting data to an invalid
+//! memory representation is still undefined behavior. Moreover, unaligned
+//! memory access is not prevented, and must be previously ensured by the
+//! caller.
+//! - The [`guard`] module contains the **Guard** API, which imposes slice
+//! boundary restrictions in a conversion.
+//! - The [`pod`] module introduces the `PodTransmutable` trait, which
+//! statically ensures that any bit combination makes a valid value for a
+//! given type. The functions in this module are safer than [`base`], but still
+//! do not prevent unaligned memory access.
+//! - `to_bytes` enables the opposite operation of reintepreting values as bytes. 
+//! - The `bool` module ensures safe transmutation of bytes to boolean values and
+//! vice versa.
+//! - At the root of this crate, there are transmutation functions with enough
+//! checks to be considered safe to use in any circumstance. The operation may
+//! still arbitrarily raise (recoverable) errors due to unaligned data, but it
+//! will not eat your laundry.
 //!
-//! The base functions in this crate are not inherently safe, but just guarded against common simple mistakes
-//! (like trying to create an 8-byte type from 7 bytes).
-//! These functions are exactly as safe as the data passed to them - creating a null pointer,
-//! for example, is not unsafe in and of itself, but dereferencing it certainly *is*,
-//! but they don't do that (see [here](https://github.com/nabijaczleweli/safe-transmute-rs/issues/1)
-//! for extended discussion).
+//! This crate can be used in a no-`std` environment by disabling the `std`
+//! feature through specifying `default-features = false` on import.
 //!
-//! Other functions in this crate, on the other hand, provide enough safety measures to ensure safety in
-//! all circumstances. This is the case for those found in the `pod` and `bool` modules.
-//!
-//! This crate can be used in a no-`std` environment by disabling the `std` feature through specifying
-//! `default-features = false` on import.
+//! [`base`]: base/index.html
+//! [`pod`]: pod/index.html
 //!
 //! # Examples
 //!
-//! View bytes as a series of `u16`s:
+//! View bytes as a series of `u16`s, with a single-many boundary
+//! guard (at least one value, extraneous bytes are allowed):
 //!
-//! ```
-//! # use safe_transmute::guarded_transmute_many;
+//! ```no_run
+//! # use safe_transmute::{safe_transmute_many, SingleManyGuard};
 //! # include!("../tests/test_util/le_to_native.rs");
 //! # fn main() {
-//! # unsafe {
-//! assert_eq!(guarded_transmute_many::<u16>(&[0x00, 0x01,
-//!                                            0x12, 0x34,
-//!                                            // Spare byte, unused
+//! assert_eq!(safe_transmute_many::<u16, SingleManyGuard>(
+//!     &[0x00, 0x01, 0x12, 0x34,
+//!     // Spare byte, unused
 //! # /*
-//!                                            0x00])?,
+//!     0x00])?,
 //! # */
-//! #                                          0x00].le_to_native::<u16>()).unwrap(),
-//!            &[0x0100, 0x3412]);
-//! # }
+//! #   0x00].le_to_native::<u16>()).unwrap(),
+//!     &[0x0100, 0x3412]);
 //! # }
 //! ```
 //!
 //! View all bytes as a series of `u16`s:
 //!
-//! ```
-//! # use safe_transmute::guarded_transmute_many_pedantic;
+//! ```no_run
+//! # use safe_transmute::safe_transmute_many_pedantic;
 //! # include!("../tests/test_util/le_to_native.rs");
 //! # fn main() {
-//! # unsafe {
-//! assert_eq!(guarded_transmute_many_pedantic::<u16>(&[0x00, 0x01,
+//! assert_eq!(safe_transmute_many_pedantic::<u16>(
+//!     &[0x00, 0x01,
 //! # /*
-//!                                                     0x12, 0x34])?,
+//!     0x12, 0x34])?,
 //! # */
-//! #                                                   0x12, 0x34].le_to_native::<u16>()).unwrap(),
-//!            &[0x0100, 0x3412]);
-//! # }
+//! #   0x12, 0x34].le_to_native::<u16>()).unwrap(),
+//!     &[0x0100, 0x3412]);
 //! # }
 //! ```
 //!
-//! View bytes as an `f64`:
+//! View a byte slice as a single `f64`:
 //!
-//! ```
-//! # use safe_transmute::guarded_transmute;
+//! ```no_run
+//! # use safe_transmute::safe_transmute_one;
 //! # include!("../tests/test_util/le_to_native.rs");
 //! # fn main() {
 //! # unsafe {
-//! assert_eq!(guarded_transmute::<f64>(&[0x00, 0x00, 0x00, 0x00,
+//! assert_eq!(safe_transmute_one::<f64>(
+//!     &[0x00, 0x00, 0x00, 0x00,
 //! # /*
-//!                                       0x00, 0x00, 0x00, 0x40])?,
+//!       0x00, 0x00, 0x00, 0x40])?,
 //! # */
-//! #                                     0x00, 0x00, 0x00, 0x40].le_to_native::<f64>()).unwrap(),
-//!            2.0);
+//! #     0x00, 0x00, 0x00, 0x40].le_to_native::<f64>()).unwrap(),
+//!     2.0);
 //! # }
 //! # }
 //! ```
@@ -71,12 +89,12 @@
 //! View a series of `u16`s as bytes:
 //!
 //! ```
-//! # use safe_transmute::guarded_transmute_to_bytes_pod_many;
+//! # use safe_transmute::safe_transmute_to_bytes;
 //! # include!("../tests/test_util/le_to_native.rs");
 //! # fn main() {
 //! # unsafe {
-//! assert_eq!(guarded_transmute_to_bytes_pod_many(&[0x0001u16,
-//!                                                  0x1234u16]),
+//! assert_eq!(safe_transmute_to_bytes(&[0x0001u16,
+//!                                      0x1234u16]),
 //! # /*
 //!            &[0x01, 0x00, 0x34, 0x12].le_to_native::<u16>());
 //! # */
@@ -92,252 +110,27 @@
 #[cfg(feature = "std")]
 extern crate core;
 
-mod pod;
-mod bool;
-mod error;
-mod to_bytes;
+mod full;
 
-use core::slice;
-#[cfg(feature = "std")]
-use core::mem::forget;
-use core::mem::size_of;
-use guard::{SingleValueGuard, PermissiveGuard, SingleManyGuard, PedanticGuard, Guard};
-
-pub mod util;
+pub mod align;
+pub mod base;
+pub mod bool;
+pub mod error;
 pub mod guard;
+pub mod pod;
+pub mod util;
+pub mod to_bytes;
 
-pub use self::error::{ErrorReason, GuardError, Error};
+pub use crate::full::*;
 
-pub use self::to_bytes::{guarded_transmute_to_bytes_pod_many, guarded_transmute_to_bytes_many, guarded_transmute_to_bytes_pod, guarded_transmute_to_bytes};
+pub use crate::guard::{SingleValueGuard, PermissiveGuard, SingleManyGuard, PedanticGuard, Guard};
+pub use crate::error::{ErrorReason, GuardError, Error};
+pub use crate::pod::PodTransmutable;
+
+pub use crate::to_bytes::{safe_transmute_to_bytes, safe_transmute_one_to_bytes, guarded_transmute_to_bytes_pod_many, guarded_transmute_to_bytes_pod};
 #[cfg(feature = "std")]
-pub use self::to_bytes::{guarded_transmute_to_bytes_pod_vec, guarded_transmute_to_bytes_vec};
-
-pub use self::pod::{PodTransmutable, guarded_transmute_pod_many_permissive, guarded_transmute_pod_many_pedantic, guarded_transmute_pod_pedantic,
-                    guarded_transmute_pod_many, guarded_transmute_pod};
-#[cfg(feature = "std")]
-pub use self::pod::{guarded_transmute_pod_vec_permissive, guarded_transmute_pod_vec_pedantic, guarded_transmute_pod_vec};
+pub use crate::to_bytes::{safe_transmute_to_bytes_vec, guarded_transmute_to_bytes_pod_vec};
 
 #[cfg(feature = "std")]
-pub use self::bool::{guarded_transmute_bool_vec_permissive, guarded_transmute_bool_vec_pedantic};
-pub use self::bool::{guarded_transmute_bool_permissive, guarded_transmute_bool_pedantic};
-
-
-/// Transmute a byte slice into a single instance of a `Copy`able type.
-///
-/// The byte slice must have at least enough bytes to fill a single instance of a type,
-/// extraneous data is ignored.
-///
-/// # Examples
-///
-/// ```
-/// # use safe_transmute::guarded_transmute;
-/// # include!("../tests/test_util/le_to_native.rs");
-/// # fn main() {
-/// // Little-endian
-/// # unsafe {
-/// # /*
-/// assert_eq!(guarded_transmute::<u32>(&[0x00, 0x00, 0x00, 0x01])?, 0x0100_0000);
-/// # */
-/// # assert_eq!(guarded_transmute::<u32>(&[0x00, 0x00, 0x00, 0x01].le_to_native::<u32>()).unwrap(), 0x0100_0000);
-/// # }
-/// # }
-/// ```
-pub unsafe fn guarded_transmute<T: Copy>(bytes: &[u8]) -> Result<T, Error> {
-    SingleManyGuard::check::<T>(bytes)?;
-    Ok(slice::from_raw_parts(bytes.as_ptr() as *const T, 1)[0])
-}
-
-/// Transmute a byte slice into a single instance of a `Copy`able type.
-///
-/// The byte slice must have exactly enough bytes to fill a single instance of a type.
-///
-/// # Examples
-///
-/// ```
-/// # use safe_transmute::guarded_transmute_pedantic;
-/// # include!("../tests/test_util/le_to_native.rs");
-/// # fn main() {
-/// // Little-endian
-/// # unsafe {
-/// # /*
-/// assert_eq!(guarded_transmute_pedantic::<u16>(&[0x0F, 0x0E])?, 0x0E0F);
-/// # */
-/// # assert_eq!(guarded_transmute_pedantic::<u16>(&[0x0F, 0x0E].le_to_native::<u16>()).unwrap(), 0x0E0F);
-/// # }
-/// # }
-/// ```
-pub unsafe fn guarded_transmute_pedantic<T: Copy>(bytes: &[u8]) -> Result<T, Error> {
-    SingleValueGuard::check::<T>(bytes)?;
-    Ok(slice::from_raw_parts(bytes.as_ptr() as *const T, 1)[0])
-}
-
-/// View a byte slice as a slice of an arbitrary type.
-///
-/// The byte slice must have at least enough bytes to fill a single instance of a type,
-/// extraneous data is ignored.
-///
-/// # Examples
-///
-/// ```
-/// # use safe_transmute::guarded_transmute_many;
-/// # include!("../tests/test_util/le_to_native.rs");
-/// # fn main() {
-/// // Little-endian
-/// # unsafe {
-/// # /*
-/// assert_eq!(guarded_transmute_many::<u16>(&[0x00, 0x01, 0x00, 0x02])?,
-/// # */
-/// # assert_eq!(guarded_transmute_many::<u16>(&[0x00, 0x01, 0x00, 0x02].le_to_native::<u16>()).unwrap(),
-///            &[0x0100, 0x0200]);
-/// # }
-/// # }
-/// ```
-pub unsafe fn guarded_transmute_many<T>(bytes: &[u8]) -> Result<&[T], Error> {
-    SingleManyGuard::check::<T>(bytes)?;
-    Ok(slice::from_raw_parts(bytes.as_ptr() as *const T, bytes.len() / size_of::<T>()))
-}
-
-/// View a byte slice as a slice of an arbitrary type.
-///
-/// The resulting slice will have as many instances of a type as will fit, rounded down.
-///
-/// # Examples
-///
-/// ```
-/// # use safe_transmute::guarded_transmute_many_permissive;
-/// # unsafe {
-/// assert_eq!(guarded_transmute_many_permissive::<u16>(&[0x00]), &[]);
-/// # }
-/// ```
-pub unsafe fn guarded_transmute_many_permissive<T>(bytes: &[u8]) -> &[T] {
-    PermissiveGuard::check::<T>(bytes).unwrap();
-    slice::from_raw_parts(bytes.as_ptr() as *const T, bytes.len() / size_of::<T>())
-}
-
-/// View a byte slice as a slice of an arbitrary type.
-///
-/// The byte slice must have at least enough bytes to fill a single instance of a type,
-/// and should not have extraneous data.
-///
-/// # Examples
-///
-/// ```
-/// # use safe_transmute::guarded_transmute_many_pedantic;
-/// # include!("../tests/test_util/le_to_native.rs");
-/// # fn main() {
-/// // Little-endian
-/// # unsafe {
-/// # /*
-/// assert_eq!(guarded_transmute_many_pedantic::<u16>(&[0x0F, 0x0E, 0x0A, 0x0B])?,
-/// # */
-/// # assert_eq!(guarded_transmute_many_pedantic::<u16>(&[0x0F, 0x0E, 0x0A, 0x0B].le_to_native::<u16>()).unwrap(),
-///            &[0x0E0F, 0x0B0A]);
-/// # }
-/// # }
-/// ```
-pub unsafe fn guarded_transmute_many_pedantic<T>(bytes: &[u8]) -> Result<&[T], Error> {
-    PedanticGuard::check::<T>(bytes)?;
-    Ok(slice::from_raw_parts(bytes.as_ptr() as *const T, bytes.len() / size_of::<T>()))
-}
-
-/// Trasform a byte vector into a vector of an arbitrary type.
-///
-/// The resulting vec will reuse the allocated byte buffer when possible, and
-/// should have at least enough bytes to fill a single instance of a type.
-/// Extraneous data is ignored.
-///
-/// # Examples
-///
-/// ```
-/// # use safe_transmute::guarded_transmute_vec;
-/// # include!("../tests/test_util/le_to_native.rs");
-/// # fn main() {
-/// // Little-endian
-/// # unsafe {
-/// # /*
-/// assert_eq!(guarded_transmute_vec::<u16>(vec![0x00, 0x01, 0x00, 0x02])?,
-/// # */
-/// # assert_eq!(guarded_transmute_vec::<u16>(vec![0x00, 0x01, 0x00, 0x02].le_to_native::<u16>()).unwrap(),
-///            vec![0x0100, 0x0200]);
-/// # /*
-/// assert_eq!(guarded_transmute_vec::<u32>(vec![0x04, 0x00, 0x00, 0x00, 0xED])?,
-/// # */
-/// # assert_eq!(guarded_transmute_vec::<u32>(vec![0x04, 0x00, 0x00, 0x00, 0xED].le_to_native::<u32>()).unwrap(),
-///            vec![0x0000_0004]);
-///
-/// assert!(guarded_transmute_vec::<i16>(vec![0xED]).is_err());
-/// # }
-/// # }
-/// ```
-#[cfg(feature = "std")]
-pub unsafe fn guarded_transmute_vec<T>(bytes: Vec<u8>) -> Result<Vec<T>, Error> {
-    SingleManyGuard::check::<T>(&bytes)?;
-    Ok(guarded_transmute_vec_permissive(bytes))
-}
-
-/// Trasform a byte vector into a vector of an arbitrary type.
-///
-/// The vector's allocated byte buffer will be reused when possible, and
-/// have as many instances of a type as will fit, rounded down.
-/// Extraneous data is ignored.
-///
-/// # Examples
-///
-/// ```
-/// # use safe_transmute::guarded_transmute_vec_permissive;
-/// # include!("../tests/test_util/le_to_native.rs");
-/// # fn main() {
-/// // Little-endian
-/// # unsafe {
-/// # /*
-/// assert_eq!(guarded_transmute_vec_permissive::<u16>(vec![0x00, 0x01, 0x00, 0x02]),
-/// # */
-/// # assert_eq!(guarded_transmute_vec_permissive::<u16>(vec![0x00, 0x01, 0x00, 0x02].le_to_native::<u16>()),
-///            vec![0x0100, 0x0200]);
-/// # /*
-/// assert_eq!(guarded_transmute_vec_permissive::<u32>(vec![0x04, 0x00, 0x00, 0x00, 0xED]),
-/// # */
-/// # assert_eq!(guarded_transmute_vec_permissive::<u32>(vec![0x04, 0x00, 0x00, 0x00, 0xED].le_to_native::<u32>()),
-///            vec![0x0000_0004]);
-/// assert_eq!(guarded_transmute_vec_permissive::<u16>(vec![0xED]), vec![]);
-/// # }
-/// # }
-/// ```
-#[cfg(feature = "std")]
-pub unsafe fn guarded_transmute_vec_permissive<T>(mut bytes: Vec<u8>) -> Vec<T> {
-    PermissiveGuard::check::<T>(&bytes).unwrap();
-    let ptr = bytes.as_mut_ptr();
-    let capacity = bytes.capacity() / size_of::<T>();
-    let len = bytes.len() / size_of::<T>();
-    forget(bytes);
-    Vec::from_raw_parts(ptr as *mut T, len, capacity)
-}
-
-/// Trasform a byte vector into a vector of an arbitrary type.
-///
-/// The vector's allocated byte buffer will be reused when possible, and
-/// should not have extraneous data.
-///
-/// # Examples
-///
-/// ```
-/// # use safe_transmute::guarded_transmute_vec_pedantic;
-/// # include!("../tests/test_util/le_to_native.rs");
-/// # fn main() {
-/// // Little-endian
-/// # unsafe {
-/// # /*
-/// assert_eq!(guarded_transmute_vec_pedantic::<u16>(vec![0x00, 0x01, 0x00, 0x02])?,
-/// # */
-/// # assert_eq!(guarded_transmute_vec_pedantic::<u16>(vec![0x00, 0x01, 0x00, 0x02].le_to_native::<u16>()).unwrap(),
-///            vec![0x0100, 0x0200]);
-///
-/// assert!(guarded_transmute_vec_pedantic::<u32>(vec![0x04, 0x00, 0x00, 0x00, 0xED]).is_err());
-/// # }
-/// # }
-/// ```
-#[cfg(feature = "std")]
-pub unsafe fn guarded_transmute_vec_pedantic<T>(bytes: Vec<u8>) -> Result<Vec<T>, Error> {
-    PedanticGuard::check::<T>(&bytes)?;
-    Ok(guarded_transmute_vec_permissive(bytes))
-}
+pub use crate::bool::{safe_transmute_bool_vec_permissive, safe_transmute_bool_vec_pedantic, guarded_transmute_bool_vec_permissive, guarded_transmute_bool_vec_pedantic};
+pub use crate::bool::{safe_transmute_bool_permissive, safe_transmute_bool_pedantic, guarded_transmute_bool_permissive, guarded_transmute_bool_pedantic};

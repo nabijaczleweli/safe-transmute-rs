@@ -15,16 +15,12 @@ use core::fmt;
 ///            Err(Error::InvalidValue));
 /// # }
 /// ```
-#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
+#[derive(Clone, Debug, PartialEq, Eq, Hash)]
 pub enum Error {
     /// The data does not respect the target type's boundaries.
     Guard(GuardError),
     /// The given data slice is not properly aligned for the target type.
-    /// It would have been properly aligned if `offset` bytes were shifted
-    /// (discarded) from the front of the slice.
-    ///
-    /// This is currently unused.
-    Unaligned { offset: usize, },
+    Unaligned(UnalignedError),
     /// The data contains an invalid value for the target type.
     InvalidValue,
 }
@@ -44,7 +40,7 @@ impl fmt::Display for Error {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match *self {
             Error::Guard(ref e) => e.fmt(f),
-            Error::Unaligned { offset } => write!(f, "Unaligned data slice (off by {} bytes)", offset),
+            Error::Unaligned(ref e) => e.fmt(f),
             Error::InvalidValue => f.write_str("Invalid target value"),
         }
     }
@@ -56,6 +52,11 @@ impl From<GuardError> for Error {
     }
 }
 
+impl From<UnalignedError> for Error {
+    fn from(o: UnalignedError) -> Error {
+        Error::Unaligned(o)
+    }
+}
 
 /// A slice boundary guard error, usually created by a [`Guard`](./guard/trait.Guard.html).
 ///
@@ -118,5 +119,30 @@ impl StdError for GuardError {
 impl fmt::Display for GuardError {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "{} (required: {}, actual: {})", self.reason.description(), self.required, self.actual)
+    }
+}
+
+/// Unaligned memory access error.
+/// 
+/// Raised when the given data slice or vector is not properly aligned for the
+/// target type. It would have been properly aligned if `offset` bytes were
+/// shifted (discarded) from the front of the slice.
+#[derive(Debug, Clone, Eq, Hash, PartialEq)]
+pub struct UnalignedError {
+    /// The required amount of bytes to discard at the front for the attempted
+    /// transmutation to be successful.
+    pub offset: usize,
+}
+
+#[cfg(feature = "std")]
+impl StdError for UnalignedError {
+    fn description(&self) -> &str {
+        "data is unaligned"
+    }
+}
+
+impl fmt::Display for UnalignedError {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "data is unaligned (off by {} bytes)", self.offset)
     }
 }

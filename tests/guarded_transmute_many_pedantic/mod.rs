@@ -1,17 +1,19 @@
-use safe_transmute::{ErrorReason, GuardError, Error, guarded_transmute_many_pedantic};
+use safe_transmute::{ErrorReason, GuardError, Error, PedanticGuard};
+use safe_transmute::base::guarded_transmute_many;
 use self::super::LeToNative;
 
+type G = PedanticGuard;
 
 #[test]
 fn too_short() {
     unsafe {
-        assert_eq!(guarded_transmute_many_pedantic::<u16>(&[]),
+        assert_eq!(guarded_transmute_many::<u16, G>(&[]),
                    Err(Error::Guard(GuardError {
                        required: 16 / 8,
                        actual: 0,
                        reason: ErrorReason::NotEnoughBytes,
                    })));
-        assert_eq!(guarded_transmute_many_pedantic::<u16>(&[0x00]),
+        assert_eq!(guarded_transmute_many::<u16, G>(&[0x00]),
                    Err(Error::Guard(GuardError {
                        required: 16 / 8,
                        actual: 1,
@@ -23,9 +25,9 @@ fn too_short() {
 #[test]
 fn just_enough() {
     unsafe {
-        assert_eq!(guarded_transmute_many_pedantic::<u16>(&[0x00, 0x01].le_to_native::<u16>()),
+        assert_eq!(guarded_transmute_many::<u16, G>(&[0x00, 0x01].le_to_native::<u16>()),
                    Ok([0x0100u16].into_iter().as_slice()));
-        assert_eq!(guarded_transmute_many_pedantic::<u16>(&[0x00, 0x01, 0x00, 0x02].le_to_native::<u16>()),
+        assert_eq!(guarded_transmute_many::<u16, G>(&[0x00, 0x01, 0x00, 0x02].le_to_native::<u16>()),
                    Ok([0x0100u16, 0x0200u16].into_iter().as_slice()));
     }
 }
@@ -33,13 +35,13 @@ fn just_enough() {
 #[test]
 fn too_much() {
     unsafe {
-        assert_eq!(guarded_transmute_many_pedantic::<u16>(&[0x00, 0x01, 0x00]),
+        assert_eq!(guarded_transmute_many::<u16, G>(&[0x00, 0x01, 0x00]),
                    Err(Error::Guard(GuardError {
                        required: 16 / 8,
                        actual: 3,
                        reason: ErrorReason::InexactByteCount,
                    })));
-        assert_eq!(guarded_transmute_many_pedantic::<u16>(&[0x00, 0x01, 0x00, 0x02, 0x00]),
+        assert_eq!(guarded_transmute_many::<u16, G>(&[0x00, 0x01, 0x00, 0x02, 0x00]),
                    Err(Error::Guard(GuardError {
                        required: 16 / 8,
                        actual: 5,
