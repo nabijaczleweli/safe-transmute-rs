@@ -3,7 +3,7 @@
 //! # Examples:
 //!
 //! In order to check whether a value would fit in the given
-//! slice without extraneous space:
+//! slice without any extra trailing bytes:
 //!
 //! ```
 //! # use safe_transmute::Error;
@@ -54,10 +54,13 @@
 //!                reason: ErrorReason::InexactByteCount,
 //!            }));
 //! ```
+//! 
+//! # Note
 //!
 //! Regardless of the chosen strategy, guarded transmutation functions will
-//! always ensure that no out of bounds access is attempted, usually by
-//! restricting the output to spatially safe portions of the input.
+//! always ensure that no out of bounds access is attempted. All functions will
+//! restrict the output to spatially safe portions of the input. The guard
+//! API exists to establish expectations in the conversion process.
 
 
 use error::{ErrorReason, GuardError};
