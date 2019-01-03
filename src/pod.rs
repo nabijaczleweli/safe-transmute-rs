@@ -1,11 +1,13 @@
 //! Plain data object safe transmute
 //!
-//! Functions in this module are guarded from out-of-bounds memory access and from unsafe transmute
-//! target types with the use of the [`PodTransmutable`](trait.PodTransmutable.html)) trait.
+//! Functions in this module are guarded from out-of-bounds memory access and
+//! from unsafe transmutation target types through the use of the
+//! [`PodTransmutable`](trait.PodTransmutable.html)) trait.
 //! 
-//! However, they are not entirely safe because the value may be properly aligned for reading and
-//! writing a value of that type. The effects of this range from less performance (e.g. x86) to
-//! trapping or address flooring (e.g. ARM CPUs), but this is undefined behavior nonetheless.
+//! However, they are still not entirely safe because the source data may not
+//! be correctly aligned for reading and writing a value of the target type.
+//! The effects of this range from less performance (e.g. x86) to trapping or
+//! address flooring (e.g. ARM), but this is undefined behavior nonetheless.
 
 
 use crate::Error;
@@ -19,7 +21,7 @@ use crate::guard::{Guard, PedanticGuard, PermissiveGuard};
 ///
 /// A type `T` implementing this trait means that any arbitrary slice of bytes
 /// of length `size_of::<T>()` can be safely interpreted as a value of that
-/// type at any circumstance. In most cases this is a
+/// type in all circumstances. In most cases this is a
 /// [*POD class*](http://eel.is/c++draft/class#10) or a
 /// [*trivially copyable class*](http://eel.is/c++draft/class#6).
 ///
@@ -36,7 +38,7 @@ use crate::guard::{Guard, PedanticGuard, PermissiveGuard};
 ///
 /// It is only safe to implement `PodTransmutable` for a type `T` if it is safe for a slice of any arbitrary data
 /// `&[u8]` of length `sizeof<T>()` to be [`transmute()`](https://doc.rust-lang.org/stable/std/mem/fn.transmute.html)d
-/// to a unit-length `&[T]`, without any other conversion operation required.
+/// to a unit-length `&[T]`, without any other conversion operation being required.
 ///
 /// Consult the [Transmutes section](https://doc.rust-lang.org/nomicon/transmutes.html) of the Nomicon for more details.
 pub unsafe trait PodTransmutable: Copy {}

@@ -3,7 +3,7 @@
 //! # Examples:
 //!
 //! In order to check whether a value would fit in the given
-//! slice without any extra trailing bytes:
+//! slice with no extra trailing bytes:
 //!
 //! ```
 //! # use safe_transmute::Error;
