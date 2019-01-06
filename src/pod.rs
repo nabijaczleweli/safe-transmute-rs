@@ -121,9 +121,9 @@ unsafe impl<T: PodTransmutable> PodTransmutable for [T; 32] {}
 /// // Little-endian
 /// unsafe {
 /// # /*
-/// assert_eq!(guarded_transmute_pod::<u32>(&[0x00, 0x00, 0x00, 0x01])?, 0x0100_0000);
+///     assert_eq!(guarded_transmute_pod::<u32>(&[0x00, 0x00, 0x00, 0x01])?, 0x0100_0000);
 /// # */
-/// # assert_eq!(guarded_transmute_pod::<u32>(&[0x00, 0x00, 0x00, 0x01].le_to_native::<u32>()).unwrap(), 0x0100_0000);
+/// #   assert_eq!(guarded_transmute_pod::<u32>(&[0x00, 0x00, 0x00, 0x01].le_to_native::<u32>()).unwrap(), 0x0100_0000);
 /// }
 /// # }
 /// ```
