@@ -142,14 +142,14 @@ pub fn guarded_transmute_bool_vec_permissive(bytes: Vec<u8>) -> Result<Vec<bool>
 /// # Examples
 ///
 /// ```
-/// # use safe_transmute::{Error, guarded_transmute_bool_vec_pedantic};
+/// # use safe_transmute::{Error, safe_transmute_bool_vec_pedantic};
 /// # fn run() -> Result<(), Error> {
-/// assert_eq!(guarded_transmute_bool_vec_pedantic(vec![0x00, 0x01, 0x00, 0x01])?,
+/// assert_eq!(safe_transmute_bool_vec_pedantic(vec![0x00, 0x01, 0x00, 0x01])?,
 ///            vec![false, true, false, true]);
 ///
-/// assert!(guarded_transmute_bool_vec_pedantic(vec![]).is_err());
+/// assert!(safe_transmute_bool_vec_pedantic(vec![]).is_err());
 ///
-/// assert!(guarded_transmute_bool_vec_pedantic(vec![0x04, 0x00, 0xED]).is_err());
+/// assert!(safe_transmute_bool_vec_pedantic(vec![0x04, 0x00, 0xED]).is_err());
 /// # Ok(())
 /// # }
 /// # run().unwrap()
