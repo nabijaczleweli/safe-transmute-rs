@@ -127,10 +127,19 @@ pub use crate::guard::{SingleValueGuard, PermissiveGuard, SingleManyGuard, Pedan
 pub use crate::error::{ErrorReason, GuardError, Error};
 pub use crate::pod::PodTransmutable;
 
-pub use crate::to_bytes::{safe_transmute_to_bytes, safe_transmute_one_to_bytes, guarded_transmute_to_bytes_pod_many, guarded_transmute_to_bytes_pod};
+pub use crate::to_bytes::{safe_transmute_to_bytes, safe_transmute_one_to_bytes};
 #[cfg(feature = "std")]
-pub use crate::to_bytes::{safe_transmute_to_bytes_vec, guarded_transmute_to_bytes_pod_vec};
+pub use crate::to_bytes::safe_transmute_to_bytes_vec;
 
 #[cfg(feature = "std")]
-pub use crate::bool::{safe_transmute_bool_vec_permissive, safe_transmute_bool_vec_pedantic, guarded_transmute_bool_vec_permissive, guarded_transmute_bool_vec_pedantic};
-pub use crate::bool::{safe_transmute_bool_permissive, safe_transmute_bool_pedantic, guarded_transmute_bool_permissive, guarded_transmute_bool_pedantic};
+pub use crate::bool::{safe_transmute_bool_vec_permissive, safe_transmute_bool_vec_pedantic};
+pub use crate::bool::{safe_transmute_bool_permissive, safe_transmute_bool_pedantic};
+
+// Re-exports of deprecated functions, to be removed in 0.12.0 or later
+#[allow(deprecated)]
+pub use crate::to_bytes::{guarded_transmute_to_bytes_pod_many, guarded_transmute_to_bytes_pod};
+#[cfg(feature = "std")]
+#[allow(deprecated)]
+pub use crate::to_bytes::guarded_transmute_to_bytes_pod_vec;
+#[allow(deprecated)]
+pub use crate::bool::{guarded_transmute_bool_permissive, guarded_transmute_bool_pedantic};
