@@ -39,7 +39,7 @@ use core::slice;
 /// # /*
 ///     assert_eq!(from_bytes::<u32>(&[0x00, 0x00, 0x00, 0x01])?, 0x0100_0000);
 /// # */
-///     assert_eq!(from_bytes::<u32>(&[0x00, 0x00, 0x00, 0x01].le_to_native::<u32>()).unwrap(), 0x0100_0000);
+/// #   assert_eq!(from_bytes::<u32>(&[0x00, 0x00, 0x00, 0x01].le_to_native::<u32>()).unwrap(), 0x0100_0000);
 /// }
 /// # }
 /// ```
@@ -78,10 +78,10 @@ pub unsafe fn from_bytes<T: Copy>(bytes: &[u8]) -> Result<T, Error> {
 /// # /*
 ///     assert_eq!(from_bytes_pedantic::<u32>(&[0x00, 0x00, 0x00, 0x01])?, 0x0100_0000);
 /// # */
-///     assert_eq!(
-///         from_bytes_pedantic::<u32>(&[0x00, 0x00, 0x00, 0x01].le_to_native::<u32>()).unwrap(),
-///         0x0100_0000
-///     );
+/// #   assert_eq!(
+/// #       from_bytes_pedantic::<u32>(&[0x00, 0x00, 0x00, 0x01].le_to_native::<u32>()).unwrap(),
+/// #       0x0100_0000
+/// #   );
 /// }
 /// # }
 /// ```
