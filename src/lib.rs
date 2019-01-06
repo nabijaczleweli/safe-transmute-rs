@@ -12,7 +12,7 @@
 //! memory representation is still undefined behavior. Moreover, unaligned
 //! memory access is not prevented, and must be previously ensured by the
 //! caller.
-//! - The [`guard`] module contains the **Guard** API, which imposes slice
+//! - The [`guard`] module contains the **Guard API**, which imposes slice
 //! boundary restrictions in a conversion.
 //! - The [`pod`] module introduces the `PodTransmutable` trait, which
 //! statically ensures that any bit combination makes a valid value for a
