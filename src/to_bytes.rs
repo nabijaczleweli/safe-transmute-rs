@@ -192,7 +192,6 @@ pub fn guarded_transmute_to_bytes_pod_many<T: PodTransmutable>(from: &[T]) -> &[
     safe_transmute_to_bytes(from)
 }
 
-
 /// Transmute a vector of arbitrary types into a vector of their bytes,
 /// using the same memory buffer as the former.
 ///
