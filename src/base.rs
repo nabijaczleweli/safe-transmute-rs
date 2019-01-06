@@ -181,7 +181,7 @@ where
 /// # }
 /// ```
 pub unsafe fn guarded_transmute_many_permissive<T>(bytes: &[u8]) -> &[T] {
-    guarded_transmute_many::<_, crate::guard::PermissiveGuard>(bytes).expect("permissive guard should never fail")
+    guarded_transmute_many::<_, PermissiveGuard>(bytes).expect("permissive guard should never fail")
 }
 
 /// Transform a byte vector into a vector of an arbitrary type.
