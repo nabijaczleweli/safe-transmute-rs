@@ -137,7 +137,7 @@ pub fn safe_transmute_one_to_bytes<T: PodTransmutable>(from: &T) -> &[u8] {
 }
 
 /// Transmute a single instance of a POD type into a slice of its bytes.
-#[deprecated(since = "0.11.0", note = "use `safe_transmute_one_to_bytes` instead")]
+#[deprecated(since = "0.11.0", note = "use `safe_transmute_one_to_bytes()` instead")]
 pub fn guarded_transmute_to_bytes_pod<T: PodTransmutable>(from: &T) -> &[u8] {
     unsafe { guarded_transmute_to_bytes(from) }
 }
@@ -187,7 +187,7 @@ pub fn safe_transmute_to_bytes<T: PodTransmutable>(from: &[T]) -> &[u8] {
 }
 
 /// Transmute a slice of arbitrary types into a slice of their bytes.
-#[deprecated(since = "0.11.0", note = "use `safe_transmute_to_bytes` instead")]
+#[deprecated(since = "0.11.0", note = "use `safe_transmute_to_bytes()` instead")]
 pub fn guarded_transmute_to_bytes_pod_many<T: PodTransmutable>(from: &[T]) -> &[u8]{
     safe_transmute_to_bytes(from)
 }
@@ -295,7 +295,7 @@ pub fn safe_transmute_to_bytes_vec<T: PodTransmutable>(from: Vec<T>) -> Vec<u8> 
 /// Transmute a vector of POD types into a vector of their bytes,
 /// using the same memory buffer as the former.
 #[cfg(feature = "std")]
-#[deprecated(since = "0.11.0", note = "use `safe_transmute_to_bytes_vec` instead")]
+#[deprecated(since = "0.11.0", note = "use `safe_transmute_to_bytes_vec()` instead")]
 pub fn guarded_transmute_to_bytes_pod_vec<T: PodTransmutable>(from: Vec<T>) -> Vec<u8> {
     safe_transmute_to_bytes_vec(from)
 }

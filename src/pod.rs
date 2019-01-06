@@ -210,7 +210,7 @@ pub unsafe fn guarded_transmute_pod_many<T: PodTransmutable, G: Guard>(bytes: &[
 /// View a byte slice as a slice of a POD type.
 ///
 /// The resulting slice will have as many instances of a type as will fit, rounded down.
-#[deprecated(since = "0.11.0", note = "see `pod::guarded_transmute_pod_many` for the equivalent behavior")]
+#[deprecated(since = "0.11.0", note = "see `pod::guarded_transmute_pod_many()` for the equivalent behavior")]
 pub unsafe fn guarded_transmute_pod_many_permissive<T: PodTransmutable>(bytes: &[u8]) -> Result<&[T], Error> {
     Ok(guarded_transmute_many::<T, PermissiveGuard>(bytes)?)
 }
@@ -248,7 +248,7 @@ pub unsafe fn guarded_transmute_pod_many_permissive<T: PodTransmutable>(bytes: &
 /// }
 /// # }
 /// ```
-#[deprecated(since = "0.11.0", note = "see `pod::guarded_transmute_pod_many` for the equivalent behavior")]
+#[deprecated(since = "0.11.0", note = "see `pod::guarded_transmute_pod_many()` with `PedanticGuard` for the equivalent behavior")]
 pub unsafe fn guarded_transmute_pod_many_pedantic<T: PodTransmutable>(bytes: &[u8]) -> Result<&[T], Error> {
     guarded_transmute_many::<T, PedanticGuard>(bytes)
 }
@@ -335,7 +335,7 @@ pub unsafe fn guarded_transmute_pod_vec<T: PodTransmutable, G: Guard>(bytes: Vec
 /// # }
 /// ```
 #[cfg(feature = "std")]
-#[deprecated(since = "0.11.0", note = "see `pod::guarded_transmute_pod_vec` for the equivalent behavior")]
+#[deprecated(since = "0.11.0", note = "see `pod::guarded_transmute_pod_vec()` with `PermissiveGuard` for the equivalent behavior")]
 pub unsafe fn guarded_transmute_pod_vec_permissive<T: PodTransmutable>(bytes: Vec<u8>) -> Result<Vec<T>, Error> {
     guarded_transmute_vec::<T, PermissiveGuard>(bytes).map_err(From::from)
 }
@@ -378,7 +378,7 @@ pub unsafe fn guarded_transmute_pod_vec_permissive<T: PodTransmutable>(bytes: Ve
 /// # }
 /// ```
 #[cfg(feature = "std")]
-#[deprecated(since = "0.11.0", note = "see `pod::guarded_transmute_pod_vec` for the equivalent behavior")]
+#[deprecated(since = "0.11.0", note = "see `pod::guarded_transmute_pod_vec()` with `PedanticGuard` for the equivalent behavior")]
 pub unsafe fn guarded_transmute_pod_vec_pedantic<T: PodTransmutable>(bytes: Vec<u8>) -> Result<Vec<T>, Error> {
     guarded_transmute_vec::<T, PedanticGuard>(bytes)
 }

@@ -64,7 +64,7 @@ pub fn safe_transmute_bool_permissive(bytes: &[u8]) -> Result<&[bool], Error> {
 /// View a byte slice as a slice of boolean values.
 ///
 /// The resulting slice will have as many instances of `bool` as will fit, can be empty.
-#[deprecated(since = "0.11.0", note = "use `safe_transmute_bool_permissive` instead")]
+#[deprecated(since = "0.11.0", note = "use `safe_transmute_bool_permissive()` instead")]
 pub fn guarded_transmute_bool_permissive(bytes: &[u8]) -> Result<&[bool], Error> {
     guarded_transmute_bool::<PermissiveGuard>(bytes)
 }
@@ -92,7 +92,7 @@ pub fn safe_transmute_bool_pedantic(bytes: &[u8]) -> Result<&[bool], Error> {
 /// View a byte slice as a slice of boolean values.
 ///
 /// The byte slice must have at least enough bytes to fill a single `bool`.
-#[deprecated(since = "0.11.0", note = "use `safe_transmute_bool_pedantic` instead")]
+#[deprecated(since = "0.11.0", note = "use `safe_transmute_bool_pedantic()` instead")]
 pub fn guarded_transmute_bool_pedantic(bytes: &[u8]) -> Result<&[bool], Error> {
     safe_transmute_bool_pedantic(bytes)
 }
@@ -129,7 +129,7 @@ pub fn safe_transmute_bool_vec_permissive(bytes: Vec<u8>) -> Result<Vec<bool>, E
 /// The vector's allocated byte buffer will be reused when possible, and
 /// have as many instances of a type as will fit, rounded down.
 #[cfg(feature = "std")]
-#[deprecated(since = "0.11.0", note = "use `safe_transmute_bool_vec_permissive` instead")]
+#[deprecated(since = "0.11.0", note = "use `safe_transmute_bool_vec_permissive()` instead")]
 pub fn guarded_transmute_bool_vec_permissive(bytes: Vec<u8>) -> Result<Vec<bool>, Error> {
     safe_transmute_bool_vec_permissive(bytes)
 }
@@ -167,7 +167,7 @@ pub fn safe_transmute_bool_vec_pedantic(bytes: Vec<u8>) -> Result<Vec<bool>, Err
 /// The vector's allocated byte buffer will be reused when possible, and
 /// should not have extraneous data.
 #[cfg(feature = "std")]
-#[deprecated(since = "0.11.0", note = "use `safe_transmute_bool_vec_pedantic` instead")]
+#[deprecated(since = "0.11.0", note = "use `safe_transmute_bool_vec_pedantic()` instead")]
 pub fn guarded_transmute_bool_vec_pedantic(bytes: Vec<u8>) -> Result<Vec<bool>, Error> {
     safe_transmute_bool_vec_pedantic(bytes)
 }
