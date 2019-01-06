@@ -1,7 +1,7 @@
 //! Primitives for object and array transmutation.
 //!
 //! The functions in this module are very unsafe and their use is not
-//! recommended unless you _really_ know what you are doing.
+//! recommended unless you *really* know what you are doing.
 use crate::error::Error;
 use crate::guard::{Guard, SingleManyGuard, SingleValueGuard, PermissiveGuard};
 #[cfg(feature = "std")]
