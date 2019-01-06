@@ -189,8 +189,8 @@ pub unsafe fn guarded_transmute_pod_pedantic<T: PodTransmutable>(bytes: &[u8]) -
 /// # Examples
 ///
 /// ```no_run
-/// use safe_transmute::pod::guarded_transmute_pod_many;
-/// use safe_transmute::SingleManyGuard;
+/// # use safe_transmute::pod::guarded_transmute_pod_many;
+/// # use safe_transmute::SingleManyGuard;
 /// # include!("../tests/test_util/le_to_native.rs");
 /// # fn main() {
 /// // Little-endian
@@ -219,35 +219,6 @@ pub unsafe fn guarded_transmute_pod_many_permissive<T: PodTransmutable>(bytes: &
 ///
 /// The byte slice must have at least enough bytes to fill a single instance of a type,
 /// and should not have extraneous data.
-///
-/// # Errors
-///
-/// An error is returned in one of the following situations:
-///
-/// - The data does not have enough bytes for a single value `T`.
-///
-/// # Safety
-/// 
-/// This function invokes undefined behavior if the data does not have a memory
-/// alignment compatible with `T`. If this cannot be ensured, you will have to
-/// make a copy of the data, or change how it was originally made.
-/// 
-/// # Examples
-///
-/// ```no_run
-/// # use safe_transmute::pod::guarded_transmute_pod_many_pedantic;
-/// # include!("../tests/test_util/le_to_native.rs");
-/// # fn main() {
-/// // Little-endian
-/// unsafe {
-/// # /*
-///     assert_eq!(guarded_transmute_pod_many_pedantic::<u16>(&[0x0F, 0x0E, 0x0A, 0x0B])?,
-/// # */
-/// #   assert_eq!(guarded_transmute_pod_many_pedantic::<u16>(&[0x0F, 0x0E, 0x0A, 0x0B].le_to_native::<u16>()).unwrap(),
-///                &[0x0E0F, 0x0B0A]);
-/// }
-/// # }
-/// ```
 #[deprecated(since = "0.11.0", note = "see `pod::guarded_transmute_pod_many()` with `PedanticGuard` for the equivalent behavior")]
 pub unsafe fn guarded_transmute_pod_many_pedantic<T: PodTransmutable>(bytes: &[u8]) -> Result<&[T], Error> {
     guarded_transmute_many::<T, PedanticGuard>(bytes)
@@ -305,35 +276,6 @@ pub unsafe fn guarded_transmute_pod_vec<T: PodTransmutable, G: Guard>(bytes: Vec
 /// The vector's allocated byte buffer will be reused when possible, and
 /// have as many instances of a type as will fit, rounded down.
 /// Extraneous data is ignored.
-///
-/// # Safety
-/// 
-/// This function invokes undefined behavior if the data does not have a memory
-/// alignment compatible with `T`. If this cannot be ensured, you will have to
-/// make a copy of the data, or change how it was originally made.
-///
-/// # Examples
-///
-/// ```no_run
-/// # use safe_transmute::pod::guarded_transmute_pod_vec_permissive;
-/// # include!("../tests/test_util/le_to_native.rs");
-/// # fn main() {
-/// // Little-endian
-/// unsafe {
-/// # /*
-///     assert_eq!(guarded_transmute_pod_vec_permissive::<u16>(vec![0x00, 0x01, 0x00, 0x02]),
-/// # */
-/// #     assert_eq!(guarded_transmute_pod_vec_permissive::<u16>(vec![0x00, 0x01, 0x00, 0x02].le_to_native::<u16>()),
-///                Ok(vec![0x0100, 0x0200]));
-/// # /*
-///     assert_eq!(guarded_transmute_pod_vec_permissive::<u32>(vec![0x04, 0x00, 0x00, 0x00, 0xED]),
-/// # */
-/// #     assert_eq!(guarded_transmute_pod_vec_permissive::<u32>(vec![0x04, 0x00, 0x00, 0x00, 0xED].le_to_native::<u32>()),
-///                Ok(vec![0x0000_0004]));
-///     assert_eq!(guarded_transmute_pod_vec_permissive::<u16>(vec![0xED]), Ok(vec![]));
-/// }
-/// # }
-/// ```
 #[cfg(feature = "std")]
 #[deprecated(since = "0.11.0", note = "see `pod::guarded_transmute_pod_vec()` with `PermissiveGuard` for the equivalent behavior")]
 pub unsafe fn guarded_transmute_pod_vec_permissive<T: PodTransmutable>(bytes: Vec<u8>) -> Result<Vec<T>, Error> {
