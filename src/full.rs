@@ -1,8 +1,8 @@
 //! Module for functions which ensure full memory safety.
 //!
 //! Functions in this module are guarded from out-of-bounds memory access as
-//! well as from unaligned access, raising errors on both cases. Moreover, only
-//! a [`PodTransmutable`](trait.PodTransmutable.html)) can be used as the
+//! well as from unaligned access, returning errors on both cases. Moreover,
+//! only a [`PodTransmutable`](trait.PodTransmutable.html)) can be used as the
 //! transmute target, thus ensuring full safety.
 //! 
 //! Unless this was previously imposed by certain means, the functions in this
@@ -25,7 +25,7 @@ use crate::align::check_alignment;
 ///
 /// # Errors
 ///
-/// An error is raised in one of the following situations:
+/// An error is returned in one of the following situations:
 ///
 /// - The data does not have a memory alignment compatible with `T`. You will
 ///   have to make a copy anyway, or modify how the data was originally made.
@@ -55,7 +55,7 @@ pub fn safe_transmute_one<T: PodTransmutable>(bytes: &[u8]) -> Result<T, Error> 
 ///
 /// # Errors
 ///
-/// An error is raised in one of the following situations:
+/// An error is returned in one of the following situations:
 ///
 /// - The data does not have a memory alignment compatible with `T`. You will
 ///   have to make a copy anyway, or modify how the data was originally made.
@@ -85,7 +85,7 @@ pub fn safe_transmute_one_pedantic<T: PodTransmutable>(bytes: &[u8]) -> Result<T
 ///
 /// # Errors
 ///
-/// An error is raised in one of the following situations:
+/// An error is returned in one of the following situations:
 ///
 /// - The data does not have a memory alignment compatible with `T`. You will
 ///   have to make a copy anyway, or modify how the data was originally made.
@@ -114,7 +114,7 @@ pub fn safe_transmute_many<T: PodTransmutable, G: Guard>(bytes: &[u8]) -> Result
 ///
 /// # Errors
 ///
-/// An error is raised in one of the following situations:
+/// An error is returned in one of the following situations:
 ///
 /// - The data does not have a memory alignment compatible with `T`. You will
 ///   have to make a copy anyway, or modify how the data was originally made.
@@ -133,7 +133,7 @@ pub fn safe_transmute_many_permissive<T: PodTransmutable>(bytes: &[u8]) -> Resul
 ///
 /// # Errors
 ///
-/// An error is raised in one of the following situations:
+/// An error is returned in one of the following situations:
 ///
 /// - The data does not have a memory alignment compatible with `T`. You will
 ///   have to make a copy anyway, or modify how the data was originally made.
@@ -163,7 +163,7 @@ pub fn safe_transmute_many_pedantic<T: PodTransmutable>(bytes: &[u8]) -> Result<
 ///
 /// # Errors
 ///
-/// An error is raised in one of the following situations:
+/// An error is returned in one of the following situations:
 ///
 /// - The data does not have a memory alignment compatible with `T`. You will
 ///   have to make a copy anyway, or modify how the data was originally made.
@@ -204,7 +204,7 @@ pub fn safe_transmute_vec<T: PodTransmutable, G: Guard>(bytes: Vec<u8>) -> Resul
 ///
 /// # Errors
 ///
-/// An error is raised in one of the following situations:
+/// An error is returned in one of the following situations:
 ///
 /// - The data does not have a memory alignment compatible with `T`. You will
 ///   have to make a copy anyway, or modify how the data was originally made.
@@ -241,7 +241,7 @@ pub fn safe_transmute_vec_permissive<T: PodTransmutable>(bytes: Vec<u8>) -> Resu
 ///
 /// # Errors
 ///
-/// An error is raised in one of the following situations:
+/// An error is returned in one of the following situations:
 ///
 /// - The data does not have a memory alignment compatible with `T`. You will
 ///   have to make a copy anyway, or modify how the data was originally made.

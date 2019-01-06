@@ -7,7 +7,7 @@ use core::mem::{align_of, size_of};
 ///
 /// # Errors
 ///
-/// An `Error::Unaligned` error is raised with the number of bytes to discard
+/// An `Error::Unaligned` error is returned with the number of bytes to discard
 /// from the front in order to make the conversion safe from alignment concerns.
 pub fn check_alignment<T, U>(data: &[T]) -> Result<(), UnalignedError> {
     // TODO this could probably become more efficient once `ptr::align_offset`

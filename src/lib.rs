@@ -23,7 +23,7 @@
 //! vice versa.
 //! - At the root of this crate, there are transmutation functions with enough
 //! checks to be considered safe to use in any circumstance. The operation may
-//! still arbitrarily raise (recoverable) errors due to unaligned data, but it
+//! still arbitrarily return (recoverable) errors due to unaligned data, but it
 //! will not eat your laundry.
 //!
 //! This crate can be used in a no-`std` environment by disabling the `std`

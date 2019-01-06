@@ -102,7 +102,7 @@ unsafe impl<T: PodTransmutable> PodTransmutable for [T; 32] {}
 ///
 /// # Errors
 ///
-/// An error is raised in one of the following situations:
+/// An error is returned in one of the following situations:
 ///
 /// - The data does not have enough bytes for a single value `T`.
 ///
@@ -137,7 +137,7 @@ pub unsafe fn guarded_transmute_pod<T: PodTransmutable>(bytes: &[u8]) -> Result<
 ///
 /// # Errors
 ///
-/// An error is raised in one of the following situations:
+/// An error is returned in one of the following situations:
 ///
 /// - The data does not have a memory alignment compatible with `T`. You will
 ///   have to make a copy anyway, or modify how the data was originally made.
@@ -176,7 +176,7 @@ pub unsafe fn guarded_transmute_pod_pedantic<T: PodTransmutable>(bytes: &[u8]) -
 ///
 /// # Errors
 ///
-/// An error is raised in one of the following situations:
+/// An error is returned in one of the following situations:
 ///
 /// - The data does not have enough bytes for a single value `T`.
 ///
@@ -226,7 +226,7 @@ pub unsafe fn guarded_transmute_pod_many_permissive<T: PodTransmutable>(bytes: &
 ///
 /// # Errors
 ///
-/// An error is raised in one of the following situations:
+/// An error is returned in one of the following situations:
 ///
 /// - The data does not have enough bytes for a single value `T`.
 ///
@@ -259,7 +259,7 @@ pub unsafe fn guarded_transmute_pod_many_pedantic<T: PodTransmutable>(bytes: &[u
 ///
 /// # Errors
 ///
-/// An error is raised in one of the following situations:
+/// An error is returned in one of the following situations:
 ///
 /// - The data does not have enough bytes for a single value `T`.
 ///
@@ -355,7 +355,7 @@ pub unsafe fn guarded_transmute_pod_vec_permissive<T: PodTransmutable>(bytes: Ve
 ///
 /// # Errors
 ///
-/// An error is raised in one of the following situations:
+/// An error is returned in one of the following situations:
 ///
 /// - The data does not have enough bytes for a single value `T`.
 /// - The last chunk of the size of `T` is not large enough for a value, leaving extraneous bytes.

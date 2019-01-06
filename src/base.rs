@@ -25,7 +25,7 @@ use core::slice;
 ///
 /// # Errors
 ///
-/// An error is raised if the slice does not have enough bytes for a single
+/// An error is returned if the slice does not have enough bytes for a single
 /// value `T`.
 ///
 /// # Examples
@@ -67,7 +67,7 @@ where
 ///
 /// # Errors
 ///
-/// An error is raised if the slice's length is not equal to the size of a
+/// An error is returned if the slice's length is not equal to the size of a
 /// single value `T`.
 ///
 /// # Examples
@@ -114,7 +114,7 @@ where
 ///
 /// # Errors
 ///
-/// An error is raised if the slice does not have enough bytes for a single
+/// An error is returned if the slice does not have enough bytes for a single
 /// value `T`.
 ///
 /// # Examples

@@ -124,7 +124,7 @@ impl fmt::Display for GuardError {
 
 /// Unaligned memory access error.
 /// 
-/// Raised when the given data slice or vector is not properly aligned for the
+/// Returned when the given data slice or vector is not properly aligned for the
 /// target type. It would have been properly aligned if `offset` bytes were
 /// shifted (discarded) from the front of the slice.
 #[derive(Debug, Clone, Eq, Hash, PartialEq)]

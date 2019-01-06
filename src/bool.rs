@@ -172,7 +172,7 @@ pub fn guarded_transmute_bool_vec_pedantic(bytes: Vec<u8>) -> Result<Vec<bool>, 
     safe_transmute_bool_vec_pedantic(bytes)
 }
 
-/// Helper function for raising an error if any of the bytes does not make a
+/// Helper function for returning an error if any of the bytes does not make a
 /// valid `bool`.
 fn check_bool(bytes: &[u8]) -> Result<(), Error> {
     if bytes_are_bool(bytes) {
