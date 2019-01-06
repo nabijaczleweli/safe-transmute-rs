@@ -43,10 +43,7 @@ use core::slice;
 /// }
 /// # }
 /// ```
-pub unsafe fn from_bytes<T>(bytes: &[u8]) -> Result<T, Error>
-where
-    T: Copy,
-{
+pub unsafe fn from_bytes<T: Copy>(bytes: &[u8]) -> Result<T, Error> {
     SingleManyGuard::check::<T>(bytes)?;
     Ok(slice::from_raw_parts(bytes.as_ptr() as *const T, 1)[0])
 }
@@ -88,10 +85,7 @@ where
 /// }
 /// # }
 /// ```
-pub unsafe fn from_bytes_pedantic<T>(bytes: &[u8]) -> Result<T, Error>
-where
-    T: Copy,
-{
+pub unsafe fn from_bytes_pedantic<T: Copy>(bytes: &[u8]) -> Result<T, Error> {
     SingleValueGuard::check::<T>(bytes)?;
     Ok(slice::from_raw_parts(bytes.as_ptr() as *const T, 1)[0])
 }
@@ -136,10 +130,7 @@ where
 /// }
 /// # }
 /// ```
-pub unsafe fn guarded_transmute_many<T, G>(bytes: &[u8]) -> Result<&[T], Error>
-where
-    G: Guard,
-{
+pub unsafe fn guarded_transmute_many<T, G: Guard>(bytes: &[u8]) -> Result<&[T], Error> {
     G::check::<T>(bytes)?;
     Ok(slice::from_raw_parts(bytes.as_ptr() as *const T, bytes.len() / size_of::<T>()))
 }
@@ -230,10 +221,7 @@ pub unsafe fn guarded_transmute_many_permissive<T>(bytes: &[u8]) -> &[T] {
 /// # }
 /// ```
 #[cfg(feature = "std")]
-pub unsafe fn guarded_transmute_vec<T, G>(mut bytes: Vec<u8>) -> Result<Vec<T>, Error>
-where
-    G: Guard,
-{
+pub unsafe fn guarded_transmute_vec<T, G: Guard>(mut bytes: Vec<u8>) -> Result<Vec<T>, Error> {
     G::check::<T>(&bytes)?;
     let ptr = bytes.as_mut_ptr();
     let capacity = bytes.capacity() / size_of::<T>();

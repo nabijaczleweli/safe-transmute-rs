@@ -203,11 +203,7 @@ pub unsafe fn guarded_transmute_pod_pedantic<T: PodTransmutable>(bytes: &[u8]) -
 /// }
 /// # }
 /// ```
-pub unsafe fn guarded_transmute_pod_many<T, G>(bytes: &[u8]) -> Result<&[T], Error>
-where
-    T: PodTransmutable,
-    G: Guard,
-{
+pub unsafe fn guarded_transmute_pod_many<T: PodTransmutable, G: Guard>(bytes: &[u8]) -> Result<&[T], Error> {
     guarded_transmute_many::<T, G>(bytes)
 }
 
@@ -300,11 +296,7 @@ pub unsafe fn guarded_transmute_pod_many_pedantic<T: PodTransmutable>(bytes: &[u
 /// # }
 /// ```
 #[cfg(feature = "std")]
-pub unsafe fn guarded_transmute_pod_vec<T, G>(bytes: Vec<u8>) -> Result<Vec<T>, Error>
-where
-    T: PodTransmutable,
-    G: Guard,
-{
+pub unsafe fn guarded_transmute_pod_vec<T: PodTransmutable, G: Guard>(bytes: Vec<u8>) -> Result<Vec<T>, Error> {
     guarded_transmute_vec::<T, G>(bytes)
 }
 

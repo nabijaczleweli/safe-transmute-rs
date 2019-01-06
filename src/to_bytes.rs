@@ -132,10 +132,7 @@ pub unsafe fn guarded_transmute_to_bytes_many<T>(from: &[T]) -> &[u8] {
 ///            }),
 ///            &[0x42, 0x69]);
 /// ```
-pub fn safe_transmute_one_to_bytes<T>(from: &T) -> &[u8]
-where
-    T: PodTransmutable,
-{
+pub fn safe_transmute_one_to_bytes<T: PodTransmutable>(from: &T) -> &[u8] {
     unsafe { guarded_transmute_to_bytes(from) }
 }
 
@@ -185,10 +182,7 @@ pub fn guarded_transmute_to_bytes_pod<T: PodTransmutable>(from: &T) -> &[u8] {
 ///                                      }]),
 ///            &[0x42, 0x69, 0x12, 0x48]);
 /// ```
-pub fn safe_transmute_to_bytes<T>(from: &[T]) -> &[u8]
-where
-    T: PodTransmutable,
-{
+pub fn safe_transmute_to_bytes<T: PodTransmutable>(from: &[T]) -> &[u8] {
     unsafe { guarded_transmute_to_bytes_many(from) }
 }
 
@@ -294,10 +288,7 @@ pub unsafe fn guarded_transmute_to_bytes_vec<T>(mut from: Vec<T>) -> Vec<u8> {
 ///            vec![0x42, 0x69, 0x12, 0x48]);
 /// ```
 #[cfg(feature = "std")]
-pub fn safe_transmute_to_bytes_vec<T>(from: Vec<T>) -> Vec<u8>
-where
-    T: PodTransmutable,
-{
+pub fn safe_transmute_to_bytes_vec<T: PodTransmutable>(from: Vec<T>) -> Vec<u8> {
     unsafe { guarded_transmute_to_bytes_vec(from) }
 }
 
@@ -305,9 +296,6 @@ where
 /// using the same memory buffer as the former.
 #[cfg(feature = "std")]
 #[deprecated(since = "0.11.0", note = "use `safe_transmute_to_bytes_vec` instead")]
-pub fn guarded_transmute_to_bytes_pod_vec<T>(from: Vec<T>) -> Vec<u8>
-where
-    T: PodTransmutable,
-{
+pub fn guarded_transmute_to_bytes_pod_vec<T: PodTransmutable>(from: Vec<T>) -> Vec<u8> {
     safe_transmute_to_bytes_vec(from)
 }
