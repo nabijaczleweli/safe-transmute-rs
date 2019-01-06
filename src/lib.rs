@@ -12,15 +12,16 @@
 //! memory representation is still undefined behavior. Moreover, unaligned
 //! memory access is not prevented, and must be previously ensured by the
 //! caller.
-//! - The [`guard`] module contains the **Guard API**, which imposes slice
-//! boundary restrictions in a conversion.
-//! - The [`pod`] module introduces the `PodTransmutable` trait, which
-//! statically ensures that any bit combination makes a valid value for a
-//! given type. The functions in this module are safer than [`base`], but still
-//! do not prevent unaligned memory access.
-//! - `to_bytes` enables the opposite operation of reintepreting values as bytes. 
-//! - The `bool` module ensures safe transmutation of bytes to boolean values and
-//! vice versa.
+//! - The [`guard`](guard/index.html) module contains the **Guard API**, which
+//! imposes slice boundary restrictions in a conversion.
+//! - The [`pod`](pod/index.html) module introduces the `PodTransmutable`
+//! trait, which statically ensures that any bit combination makes a valid
+//! value for a given type. The functions in this module are safer than
+//! [`base`](base/index.html), but still do not prevent unaligned memory access.
+//! - [`to_bytes`](to_bytes/index.html) enables the opposite operation of
+//! reintepreting values as bytes. 
+//! - The [`bool`](bool/index.html) module ensures safe transmutation of bytes
+//! to boolean values and vice versa.
 //! - At the root of this crate, there are transmutation functions with enough
 //! checks to be considered safe to use in any circumstance. The operation may
 //! still arbitrarily return (recoverable) errors due to unaligned data, but it
@@ -28,9 +29,6 @@
 //!
 //! This crate can be used in a no-`std` environment by disabling the `std`
 //! feature through specifying `default-features = false` on import.
-//!
-//! [`base`]: base/index.html
-//! [`pod`]: pod/index.html
 //!
 //! # Examples
 //!
