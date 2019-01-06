@@ -30,7 +30,7 @@ use core::slice;
 ///
 /// # Examples
 ///
-/// ```
+/// ```no_run
 /// # use safe_transmute::base::from_bytes;
 /// # include!("../tests/test_util/le_to_native.rs");
 /// # fn main() {
@@ -69,7 +69,7 @@ pub unsafe fn from_bytes<T: Copy>(bytes: &[u8]) -> Result<T, Error> {
 ///
 /// # Examples
 ///
-/// ```
+/// ```no_run
 /// # use safe_transmute::base::from_bytes_pedantic;
 /// # include!("../tests/test_util/le_to_native.rs");
 /// # fn main() {
@@ -113,7 +113,7 @@ pub unsafe fn from_bytes_pedantic<T: Copy>(bytes: &[u8]) -> Result<T, Error> {
 ///
 /// # Examples
 ///
-/// ```
+/// ```no_run
 /// use safe_transmute::base::guarded_transmute_many;
 /// use safe_transmute::SingleManyGuard;
 /// # include!("../tests/test_util/le_to_native.rs");
@@ -155,7 +155,7 @@ pub unsafe fn guarded_transmute_many<T, G: Guard>(bytes: &[u8]) -> Result<&[T], 
 ///
 /// # Examples
 ///
-/// ```
+/// ```no_run
 /// # use safe_transmute::base::guarded_transmute_many_permissive;
 /// # include!("../tests/test_util/le_to_native.rs");
 /// # fn main() {
@@ -194,7 +194,7 @@ pub unsafe fn guarded_transmute_many_permissive<T>(bytes: &[u8]) -> &[T] {
 ///
 /// # Examples
 ///
-/// ```
+/// ```no_run
 /// use safe_transmute::guard::PermissiveGuard;
 /// # use safe_transmute::base::guarded_transmute_vec;
 /// # include!("../tests/test_util/le_to_native.rs");
@@ -247,7 +247,7 @@ pub unsafe fn guarded_transmute_vec<T, G: Guard>(mut bytes: Vec<u8>) -> Result<V
 ///
 /// # Examples
 ///
-/// ```
+/// ```no_run
 /// # use safe_transmute::base::guarded_transmute_vec_permissive;
 /// # include!("../tests/test_util/le_to_native.rs");
 ///
