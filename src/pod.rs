@@ -108,9 +108,9 @@ unsafe impl<T: PodTransmutable> PodTransmutable for [T; 32] {}
 ///
 /// # Safety
 /// 
-/// It is undefined behavior If the data does not have a memory alignment
-/// compatible with `T`. If this cannot be ensured, you will have to make a
-/// copy of the data, or change how it was originally made.
+/// This function invokes undefined behavior if the data does not have a memory
+/// alignment compatible with `T`. If this cannot be ensured, you will have to
+/// make a copy of the data, or change how it was originally made.
 /// 
 /// # Examples
 ///
@@ -146,9 +146,9 @@ pub unsafe fn guarded_transmute_pod<T: PodTransmutable>(bytes: &[u8]) -> Result<
 ///
 /// # Safety
 /// 
-/// It is undefined behavior If the data does not have a memory alignment
-/// compatible with `T`. If this cannot be ensured, you will have to make a
-/// copy of the data, or change how it was originally made.
+/// This function invokes undefined behavior if the data does not have a memory
+/// alignment compatible with `T`. If this cannot be ensured, you will have to
+/// make a copy of the data, or change how it was originally made.
 ///
 /// # Examples
 ///
@@ -182,9 +182,9 @@ pub unsafe fn guarded_transmute_pod_pedantic<T: PodTransmutable>(bytes: &[u8]) -
 ///
 /// # Safety
 /// 
-/// It is undefined behavior If the data does not have a memory alignment
-/// compatible with `T`. If this cannot be ensured, you will have to make a
-/// copy of the data, or change how it was originally made.
+/// This function invokes undefined behavior if the data does not have a memory
+/// alignment compatible with `T`. If this cannot be ensured, you will have to
+/// make a copy of the data, or change how it was originally made.
 ///
 /// # Examples
 ///
@@ -230,6 +230,12 @@ pub unsafe fn guarded_transmute_pod_many_permissive<T: PodTransmutable>(bytes: &
 ///
 /// - The data does not have enough bytes for a single value `T`.
 ///
+/// # Safety
+/// 
+/// This function invokes undefined behavior if the data does not have a memory
+/// alignment compatible with `T`. If this cannot be ensured, you will have to
+/// make a copy of the data, or change how it was originally made.
+/// 
 /// # Examples
 ///
 /// ```no_run
@@ -265,9 +271,9 @@ pub unsafe fn guarded_transmute_pod_many_pedantic<T: PodTransmutable>(bytes: &[u
 ///
 /// # Safety
 /// 
-/// It is undefined behavior If the data does not have a memory alignment
-/// compatible with `T`. If this cannot be ensured, you will have to make a
-/// copy of the data, or change how it was originally made.
+/// This function invokes undefined behavior if the data does not have a memory
+/// alignment compatible with `T`. If this cannot be ensured, you will have to
+/// make a copy of the data, or change how it was originally made.
 ///
 /// # Examples
 ///
@@ -310,9 +316,9 @@ where
 ///
 /// # Safety
 /// 
-/// It is undefined behavior If the data does not have a memory alignment
-/// compatible with `T`. If this cannot be ensured, you will have to make a
-/// copy of the data, or change how it was originally made.
+/// This function invokes undefined behavior if the data does not have a memory
+/// alignment compatible with `T`. If this cannot be ensured, you will have to
+/// make a copy of the data, or change how it was originally made.
 ///
 /// # Examples
 ///
@@ -349,9 +355,9 @@ pub unsafe fn guarded_transmute_pod_vec_permissive<T: PodTransmutable>(bytes: Ve
 ///
 /// # Safety
 /// 
-/// It is undefined behavior If the data does not have a memory alignment
-/// compatible with `T`. If this cannot be ensured, you will have to make a
-/// copy of the data, or change how it was originally made.
+/// This function invokes undefined behavior if the data does not have a memory
+/// alignment compatible with `T`. If this cannot be ensured, you will have to
+/// make a copy of the data, or change how it was originally made.
 ///
 /// # Errors
 ///
