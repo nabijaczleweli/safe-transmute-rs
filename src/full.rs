@@ -7,7 +7,8 @@
 //! 
 //! Unless this was previously imposed by certain means, the functions in this
 //! module may arbitrarily fail due to unaligned memory access. It is up to the
-//! user of this crate to 
+//! user of this crate to make the receiving data well aligned for the intended
+//! target type.
 
 use crate::Error;
 use crate::guard::{Guard, PedanticGuard, PermissiveGuard, SingleValueGuard};
@@ -43,10 +44,7 @@ use crate::align::check_alignment;
 /// # assert_eq!(safe_transmute_one::<u32>(&[0x00, 0x00, 0x00, 0x01].le_to_native::<u32>()).unwrap(), 0x0100_0000);
 /// # }
 /// ```
-pub fn safe_transmute_one<T>(bytes: &[u8]) -> Result<T, Error>
-where
-    T: PodTransmutable,
-{
+pub fn safe_transmute_one<T: PodTransmutable>(bytes: &[u8]) -> Result<T, Error> {
     check_alignment::<_, T>(bytes)?;
     unsafe { guarded_transmute_pod(bytes) }
 }
@@ -77,10 +75,7 @@ where
 /// # assert_eq!(safe_transmute_one_pedantic::<u16>(&[0x0F, 0x0E].le_to_native::<u16>()).unwrap(), 0x0E0F);
 /// # }
 /// ```
-pub fn safe_transmute_one_pedantic<T>(bytes: &[u8]) -> Result<T, Error>
-where
-    T: PodTransmutable,
-{
+pub fn safe_transmute_one_pedantic<T: PodTransmutable>(bytes: &[u8]) -> Result<T, Error> {
     SingleValueGuard::check::<T>(bytes)?;
     check_alignment::<_, T>(bytes)?;
     unsafe { guarded_transmute_pod(bytes) }
@@ -99,7 +94,7 @@ where
 /// # Examples
 ///
 /// ```no_run
-/// use safe_transmute::{SingleManyGuard, safe_transmute_many};
+/// # use safe_transmute::{SingleManyGuard, safe_transmute_many};
 /// # include!("../tests/test_util/le_to_native.rs");
 /// # fn main() {
 /// // Little-endian
@@ -110,11 +105,7 @@ where
 ///            &[0x0100, 0x0200]);
 /// # }
 /// ```
-pub fn safe_transmute_many<T, G>(bytes: &[u8]) -> Result<&[T], Error>
-where
-    T: PodTransmutable,
-    G: Guard,
-{
+pub fn safe_transmute_many<T: PodTransmutable, G: Guard>(bytes: &[u8]) -> Result<&[T], Error> {
     check_alignment::<_, T>(bytes)?;
     unsafe { guarded_transmute_pod_many::<_, G>(bytes) }
 }
@@ -162,10 +153,7 @@ pub fn safe_transmute_many_permissive<T: PodTransmutable>(bytes: &[u8]) -> Resul
 ///            &[0x0E0F, 0x0B0A]);
 /// # }
 /// ```
-pub fn safe_transmute_many_pedantic<T>(bytes: &[u8]) -> Result<&[T], Error>
-where
-    T: PodTransmutable,
-{
+pub fn safe_transmute_many_pedantic<T: PodTransmutable>(bytes: &[u8]) -> Result<&[T], Error> {
     safe_transmute_many::<T, PedanticGuard>(bytes)
 }
 
@@ -184,7 +172,7 @@ where
 /// # Examples
 ///
 /// ```no_run
-/// use safe_transmute::{safe_transmute_vec, SingleManyGuard};
+/// # use safe_transmute::{safe_transmute_vec, SingleManyGuard};
 /// # include!("../tests/test_util/le_to_native.rs");
 /// # fn main() {
 /// // Little-endian
@@ -203,11 +191,7 @@ where
 /// # }
 /// ```
 #[cfg(feature = "std")]
-pub fn safe_transmute_vec<T, G>(bytes: Vec<u8>) -> Result<Vec<T>, Error>
-where
-    T: PodTransmutable,
-    G: Guard,
-{
+pub fn safe_transmute_vec<T: PodTransmutable, G: Guard>(bytes: Vec<u8>) -> Result<Vec<T>, Error> {
     check_alignment::<_, T>(&bytes)?;
     unsafe { guarded_transmute_pod_vec::<T, G>(bytes) }
 }
@@ -246,10 +230,7 @@ where
 /// # }
 /// ```
 #[cfg(feature = "std")]
-pub fn safe_transmute_vec_permissive<T>(bytes: Vec<u8>) -> Result<Vec<T>, Error>
-where
-    T: PodTransmutable,
-{
+pub fn safe_transmute_vec_permissive<T: PodTransmutable>(bytes: Vec<u8>) -> Result<Vec<T>, Error> {
     safe_transmute_vec::<T, PermissiveGuard>(bytes)
 }
 
@@ -280,14 +261,10 @@ where
 /// # assert_eq!(safe_transmute_vec_pedantic::<u16>(vec![0x00, 0x01, 0x00, 0x02].le_to_native::<u16>()).unwrap(),
 ///            vec![0x0100, 0x0200]);
 ///
-/// assert!(safe_transmute_vec_pedantic::<u32>(vec![0x04, 0x00, 0x00, 0x00, 0xED])
-///           .is_err());
+/// assert!(safe_transmute_vec_pedantic::<u32>(vec![0x04, 0x00, 0x00, 0x00, 0xED]).is_err());
 /// # }
 /// ```
 #[cfg(feature = "std")]
-pub fn safe_transmute_vec_pedantic<T>(bytes: Vec<u8>) -> Result<Vec<T>, Error>
-where
-    T: PodTransmutable,
-{
+pub fn safe_transmute_vec_pedantic<T: PodTransmutable>(bytes: Vec<u8>) -> Result<Vec<T>, Error> {
     safe_transmute_vec::<T, PedanticGuard>(bytes)
 }

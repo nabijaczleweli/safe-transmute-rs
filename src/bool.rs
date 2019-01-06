@@ -1,6 +1,6 @@
 //! Functions for safe transmutation to `bool`.
 //! 
-//! Transmuting to `bool' is not undefined behavior if the transmuted value is
+//! Transmuting to `bool` is not undefined behavior if the transmuted value is
 //! either 0 or 1. These functions will return an error if the integer value
 //! behind the `bool` value is neither one.
 
@@ -35,9 +35,7 @@ fn byte_is_bool(b: u8) -> bool {
     unsafe { b == transmute::<_, u8>(false) || b == transmute::<_, u8>(true) }
 }
 
-fn guarded_transmute_bool<G>(bytes: &[u8]) -> Result<&[bool], Error>
-where
-    G: Guard,
+fn guarded_transmute_bool<G: Guard>(bytes: &[u8]) -> Result<&[bool], Error>
 {
     check_bool(bytes)?;
     unsafe { guarded_transmute_many::<_, G>(bytes) }
@@ -121,7 +119,7 @@ pub fn guarded_transmute_bool_pedantic(bytes: &[u8]) -> Result<&[bool], Error> {
 #[cfg(feature = "std")]
 pub fn safe_transmute_bool_vec_permissive(bytes: Vec<u8>) -> Result<Vec<bool>, Error> {
     check_bool(&bytes)?;
-    // alignment guarantees are ensured, and all values have been checked,
+    // Alignment guarantees are ensured, and all values have been checked,
     // so the conversion is safe.
     unsafe { guarded_transmute_vec::<_, PermissiveGuard>(bytes) }
 }
