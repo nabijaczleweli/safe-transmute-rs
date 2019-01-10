@@ -245,8 +245,8 @@ pub unsafe fn guarded_transmute_pod_many_pedantic<T: PodTransmutable>(bytes: &[u
 /// # Examples
 ///
 /// ```no_run
-/// use safe_transmute::pod::guarded_transmute_pod_vec;
-/// use safe_transmute::SingleManyGuard;
+/// # use safe_transmute::pod::guarded_transmute_pod_vec;
+/// # use safe_transmute::SingleManyGuard;
 /// # include!("../tests/test_util/le_to_native.rs");
 /// # fn main() {
 /// // Little-endian
