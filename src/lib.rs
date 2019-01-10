@@ -41,11 +41,11 @@
 //! # fn main() {
 //! assert_eq!(safe_transmute_many::<u16, SingleManyGuard>(
 //!     &[0x00, 0x01, 0x12, 0x34,
-//!     // Spare byte, unused
+//!       // Spare byte, unused
 //! # /*
-//!     0x00])?,
+//!       0x00])?,
 //! # */
-//! #   0x00].le_to_native::<u16>()).unwrap(),
+//! #     0x00].le_to_native::<u16>()).unwrap(),
 //!     &[0x0100, 0x3412]);
 //! # }
 //! ```
