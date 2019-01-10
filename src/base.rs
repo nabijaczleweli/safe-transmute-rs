@@ -20,8 +20,8 @@ use core::slice;
 ///   the slice data must be properly aligned for accessing the value of type `T`.
 /// - The byte data needs to correspond to a valid `T` value.
 ///
-/// Failure to fulfill any of the requirements above is dangerous and may eat
-/// your laundry.
+/// Failure to fulfill any of the requirements above results in undefined
+/// behavior.
 ///
 /// # Errors
 ///
@@ -59,8 +59,8 @@ pub unsafe fn from_bytes<T: Copy>(bytes: &[u8]) -> Result<T, Error> {
 ///   the slice data must be properly aligned for accessing the value of type `T`.
 /// - The byte data needs to correspond to a valid `T` value.
 ///
-/// Failure to fulfill any of the requirements above is dangerous and may eat
-/// your laundry.
+/// Failure to fulfill any of the requirements above results in undefined
+/// behavior.
 ///
 /// # Errors
 ///
@@ -103,8 +103,8 @@ pub unsafe fn from_bytes_pedantic<T: Copy>(bytes: &[u8]) -> Result<T, Error> {
 ///   values. Types `T` with a `Drop` implementation are unlikely to be safe
 ///   in this regard.
 ///
-/// Failure to fulfill any of the requirements above is dangerous and may eat
-/// your laundry.
+/// Failure to fulfill any of the requirements above results in undefined
+/// behavior.
 ///
 /// # Errors
 ///
@@ -150,8 +150,8 @@ pub unsafe fn guarded_transmute_many<T, G: Guard>(bytes: &[u8]) -> Result<&[T], 
 ///   values. Types `T` with a `Drop` implementation are unlikely to be safe
 ///   in this regard.
 ///
-/// Failure to fulfill any of the requirements above is dangerous and may eat
-/// your laundry.
+/// Failure to fulfill any of the requirements above results in undefined
+/// behavior.
 ///
 /// # Examples
 ///
@@ -189,8 +189,8 @@ pub unsafe fn guarded_transmute_many_permissive<T>(bytes: &[u8]) -> &[T] {
 ///   values. Types `T` with a `Drop` implementation are unlikely to be safe
 ///   in this regard.
 ///
-/// Failure to fulfill any of the requirements above is dangerous and may eat
-/// your laundry.
+/// Failure to fulfill any of the requirements above results in undefined
+/// behavior.
 ///
 /// # Examples
 ///
@@ -242,8 +242,8 @@ pub unsafe fn guarded_transmute_vec<T, G: Guard>(mut bytes: Vec<u8>) -> Result<V
 ///   values. Types `T` with a `Drop` implementation are unlikely to be safe
 ///   in this regard.
 ///
-/// Failure to fulfill any of the requirements above is dangerous and may eat
-/// your laundry.
+/// Failure to fulfill any of the requirements above results in undefined
+/// behavior.
 ///
 /// # Examples
 ///
