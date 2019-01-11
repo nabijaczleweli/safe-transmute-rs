@@ -169,13 +169,16 @@
 <span id="169">169</span>
 <span id="170">170</span>
 <span id="171">171</span>
+<span id="172">172</span>
+<span id="173">173</span>
+<span id="174">174</span>
 </pre><pre class="rust ">
 <span class="doccomment">//! The `guard` module exposes an API for memory boundary checking.</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! # Examples:</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! In order to check whether a value would fit in the given</span>
-<span class="doccomment">//! slice without extraneous space:</span>
+<span class="doccomment">//! slice with no extra trailing bytes:</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! ```</span>
 <span class="doccomment">//! # use safe_transmute::Error;</span>
@@ -227,9 +230,12 @@
 <span class="doccomment">//!            }));</span>
 <span class="doccomment">//! ```</span>
 <span class="doccomment">//!</span>
+<span class="doccomment">//! # Note</span>
+<span class="doccomment">//!</span>
 <span class="doccomment">//! Regardless of the chosen strategy, guarded transmutation functions will</span>
-<span class="doccomment">//! always ensure that no out of bounds access is attempted, usually by</span>
-<span class="doccomment">//! restricting the output to spatially safe portions of the input.</span>
+<span class="doccomment">//! always ensure that no out of bounds access is attempted. All functions will</span>
+<span class="doccomment">//! restrict the output to spatially safe portions of the input. The guard</span>
+<span class="doccomment">//! API exists to establish expectations in the conversion process.</span>
 
 
 <span class="kw">use</span> <span class="ident">error</span>::{<span class="ident">ErrorReason</span>, <span class="ident">GuardError</span>};
