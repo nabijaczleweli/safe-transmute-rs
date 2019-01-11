@@ -143,6 +143,7 @@
 <span id="143">143</span>
 <span id="144">144</span>
 <span id="145">145</span>
+<span id="146">146</span>
 </pre><pre class="rust ">
 <span class="doccomment">//! This crate contains checked implementations of transmutation procedures, some of which</span>
 <span class="doccomment">//! ensure memory safety.</span>
@@ -265,8 +266,9 @@
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">util</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">to_bytes</span>;
 
-<span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span>::<span class="ident">full</span>::{<span class="ident">safe_transmute_many_permissive</span>, <span class="ident">safe_transmute_vec_permissive</span>, <span class="ident">safe_transmute_many_pedantic</span>, <span class="ident">safe_transmute_one_pedantic</span>,
-                     <span class="ident">safe_transmute_vec_pedantic</span>, <span class="ident">safe_transmute_many</span>, <span class="ident">safe_transmute_one</span>, <span class="ident">safe_transmute_vec</span>};
+<span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span>::<span class="ident">full</span>::{<span class="ident">safe_transmute_many_permissive</span>, <span class="ident">safe_transmute_many_pedantic</span>, <span class="ident">safe_transmute_one_pedantic</span>, <span class="ident">safe_transmute_many</span>, <span class="ident">safe_transmute_one</span>};
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;std&quot;</span>)]</span>
+<span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span>::<span class="ident">full</span>::{<span class="ident">safe_transmute_vec_permissive</span>, <span class="ident">safe_transmute_vec_pedantic</span>, <span class="ident">safe_transmute_vec</span>};
 
 
 <span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span>::<span class="ident">guard</span>::{<span class="ident">SingleValueGuard</span>, <span class="ident">PermissiveGuard</span>, <span class="ident">SingleManyGuard</span>, <span class="ident">PedanticGuard</span>, <span class="ident">Guard</span>};
