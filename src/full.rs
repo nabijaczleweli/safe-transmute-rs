@@ -193,8 +193,11 @@ pub fn transmute_many_pedantic<T: PodTransmutable>(bytes: &[u8]) -> Result<&[T],
 /// ```
 #[cfg(feature = "std")]
 pub fn transmute_vec<T: PodTransmutable, G: Guard>(bytes: Vec<u8>) -> Result<Vec<T>, Error> {
-    check_alignment::<_, T>(&bytes)?;
-    unsafe { transmute_pod_vec::<T, G>(bytes) }
+    if let Err(e) = check_alignment::<_, T>(&bytes) {
+        Err(e.with_vec(bytes).into())
+    } else {
+        unsafe { transmute_pod_vec::<T, G>(bytes) }
+    }
 }
 
 /// Transform a byte vector into a vector of values.
