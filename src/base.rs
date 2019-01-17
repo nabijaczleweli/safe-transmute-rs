@@ -117,7 +117,7 @@ pub unsafe fn from_bytes_pedantic<T: Copy>(bytes: &[u8]) -> Result<T, Error> {
 /// # Examples
 ///
 /// ```no_run
-/// # use safe_transmute::base::guarded_transmute_many;
+/// # use safe_transmute::base::transmute_many;
 /// # use safe_transmute::SingleManyGuard;
 /// # include!("../tests/test_util/le_to_native.rs");
 /// # fn main() {
@@ -125,15 +125,15 @@ pub unsafe fn from_bytes_pedantic<T: Copy>(bytes: &[u8]) -> Result<T, Error> {
 /// unsafe {
 /// # /*
 ///     assert_eq!(
-///         guarded_transmute_many::<u16, SingleManyGuard>(&[0x00, 0x01, 0x00, 0x02])?,
+///         transmute_many::<u16, SingleManyGuard>(&[0x00, 0x01, 0x00, 0x02])?,
 /// # */
-/// #   assert_eq!(guarded_transmute_many::<u16, SingleManyGuard>(&[0x00, 0x01, 0x00, 0x02].le_to_native::<u16>()).unwrap(),
+/// #   assert_eq!(transmute_many::<u16, SingleManyGuard>(&[0x00, 0x01, 0x00, 0x02].le_to_native::<u16>()).unwrap(),
 ///         &[0x0100, 0x0200]
 ///     );
 /// }
 /// # }
 /// ```
-pub unsafe fn guarded_transmute_many<T, G: Guard>(bytes: &[u8]) -> Result<&[T], Error> {
+pub unsafe fn transmute_many<T, G: Guard>(bytes: &[u8]) -> Result<&[T], Error> {
     G::check::<T>(bytes)?;
     Ok(slice::from_raw_parts(bytes.as_ptr() as *const T, bytes.len() / size_of::<T>()))
 }
@@ -143,7 +143,7 @@ pub unsafe fn guarded_transmute_many<T, G: Guard>(bytes: &[u8]) -> Result<&[T], 
 /// The resulting slice will have as many instances of a type as will fit,
 /// rounded down. The permissive guard is a no-op, which makes it possible for
 /// this function to return a slice directly. It is therefore equivalent to
-/// `guarded_transmute_many::<_, PermissiveGuard>(bytes).unwrap()`.
+/// `transmute_many::<_, PermissiveGuard>(bytes).unwrap()`.
 ///
 /// # Safety
 ///
@@ -159,23 +159,23 @@ pub unsafe fn guarded_transmute_many<T, G: Guard>(bytes: &[u8]) -> Result<&[T], 
 /// # Examples
 ///
 /// ```no_run
-/// # use safe_transmute::base::guarded_transmute_many_permissive;
+/// # use safe_transmute::base::transmute_many_permissive;
 /// # include!("../tests/test_util/le_to_native.rs");
 /// # fn main() {
 /// // Little-endian
 /// unsafe {
 /// # /*
 ///     assert_eq!(
-///         guarded_transmute_many_permissive::<u16>(&[0x00, 0x01, 0x00, 0x02]),
+///         transmute_many_permissive::<u16>(&[0x00, 0x01, 0x00, 0x02]),
 /// # */
-/// #   assert_eq!(guarded_transmute_many_permissive::<u16>(&[0x00, 0x01, 0x00, 0x02].le_to_native::<u16>()),
+/// #   assert_eq!(transmute_many_permissive::<u16>(&[0x00, 0x01, 0x00, 0x02].le_to_native::<u16>()),
 ///         &[0x0100, 0x0200]
 ///     );
 /// }
 /// # }
 /// ```
-pub unsafe fn guarded_transmute_many_permissive<T>(bytes: &[u8]) -> &[T] {
-    guarded_transmute_many::<_, PermissiveGuard>(bytes).expect("permissive guard should never fail")
+pub unsafe fn transmute_many_permissive<T>(bytes: &[u8]) -> &[T] {
+    transmute_many::<_, PermissiveGuard>(bytes).expect("permissive guard should never fail")
 }
 
 /// Transform a byte vector into a vector of an arbitrary type.
@@ -199,32 +199,32 @@ pub unsafe fn guarded_transmute_many_permissive<T>(bytes: &[u8]) -> &[T] {
 ///
 /// ```no_run
 /// # use safe_transmute::guard::PermissiveGuard;
-/// # use safe_transmute::base::guarded_transmute_vec;
+/// # use safe_transmute::base::transmute_vec;
 /// # include!("../tests/test_util/le_to_native.rs");
 /// # fn main() {
 /// // Little-endian
 /// unsafe {
 /// # /*
 ///     assert_eq!(
-///         guarded_transmute_vec::<u16, PermissiveGuard>(vec![0x00, 0x01, 0x00, 0x02])?,
+///         transmute_vec::<u16, PermissiveGuard>(vec![0x00, 0x01, 0x00, 0x02])?,
 /// # */
-/// # assert_eq!(guarded_transmute_vec::<u16, PermissiveGuard>(vec![0x00, 0x01, 0x00, 0x02].le_to_native::<u16>()).unwrap(),
+/// # assert_eq!(transmute_vec::<u16, PermissiveGuard>(vec![0x00, 0x01, 0x00, 0x02].le_to_native::<u16>()).unwrap(),
 ///         vec![0x0100, 0x0200]
 ///     );
 /// # /*
 ///     assert_eq!(
-///         guarded_transmute_vec::<u32, PermissiveGuard>(vec![0x04, 0x00, 0x00, 0x00, 0xED])?,
+///         transmute_vec::<u32, PermissiveGuard>(vec![0x04, 0x00, 0x00, 0x00, 0xED])?,
 /// # */
-/// # assert_eq!(guarded_transmute_vec::<u32, PermissiveGuard>(
+/// # assert_eq!(transmute_vec::<u32, PermissiveGuard>(
 /// #                vec![0x04, 0x00, 0x00, 0x00, 0xED].le_to_native::<u32>()).unwrap(),
 ///         vec![0x0000_0004]
 ///     );
-///     assert_eq!(guarded_transmute_vec::<u16, PermissiveGuard>(vec![0xED]), Ok(vec![]));
+///     assert_eq!(transmute_vec::<u16, PermissiveGuard>(vec![0xED]), Ok(vec![]));
 /// }
 /// # }
 /// ```
 #[cfg(feature = "std")]
-pub unsafe fn guarded_transmute_vec<T, G: Guard>(mut bytes: Vec<u8>) -> Result<Vec<T>, Error> {
+pub unsafe fn transmute_vec<T, G: Guard>(mut bytes: Vec<u8>) -> Result<Vec<T>, Error> {
     G::check::<T>(&bytes)?;
     let ptr = bytes.as_mut_ptr();
     let capacity = bytes.capacity() / size_of::<T>();
@@ -251,30 +251,30 @@ pub unsafe fn guarded_transmute_vec<T, G: Guard>(mut bytes: Vec<u8>) -> Result<V
 /// # Examples
 ///
 /// ```no_run
-/// # use safe_transmute::base::guarded_transmute_vec_permissive;
+/// # use safe_transmute::base::transmute_vec_permissive;
 /// # include!("../tests/test_util/le_to_native.rs");
 /// # fn main() {
 /// // Little-endian
 /// unsafe {
 /// # /*
 ///     assert_eq!(
-///         guarded_transmute_vec_permissive::<u16>(vec![0x00, 0x01, 0x00, 0x02]),
+///         transmute_vec_permissive::<u16>(vec![0x00, 0x01, 0x00, 0x02]),
 /// # */
-/// # assert_eq!(guarded_transmute_vec_permissive::<u16>(vec![0x00, 0x01, 0x00, 0x02].le_to_native::<u16>()),
+/// # assert_eq!(transmute_vec_permissive::<u16>(vec![0x00, 0x01, 0x00, 0x02].le_to_native::<u16>()),
 ///         vec![0x0100, 0x0200]
 ///     );
 /// # /*
 ///     assert_eq!(
-///         guarded_transmute_vec_permissive::<u32>(vec![0x04, 0x00, 0x00, 0x00, 0xED]),
+///         transmute_vec_permissive::<u32>(vec![0x04, 0x00, 0x00, 0x00, 0xED]),
 /// # */
-/// # assert_eq!(guarded_transmute_vec_permissive::<u32>(vec![0x04, 0x00, 0x00, 0x00, 0xED].le_to_native::<u32>()),
+/// # assert_eq!(transmute_vec_permissive::<u32>(vec![0x04, 0x00, 0x00, 0x00, 0xED].le_to_native::<u32>()),
 ///         vec![0x0000_0004]
 ///     );
-///     assert_eq!(guarded_transmute_vec_permissive::<u16>(vec![0xED]), vec![]);
+///     assert_eq!(transmute_vec_permissive::<u16>(vec![0xED]), vec![]);
 /// }
 /// # }
 /// ```
 #[cfg(feature = "std")]
-pub unsafe fn guarded_transmute_vec_permissive<T>(bytes: Vec<u8>) -> Vec<T> {
-    guarded_transmute_vec::<T, PermissiveGuard>(bytes).expect("permissive guard should never fail")
+pub unsafe fn transmute_vec_permissive<T>(bytes: Vec<u8>) -> Vec<T> {
+    transmute_vec::<T, PermissiveGuard>(bytes).expect("permissive guard should never fail")
 }

@@ -12,25 +12,24 @@ mod from_bytes;
 mod alignment_check;
 mod from_bytes_pedantic;
 
-mod guarded_transmute_vec;
-mod guarded_transmute_many;
-mod guarded_transmute_pod_vec;
-mod guarded_transmute_vec_pedantic;
-mod guarded_transmute_pod_pedantic;
-mod guarded_transmute_many_pedantic;
-mod guarded_transmute_vec_permissive;
-mod guarded_transmute_many_permissive;
-mod guarded_transmute_pod_vec_pedantic;
-mod guarded_transmute_pod_vec_permissive;
+mod base_transmute_vec;
+mod base_transmute_many;
+mod base_transmute_vec_pedantic;
+mod base_transmute_many_pedantic;
+mod base_transmute_vec_permissive;
 
-mod safe_transmute_one;
-mod safe_transmute_many;
-mod safe_transmute_bool_pedantic;
-mod safe_transmute_many_pedantic;
-mod safe_transmute_bool_permissive;
-mod safe_transmute_many_permissive;
-mod safe_transmute_bool_vec_pedantic;
-mod safe_transmute_bool_vec_permissive;
+mod transmute_one;
+mod transmute_one_pedantic;
+mod transmute_many;
+mod transmute_vec;
+mod transmute_vec_pedantic;
+mod transmute_vec_permissive;
+mod transmute_bool_pedantic;
+mod transmute_bool_permissive;
+mod transmute_bool_vec_pedantic;
+mod transmute_bool_vec_permissive;
+mod transmute_many_pedantic;
+mod transmute_many_permissive;
 
 
 include!("test_util/le_to_native.rs");

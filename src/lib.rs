@@ -36,10 +36,10 @@
 //! guard (at least one value, extraneous bytes are allowed):
 //!
 //! ```no_run
-//! # use safe_transmute::{safe_transmute_many, SingleManyGuard};
+//! # use safe_transmute::{transmute_many, SingleManyGuard};
 //! # include!("../tests/test_util/le_to_native.rs");
 //! # fn main() {
-//! assert_eq!(safe_transmute_many::<u16, SingleManyGuard>(
+//! assert_eq!(transmute_many::<u16, SingleManyGuard>(
 //!     &[0x00, 0x01, 0x12, 0x34,
 //!       // Spare byte, unused
 //! # /*
@@ -53,10 +53,10 @@
 //! View all bytes as a series of `u16`s:
 //!
 //! ```no_run
-//! # use safe_transmute::safe_transmute_many_pedantic;
+//! # use safe_transmute::transmute_many_pedantic;
 //! # include!("../tests/test_util/le_to_native.rs");
 //! # fn main() {
-//! assert_eq!(safe_transmute_many_pedantic::<u16>(
+//! assert_eq!(transmute_many_pedantic::<u16>(
 //!     &[0x00, 0x01,
 //! # /*
 //!       0x12, 0x34])?,
@@ -69,11 +69,11 @@
 //! View a byte slice as a single `f64`:
 //!
 //! ```no_run
-//! # use safe_transmute::safe_transmute_one;
+//! # use safe_transmute::transmute_one;
 //! # include!("../tests/test_util/le_to_native.rs");
 //! # fn main() {
 //! # unsafe {
-//! assert_eq!(safe_transmute_one::<f64>(
+//! assert_eq!(transmute_one::<f64>(
 //!     &[0x00, 0x00, 0x00, 0x00,
 //! # /*
 //!       0x00, 0x00, 0x00, 0x40])?,
@@ -87,11 +87,11 @@
 //! View a series of `u16`s as bytes:
 //!
 //! ```
-//! # use safe_transmute::safe_transmute_to_bytes;
+//! # use safe_transmute::transmute_to_bytes;
 //! # include!("../tests/test_util/le_to_native.rs");
 //! # fn main() {
 //! # unsafe {
-//! assert_eq!(safe_transmute_to_bytes(&[0x0001u16,
+//! assert_eq!(transmute_to_bytes(&[0x0001u16,
 //!                                      0x1234u16]),
 //! # /*
 //!            &[0x01, 0x00, 0x34, 0x12].le_to_native::<u16>());
@@ -119,28 +119,19 @@ pub mod pod;
 pub mod util;
 pub mod to_bytes;
 
-pub use self::full::{safe_transmute_many_permissive, safe_transmute_many_pedantic, safe_transmute_one_pedantic, safe_transmute_many, safe_transmute_one};
+pub use self::full::{transmute_many_permissive, transmute_many_pedantic, transmute_one_pedantic, transmute_many, transmute_one};
 #[cfg(feature = "std")]
-pub use self::full::{safe_transmute_vec_permissive, safe_transmute_vec_pedantic, safe_transmute_vec};
+pub use self::full::{transmute_vec_permissive, transmute_vec_pedantic, transmute_vec};
 
 
 pub use self::guard::{SingleValueGuard, PermissiveGuard, SingleManyGuard, PedanticGuard, Guard};
 pub use self::error::{ErrorReason, GuardError, Error};
 pub use self::pod::PodTransmutable;
 
-pub use self::to_bytes::{safe_transmute_one_to_bytes, safe_transmute_to_bytes};
+pub use self::to_bytes::{transmute_one_to_bytes, transmute_to_bytes};
 #[cfg(feature = "std")]
-pub use self::to_bytes::safe_transmute_to_bytes_vec;
+pub use self::to_bytes::transmute_to_bytes_vec;
 
 #[cfg(feature = "std")]
-pub use self::bool::{safe_transmute_bool_vec_permissive, safe_transmute_bool_vec_pedantic};
-pub use self::bool::{safe_transmute_bool_permissive, safe_transmute_bool_pedantic};
-
-// Re-exports of deprecated functions, to be removed in 0.12.0 or later
-#[allow(deprecated)]
-pub use self::to_bytes::{guarded_transmute_to_bytes_pod_many, guarded_transmute_to_bytes_pod};
-#[cfg(feature = "std")]
-#[allow(deprecated)]
-pub use self::to_bytes::guarded_transmute_to_bytes_pod_vec;
-#[allow(deprecated)]
-pub use self::bool::{guarded_transmute_bool_permissive, guarded_transmute_bool_pedantic};
+pub use self::bool::{transmute_bool_vec_permissive, transmute_bool_vec_pedantic};
+pub use self::bool::{transmute_bool_permissive, transmute_bool_pedantic};

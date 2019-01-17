@@ -11,9 +11,9 @@
 
 
 use self::super::guard::{PermissiveGuard, PedanticGuard, Guard};
-use self::super::base::{guarded_transmute_many, from_bytes};
+use self::super::base::{transmute_many, from_bytes};
 #[cfg(feature = "std")]
-use self::super::base::guarded_transmute_vec;
+use self::super::base::transmute_vec;
 use self::super::Error;
 
 
@@ -115,19 +115,19 @@ unsafe impl<T: PodTransmutable> PodTransmutable for [T; 32] {}
 /// # Examples
 ///
 /// ```no_run
-/// # use safe_transmute::pod::guarded_transmute_pod;
+/// # use safe_transmute::pod::transmute_pod;
 /// # include!("../tests/test_util/le_to_native.rs");
 /// # fn main() {
 /// // Little-endian
 /// unsafe {
 /// # /*
-///     assert_eq!(guarded_transmute_pod::<u32>(&[0x00, 0x00, 0x00, 0x01])?, 0x0100_0000);
+///     assert_eq!(transmute_pod::<u32>(&[0x00, 0x00, 0x00, 0x01])?, 0x0100_0000);
 /// # */
-/// #   assert_eq!(guarded_transmute_pod::<u32>(&[0x00, 0x00, 0x00, 0x01].le_to_native::<u32>()).unwrap(), 0x0100_0000);
+/// #   assert_eq!(transmute_pod::<u32>(&[0x00, 0x00, 0x00, 0x01].le_to_native::<u32>()).unwrap(), 0x0100_0000);
 /// }
 /// # }
 /// ```
-pub unsafe fn guarded_transmute_pod<T: PodTransmutable>(bytes: &[u8]) -> Result<T, Error> {
+pub unsafe fn transmute_pod<T: PodTransmutable>(bytes: &[u8]) -> Result<T, Error> {
     from_bytes::<T>(bytes)
 }
 
@@ -153,19 +153,19 @@ pub unsafe fn guarded_transmute_pod<T: PodTransmutable>(bytes: &[u8]) -> Result<
 /// # Examples
 ///
 /// ```no_run
-/// # use safe_transmute::pod::guarded_transmute_pod_pedantic;
+/// # use safe_transmute::pod::transmute_pod_pedantic;
 /// # include!("../tests/test_util/le_to_native.rs");
 /// # fn main() {
 /// // Little-endian
 /// unsafe {
 /// # /*
-///     assert_eq!(guarded_transmute_pod_pedantic::<u16>(&[0x0F, 0x0E])?, 0x0E0F);
+///     assert_eq!(transmute_pod_pedantic::<u16>(&[0x0F, 0x0E])?, 0x0E0F);
 /// # */
-/// #   assert_eq!(guarded_transmute_pod_pedantic::<u16>(&[0x0F, 0x0E].le_to_native::<u16>()).unwrap(), 0x0E0F);
+/// #   assert_eq!(transmute_pod_pedantic::<u16>(&[0x0F, 0x0E].le_to_native::<u16>()).unwrap(), 0x0E0F);
 /// }
 /// # }
 /// ```
-pub unsafe fn guarded_transmute_pod_pedantic<T: PodTransmutable>(bytes: &[u8]) -> Result<T, Error> {
+pub unsafe fn transmute_pod_pedantic<T: PodTransmutable>(bytes: &[u8]) -> Result<T, Error> {
     PedanticGuard::check::<T>(bytes)?;
     from_bytes(bytes)
 }
@@ -189,39 +189,39 @@ pub unsafe fn guarded_transmute_pod_pedantic<T: PodTransmutable>(bytes: &[u8]) -
 /// # Examples
 ///
 /// ```no_run
-/// # use safe_transmute::pod::guarded_transmute_pod_many;
+/// # use safe_transmute::pod::transmute_pod_many;
 /// # use safe_transmute::SingleManyGuard;
 /// # include!("../tests/test_util/le_to_native.rs");
 /// # fn main() {
 /// // Little-endian
 /// unsafe {
 /// # /*
-///     assert_eq!(guarded_transmute_pod_many::<u16, SingleManyGuard>(&[0x00, 0x01, 0x00, 0x02])?,
+///     assert_eq!(transmute_pod_many::<u16, SingleManyGuard>(&[0x00, 0x01, 0x00, 0x02])?,
 /// # */
-/// #   assert_eq!(guarded_transmute_pod_many::<u16, SingleManyGuard>(&[0x00, 0x01, 0x00, 0x02].le_to_native::<u16>()).unwrap(),
+/// #   assert_eq!(transmute_pod_many::<u16, SingleManyGuard>(&[0x00, 0x01, 0x00, 0x02].le_to_native::<u16>()).unwrap(),
 ///                &[0x0100, 0x0200]);
 /// }
 /// # }
 /// ```
-pub unsafe fn guarded_transmute_pod_many<T: PodTransmutable, G: Guard>(bytes: &[u8]) -> Result<&[T], Error> {
-    guarded_transmute_many::<T, G>(bytes)
+pub unsafe fn transmute_pod_many<T: PodTransmutable, G: Guard>(bytes: &[u8]) -> Result<&[T], Error> {
+    transmute_many::<T, G>(bytes)
 }
 
 /// View a byte slice as a slice of a POD type.
 ///
 /// The resulting slice will have as many instances of a type as will fit, rounded down.
-#[deprecated(since = "0.11.0", note = "see `pod::guarded_transmute_pod_many()` for the equivalent behavior")]
+#[deprecated(since = "0.11.0", note = "see `pod::transmute_many()` with `PermissiveGuard` for the equivalent behavior")]
 pub unsafe fn guarded_transmute_pod_many_permissive<T: PodTransmutable>(bytes: &[u8]) -> Result<&[T], Error> {
-    Ok(guarded_transmute_many::<T, PermissiveGuard>(bytes)?)
+    Ok(transmute_many::<T, PermissiveGuard>(bytes)?)
 }
 
 /// View a byte slice as a slice of POD.
 ///
 /// The byte slice must have at least enough bytes to fill a single instance of a type,
 /// and should not have extraneous data.
-#[deprecated(since = "0.11.0", note = "see `pod::guarded_transmute_pod_many()` with `PedanticGuard` for the equivalent behavior")]
+#[deprecated(since = "0.11.0", note = "see `pod::transmute_many()` with `PedanticGuard` for the equivalent behavior")]
 pub unsafe fn guarded_transmute_pod_many_pedantic<T: PodTransmutable>(bytes: &[u8]) -> Result<&[T], Error> {
-    guarded_transmute_many::<T, PedanticGuard>(bytes)
+    transmute_many::<T, PedanticGuard>(bytes)
 }
 
 /// Transform a byte vector into a vector of POD.
@@ -245,32 +245,32 @@ pub unsafe fn guarded_transmute_pod_many_pedantic<T: PodTransmutable>(bytes: &[u
 /// # Examples
 ///
 /// ```no_run
-/// # use safe_transmute::pod::guarded_transmute_pod_vec;
+/// # use safe_transmute::pod::transmute_pod_vec;
 /// # use safe_transmute::SingleManyGuard;
 /// # include!("../tests/test_util/le_to_native.rs");
 /// # fn main() {
 /// // Little-endian
 /// unsafe {
 /// # /*
-///     assert_eq!(guarded_transmute_pod_vec::<u16, SingleManyGuard>(vec![0x00, 0x01, 0x00, 0x02])?,
+///     assert_eq!(transmute_pod_vec::<u16, SingleManyGuard>(vec![0x00, 0x01, 0x00, 0x02])?,
 /// # */
-/// #   assert_eq!(guarded_transmute_pod_vec::<u16, SingleManyGuard>(
+/// #   assert_eq!(transmute_pod_vec::<u16, SingleManyGuard>(
 /// #                  vec![0x00, 0x01, 0x00, 0x02].le_to_native::<u16>()).unwrap(),
 ///            vec![0x0100, 0x0200]);
 /// # /*
-///     assert_eq!(guarded_transmute_pod_vec::<u32, SingleManyGuard>(vec![0x04, 0x00, 0x00, 0x00, 0xED])?,
+///     assert_eq!(transmute_pod_vec::<u32, SingleManyGuard>(vec![0x04, 0x00, 0x00, 0x00, 0xED])?,
 /// # */
-/// #   assert_eq!(guarded_transmute_pod_vec::<u32, SingleManyGuard>(
+/// #   assert_eq!(transmute_pod_vec::<u32, SingleManyGuard>(
 /// #                  vec![0x04, 0x00, 0x00, 0x00, 0xED].le_to_native::<u32>()).unwrap(),
 ///            vec![0x0000_0004]);
 ///
-///     assert!(guarded_transmute_pod_vec::<i16, SingleManyGuard>(vec![0xED]).is_err());
+///     assert!(transmute_pod_vec::<i16, SingleManyGuard>(vec![0xED]).is_err());
 /// }
 /// # }
 /// ```
 #[cfg(feature = "std")]
-pub unsafe fn guarded_transmute_pod_vec<T: PodTransmutable, G: Guard>(bytes: Vec<u8>) -> Result<Vec<T>, Error> {
-    guarded_transmute_vec::<T, G>(bytes)
+pub unsafe fn transmute_pod_vec<T: PodTransmutable, G: Guard>(bytes: Vec<u8>) -> Result<Vec<T>, Error> {
+    transmute_vec::<T, G>(bytes)
 }
 
 /// Transform a byte vector into a vector of POD.
@@ -279,50 +279,17 @@ pub unsafe fn guarded_transmute_pod_vec<T: PodTransmutable, G: Guard>(bytes: Vec
 /// have as many instances of a type as will fit, rounded down.
 /// Extraneous data is ignored.
 #[cfg(feature = "std")]
-#[deprecated(since = "0.11.0", note = "see `pod::guarded_transmute_pod_vec()` with `PermissiveGuard` for the equivalent behavior")]
+#[deprecated(since = "0.11.0", note = "see `pod::transmute_vec()` with `PermissiveGuard` for the equivalent behavior")]
 pub unsafe fn guarded_transmute_pod_vec_permissive<T: PodTransmutable>(bytes: Vec<u8>) -> Result<Vec<T>, Error> {
-    guarded_transmute_vec::<T, PermissiveGuard>(bytes).map_err(From::from)
+    transmute_vec::<T, PermissiveGuard>(bytes).map_err(From::from)
 }
 
 /// Transform a byte vector into a vector of POD.
 ///
 /// The vector's allocated byte buffer will be reused when possible, and
 /// should not have extraneous data.
-///
-/// # Safety
-///
-/// This function invokes undefined behavior if the data does not have a memory
-/// alignment compatible with `T`. If this cannot be ensured, you will have to
-/// make a copy of the data, or change how it was originally made.
-///
-/// # Errors
-///
-/// An error is returned in one of the following situations:
-///
-/// - The data does not have enough bytes for a single value `T`.
-/// - The last chunk of the size of `T` is not large enough for a value, leaving extraneous bytes.
-///
-/// # Examples
-///
-/// ```no_run
-/// # use safe_transmute::pod::guarded_transmute_pod_vec_pedantic;
-/// # include!("../tests/test_util/le_to_native.rs");
-/// # fn main() {
-/// // Little-endian
-/// unsafe {
-/// # /*
-///     assert_eq!(guarded_transmute_pod_vec_pedantic::<u16>(vec![0x00, 0x01, 0x00, 0x02])?,
-/// # */
-/// #     assert_eq!(guarded_transmute_pod_vec_pedantic::<u16>(vec![0x00, 0x01, 0x00, 0x02].le_to_native::<u16>()).unwrap(),
-///                  vec![0x0100, 0x0200]);
-///
-///     assert!(guarded_transmute_pod_vec_pedantic::<u32>(vec![0x04, 0x00, 0x00, 0x00, 0xED])
-///               .is_err());
-/// }
-/// # }
-/// ```
 #[cfg(feature = "std")]
-#[deprecated(since = "0.11.0", note = "see `pod::guarded_transmute_pod_vec()` with `PedanticGuard` for the equivalent behavior")]
+#[deprecated(since = "0.11.0", note = "see `pod::transmute_vec()` with `PedanticGuard` for the equivalent behavior")]
 pub unsafe fn guarded_transmute_pod_vec_pedantic<T: PodTransmutable>(bytes: Vec<u8>) -> Result<Vec<T>, Error> {
-    guarded_transmute_vec::<T, PedanticGuard>(bytes)
+    transmute_vec::<T, PedanticGuard>(bytes)
 }

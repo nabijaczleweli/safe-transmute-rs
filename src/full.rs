@@ -11,11 +11,11 @@
 //! target type.
 
 
-use self::super::pod::{PodTransmutable, guarded_transmute_pod_many, guarded_transmute_pod};
+use self::super::pod::{PodTransmutable, transmute_pod_many, transmute_pod};
 use self::super::guard::{SingleValueGuard, PermissiveGuard, PedanticGuard, Guard};
 use self::super::Error;
 #[cfg(feature = "std")]
-use self::super::pod::guarded_transmute_pod_vec;
+use self::super::pod::transmute_pod_vec;
 use self::super::align::check_alignment;
 
 
@@ -35,19 +35,19 @@ use self::super::align::check_alignment;
 /// # Examples
 ///
 /// ```no_run
-/// # use safe_transmute::safe_transmute_one;
+/// # use safe_transmute::transmute_one;
 /// # include!("../tests/test_util/le_to_native.rs");
 /// # fn main() {
 /// // Little-endian
 /// # /*
-/// assert_eq!(safe_transmute_one::<u32>(&[0x00, 0x00, 0x00, 0x01])?, 0x0100_0000);
+/// assert_eq!(transmute_one::<u32>(&[0x00, 0x00, 0x00, 0x01])?, 0x0100_0000);
 /// # */
-/// # assert_eq!(safe_transmute_one::<u32>(&[0x00, 0x00, 0x00, 0x01].le_to_native::<u32>()).unwrap(), 0x0100_0000);
+/// # assert_eq!(transmute_one::<u32>(&[0x00, 0x00, 0x00, 0x01].le_to_native::<u32>()).unwrap(), 0x0100_0000);
 /// # }
 /// ```
-pub fn safe_transmute_one<T: PodTransmutable>(bytes: &[u8]) -> Result<T, Error> {
+pub fn transmute_one<T: PodTransmutable>(bytes: &[u8]) -> Result<T, Error> {
     check_alignment::<_, T>(bytes)?;
-    unsafe { guarded_transmute_pod(bytes) }
+    unsafe { transmute_pod(bytes) }
 }
 
 /// Transmute a byte slice into a single instance of a POD.
@@ -66,20 +66,20 @@ pub fn safe_transmute_one<T: PodTransmutable>(bytes: &[u8]) -> Result<T, Error> 
 /// # Examples
 ///
 /// ```no_run
-/// # use safe_transmute::safe_transmute_one_pedantic;
+/// # use safe_transmute::transmute_one_pedantic;
 /// # include!("../tests/test_util/le_to_native.rs");
 /// # fn main() {
 /// // Little-endian
 /// # /*
-/// assert_eq!(safe_transmute_one_pedantic::<u16>(&[0x0F, 0x0E])?, 0x0E0F);
+/// assert_eq!(transmute_one_pedantic::<u16>(&[0x0F, 0x0E])?, 0x0E0F);
 /// # */
-/// # assert_eq!(safe_transmute_one_pedantic::<u16>(&[0x0F, 0x0E].le_to_native::<u16>()).unwrap(), 0x0E0F);
+/// # assert_eq!(transmute_one_pedantic::<u16>(&[0x0F, 0x0E].le_to_native::<u16>()).unwrap(), 0x0E0F);
 /// # }
 /// ```
-pub fn safe_transmute_one_pedantic<T: PodTransmutable>(bytes: &[u8]) -> Result<T, Error> {
+pub fn transmute_one_pedantic<T: PodTransmutable>(bytes: &[u8]) -> Result<T, Error> {
     SingleValueGuard::check::<T>(bytes)?;
     check_alignment::<_, T>(bytes)?;
-    unsafe { guarded_transmute_pod(bytes) }
+    unsafe { transmute_pod(bytes) }
 }
 
 /// Transmute a byte slice into a sequence of values of the given type.
@@ -95,20 +95,20 @@ pub fn safe_transmute_one_pedantic<T: PodTransmutable>(bytes: &[u8]) -> Result<T
 /// # Examples
 ///
 /// ```no_run
-/// # use safe_transmute::{SingleManyGuard, safe_transmute_many};
+/// # use safe_transmute::{SingleManyGuard, transmute_many};
 /// # include!("../tests/test_util/le_to_native.rs");
 /// # fn main() {
 /// // Little-endian
 /// # /*
-/// assert_eq!(safe_transmute_many::<u16, SingleManyGuard>(&[0x00, 0x01, 0x00, 0x02])?,
+/// assert_eq!(transmute_many::<u16, SingleManyGuard>(&[0x00, 0x01, 0x00, 0x02])?,
 /// # */
-/// # assert_eq!(safe_transmute_many::<u16, SingleManyGuard>(&[0x00, 0x01, 0x00, 0x02].le_to_native::<u16>()).unwrap(),
+/// # assert_eq!(transmute_many::<u16, SingleManyGuard>(&[0x00, 0x01, 0x00, 0x02].le_to_native::<u16>()).unwrap(),
 ///            &[0x0100, 0x0200]);
 /// # }
 /// ```
-pub fn safe_transmute_many<T: PodTransmutable, G: Guard>(bytes: &[u8]) -> Result<&[T], Error> {
+pub fn transmute_many<T: PodTransmutable, G: Guard>(bytes: &[u8]) -> Result<&[T], Error> {
     check_alignment::<_, T>(bytes)?;
-    unsafe { guarded_transmute_pod_many::<_, G>(bytes) }
+    unsafe { transmute_pod_many::<_, G>(bytes) }
 }
 
 /// Transmute a byte slice into a sequence of values of the given type.
@@ -123,11 +123,11 @@ pub fn safe_transmute_many<T: PodTransmutable, G: Guard>(bytes: &[u8]) -> Result
 /// # Examples
 ///
 /// ```no_run
-/// # use safe_transmute::safe_transmute_many_permissive;
-/// assert_eq!(safe_transmute_many_permissive::<u16>(&[0x00]), Ok([].as_ref()));
+/// # use safe_transmute::transmute_many_permissive;
+/// assert_eq!(transmute_many_permissive::<u16>(&[0x00]), Ok([].as_ref()));
 /// ```
-pub fn safe_transmute_many_permissive<T: PodTransmutable>(bytes: &[u8]) -> Result<&[T], Error> {
-    safe_transmute_many::<T, PermissiveGuard>(bytes)
+pub fn transmute_many_permissive<T: PodTransmutable>(bytes: &[u8]) -> Result<&[T], Error> {
+    transmute_many::<T, PermissiveGuard>(bytes)
 }
 
 /// Transmute a byte slice into a sequence of values of the given type.
@@ -143,19 +143,19 @@ pub fn safe_transmute_many_permissive<T: PodTransmutable>(bytes: &[u8]) -> Resul
 /// # Examples
 ///
 /// ```no_run
-/// # use safe_transmute::safe_transmute_many_pedantic;
+/// # use safe_transmute::transmute_many_pedantic;
 /// # include!("../tests/test_util/le_to_native.rs");
 /// # fn main() {
 /// // Little-endian
 /// # /*
-/// assert_eq!(safe_transmute_many_pedantic::<u16>(&[0x0F, 0x0E, 0x0A, 0x0B])?,
+/// assert_eq!(transmute_many_pedantic::<u16>(&[0x0F, 0x0E, 0x0A, 0x0B])?,
 /// # */
-/// # assert_eq!(safe_transmute_many_pedantic::<u16>(&[0x0F, 0x0E, 0x0A, 0x0B].le_to_native::<u16>()).unwrap(),
+/// # assert_eq!(transmute_many_pedantic::<u16>(&[0x0F, 0x0E, 0x0A, 0x0B].le_to_native::<u16>()).unwrap(),
 ///            &[0x0E0F, 0x0B0A]);
 /// # }
 /// ```
-pub fn safe_transmute_many_pedantic<T: PodTransmutable>(bytes: &[u8]) -> Result<&[T], Error> {
-    safe_transmute_many::<T, PedanticGuard>(bytes)
+pub fn transmute_many_pedantic<T: PodTransmutable>(bytes: &[u8]) -> Result<&[T], Error> {
+    transmute_many::<T, PedanticGuard>(bytes)
 }
 
 /// Transform a byte vector into a vector of values.
@@ -173,28 +173,28 @@ pub fn safe_transmute_many_pedantic<T: PodTransmutable>(bytes: &[u8]) -> Result<
 /// # Examples
 ///
 /// ```no_run
-/// # use safe_transmute::{safe_transmute_vec, SingleManyGuard};
+/// # use safe_transmute::{transmute_vec, SingleManyGuard};
 /// # include!("../tests/test_util/le_to_native.rs");
 /// # fn main() {
 /// // Little-endian
 /// # /*
-/// assert_eq!(safe_transmute_vec::<u16, SingleManyGuard>(vec![0x00, 0x01, 0x00, 0x02])?,
+/// assert_eq!(transmute_vec::<u16, SingleManyGuard>(vec![0x00, 0x01, 0x00, 0x02])?,
 /// # */
-/// # assert_eq!(safe_transmute_vec::<u16, SingleManyGuard>(vec![0x00, 0x01, 0x00, 0x02].le_to_native::<u16>()).unwrap(),
+/// # assert_eq!(transmute_vec::<u16, SingleManyGuard>(vec![0x00, 0x01, 0x00, 0x02].le_to_native::<u16>()).unwrap(),
 ///            vec![0x0100, 0x0200]);
 /// # /*
-/// assert_eq!(safe_transmute_vec::<u32, SingleManyGuard>(vec![0x04, 0x00, 0x00, 0x00, 0xED])?,
+/// assert_eq!(transmute_vec::<u32, SingleManyGuard>(vec![0x04, 0x00, 0x00, 0x00, 0xED])?,
 /// # */
-/// # assert_eq!(safe_transmute_vec::<u32, SingleManyGuard>(vec![0x04, 0x00, 0x00, 0x00, 0xED].le_to_native::<u32>()).unwrap(),
+/// # assert_eq!(transmute_vec::<u32, SingleManyGuard>(vec![0x04, 0x00, 0x00, 0x00, 0xED].le_to_native::<u32>()).unwrap(),
 ///            vec![0x0000_0004]);
 ///
-/// assert!(safe_transmute_vec::<i16, SingleManyGuard>(vec![0xED]).is_err());
+/// assert!(transmute_vec::<i16, SingleManyGuard>(vec![0xED]).is_err());
 /// # }
 /// ```
 #[cfg(feature = "std")]
-pub fn safe_transmute_vec<T: PodTransmutable, G: Guard>(bytes: Vec<u8>) -> Result<Vec<T>, Error> {
+pub fn transmute_vec<T: PodTransmutable, G: Guard>(bytes: Vec<u8>) -> Result<Vec<T>, Error> {
     check_alignment::<_, T>(&bytes)?;
-    unsafe { guarded_transmute_pod_vec::<T, G>(bytes) }
+    unsafe { transmute_pod_vec::<T, G>(bytes) }
 }
 
 /// Transform a byte vector into a vector of values.
@@ -213,26 +213,26 @@ pub fn safe_transmute_vec<T: PodTransmutable, G: Guard>(bytes: Vec<u8>) -> Resul
 /// # Examples
 ///
 /// ```no_run
-/// # use safe_transmute::safe_transmute_vec_permissive;
+/// # use safe_transmute::transmute_vec_permissive;
 /// # include!("../tests/test_util/le_to_native.rs");
 /// # fn main() {
 /// // Little-endian
 /// # /*
-/// assert_eq!(safe_transmute_vec_permissive::<u16>(vec![0x00, 0x01, 0x00, 0x02]),
+/// assert_eq!(transmute_vec_permissive::<u16>(vec![0x00, 0x01, 0x00, 0x02]),
 /// # */
-/// # assert_eq!(safe_transmute_vec_permissive::<u16>(vec![0x00, 0x01, 0x00, 0x02].le_to_native::<u16>()),
+/// # assert_eq!(transmute_vec_permissive::<u16>(vec![0x00, 0x01, 0x00, 0x02].le_to_native::<u16>()),
 ///            Ok(vec![0x0100, 0x0200]));
 /// # /*
-/// assert_eq!(safe_transmute_vec_permissive::<u32>(vec![0x04, 0x00, 0x00, 0x00, 0xED]),
+/// assert_eq!(transmute_vec_permissive::<u32>(vec![0x04, 0x00, 0x00, 0x00, 0xED]),
 /// # */
-/// # assert_eq!(safe_transmute_vec_permissive::<u32>(vec![0x04, 0x00, 0x00, 0x00, 0xED].le_to_native::<u32>()),
+/// # assert_eq!(transmute_vec_permissive::<u32>(vec![0x04, 0x00, 0x00, 0x00, 0xED].le_to_native::<u32>()),
 ///            Ok(vec![0x0000_0004]));
-/// assert_eq!(safe_transmute_vec_permissive::<u16>(vec![0xED]), Ok(vec![]));
+/// assert_eq!(transmute_vec_permissive::<u16>(vec![0xED]), Ok(vec![]));
 /// # }
 /// ```
 #[cfg(feature = "std")]
-pub fn safe_transmute_vec_permissive<T: PodTransmutable>(bytes: Vec<u8>) -> Result<Vec<T>, Error> {
-    safe_transmute_vec::<T, PermissiveGuard>(bytes)
+pub fn transmute_vec_permissive<T: PodTransmutable>(bytes: Vec<u8>) -> Result<Vec<T>, Error> {
+    transmute_vec::<T, PermissiveGuard>(bytes)
 }
 
 /// Transform a byte vector into a vector of values.
@@ -252,20 +252,20 @@ pub fn safe_transmute_vec_permissive<T: PodTransmutable>(bytes: Vec<u8>) -> Resu
 /// # Examples
 ///
 /// ```no_run
-/// # use safe_transmute::safe_transmute_vec_pedantic;
+/// # use safe_transmute::transmute_vec_pedantic;
 /// # include!("../tests/test_util/le_to_native.rs");
 /// # fn main() {
 /// // Little-endian
 /// # /*
-/// assert_eq!(safe_transmute_vec_pedantic::<u16>(vec![0x00, 0x01, 0x00, 0x02])?,
+/// assert_eq!(transmute_vec_pedantic::<u16>(vec![0x00, 0x01, 0x00, 0x02])?,
 /// # */
-/// # assert_eq!(safe_transmute_vec_pedantic::<u16>(vec![0x00, 0x01, 0x00, 0x02].le_to_native::<u16>()).unwrap(),
+/// # assert_eq!(transmute_vec_pedantic::<u16>(vec![0x00, 0x01, 0x00, 0x02].le_to_native::<u16>()).unwrap(),
 ///            vec![0x0100, 0x0200]);
 ///
-/// assert!(safe_transmute_vec_pedantic::<u32>(vec![0x04, 0x00, 0x00, 0x00, 0xED]).is_err());
+/// assert!(transmute_vec_pedantic::<u32>(vec![0x04, 0x00, 0x00, 0x00, 0xED]).is_err());
 /// # }
 /// ```
 #[cfg(feature = "std")]
-pub fn safe_transmute_vec_pedantic<T: PodTransmutable>(bytes: Vec<u8>) -> Result<Vec<T>, Error> {
-    safe_transmute_vec::<T, PedanticGuard>(bytes)
+pub fn transmute_vec_pedantic<T: PodTransmutable>(bytes: Vec<u8>) -> Result<Vec<T>, Error> {
+    transmute_vec::<T, PedanticGuard>(bytes)
 }

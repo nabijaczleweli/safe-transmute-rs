@@ -15,11 +15,11 @@ use core::slice;
 /// An `u32`:
 ///
 /// ```
-/// # use safe_transmute::to_bytes::guarded_transmute_to_bytes;
+/// # use safe_transmute::to_bytes::transmute_to_bytes_unchecked;
 /// # include!("../tests/test_util/le_to_native.rs");
 /// # fn main() {
 /// unsafe {
-///     assert_eq!(guarded_transmute_to_bytes(&0x0123_4567),
+///     assert_eq!(transmute_to_bytes_unchecked(&0x0123_4567),
 /// # /*
 ///                &[0x67, 0x45, 0x23, 0x01]);
 /// # */
@@ -31,7 +31,7 @@ use core::slice;
 /// An arbitrary type:
 ///
 /// ```
-/// # use safe_transmute::to_bytes::guarded_transmute_to_bytes;
+/// # use safe_transmute::to_bytes::transmute_to_bytes_unchecked;
 /// #[repr(C)]
 /// struct Gene {
 ///     x1: u8,
@@ -39,14 +39,14 @@ use core::slice;
 /// }
 ///
 /// unsafe {
-///     assert_eq!(guarded_transmute_to_bytes(&Gene {
+///     assert_eq!(transmute_to_bytes_unchecked(&Gene {
 ///                    x1: 0x42,
 ///                    x2: 0x69,
 ///                }),
 ///                &[0x42, 0x69]);
 /// }
 /// ```
-pub unsafe fn guarded_transmute_to_bytes<T>(from: &T) -> &[u8] {
+pub unsafe fn transmute_to_bytes_unchecked<T>(from: &T) -> &[u8] {
     slice::from_raw_parts(from as *const T as *const u8, size_of::<T>())
 }
 
@@ -57,11 +57,11 @@ pub unsafe fn guarded_transmute_to_bytes<T>(from: &T) -> &[u8] {
 /// Some `u16`s:
 ///
 /// ```
-/// # use safe_transmute::to_bytes::guarded_transmute_to_bytes;
+/// # use safe_transmute::to_bytes::transmute_to_bytes;
 /// # include!("../tests/test_util/le_to_native.rs");
 /// # fn main() {
 /// unsafe {
-///     assert_eq!(guarded_transmute_to_bytes(&[0x0123u16, 0x4567u16]),
+///     assert_eq!(transmute_to_bytes(&[0x0123u16, 0x4567u16]),
 /// # /*
 ///                &[0x23, 0x01, 0x67, 0x45]);
 /// # */
@@ -73,7 +73,7 @@ pub unsafe fn guarded_transmute_to_bytes<T>(from: &T) -> &[u8] {
 /// An arbitrary type:
 ///
 /// ```
-/// # use safe_transmute::to_bytes::guarded_transmute_to_bytes_many;
+/// # use safe_transmute::to_bytes::transmute_to_bytes_many_unchecked;
 /// #[repr(C)]
 /// struct Gene {
 ///     x1: u8,
@@ -81,18 +81,18 @@ pub unsafe fn guarded_transmute_to_bytes<T>(from: &T) -> &[u8] {
 /// }
 ///
 /// unsafe {
-///     assert_eq!(guarded_transmute_to_bytes_many(&[Gene {
-///                                                      x1: 0x42,
-///                                                      x2: 0x69,
-///                                                  },
-///                                                  Gene {
-///                                                      x1: 0x12,
-///                                                      x2: 0x48,
-///                                                  }]),
+///     assert_eq!(transmute_to_bytes_many_unchecked(&[Gene {
+///                                                        x1: 0x42,
+///                                                        x2: 0x69,
+///                                                    },
+///                                                    Gene {
+///                                                        x1: 0x12,
+///                                                        x2: 0x48,
+///                                                    }]),
 ///                &[0x42, 0x69, 0x12, 0x48]);
 /// }
 /// ```
-pub unsafe fn guarded_transmute_to_bytes_many<T>(from: &[T]) -> &[u8] {
+pub unsafe fn transmute_to_bytes_many_unchecked<T>(from: &[T]) -> &[u8] {
     slice::from_raw_parts(from.as_ptr() as *const u8, from.len() * size_of::<T>())
 }
 
@@ -103,10 +103,10 @@ pub unsafe fn guarded_transmute_to_bytes_many<T>(from: &[T]) -> &[u8] {
 /// An `u32`:
 ///
 /// ```
-/// # use safe_transmute::safe_transmute_one_to_bytes;
+/// # use safe_transmute::transmute_one_to_bytes;
 /// # include!("../tests/test_util/le_to_native.rs");
 /// # fn main() {
-/// assert_eq!(safe_transmute_one_to_bytes(&0x0123_4567),
+/// assert_eq!(transmute_one_to_bytes(&0x0123_4567),
 /// # /*
 ///            &[0x67, 0x45, 0x23, 0x01]);
 /// # */
@@ -117,7 +117,7 @@ pub unsafe fn guarded_transmute_to_bytes_many<T>(from: &[T]) -> &[u8] {
 /// An arbitrary type:
 ///
 /// ```
-/// # use safe_transmute::{PodTransmutable, safe_transmute_one_to_bytes};
+/// # use safe_transmute::{PodTransmutable, transmute_one_to_bytes};
 /// #[repr(C)]
 /// #[derive(Clone, Copy)]
 /// struct Gene {
@@ -126,20 +126,14 @@ pub unsafe fn guarded_transmute_to_bytes_many<T>(from: &[T]) -> &[u8] {
 /// }
 /// unsafe impl PodTransmutable for Gene {}
 ///
-/// assert_eq!(safe_transmute_one_to_bytes(&Gene {
+/// assert_eq!(transmute_one_to_bytes(&Gene {
 ///                x1: 0x42,
 ///                x2: 0x69,
 ///            }),
 ///            &[0x42, 0x69]);
 /// ```
-pub fn safe_transmute_one_to_bytes<T: PodTransmutable>(from: &T) -> &[u8] {
-    unsafe { guarded_transmute_to_bytes(from) }
-}
-
-/// Transmute a single instance of a POD type into a slice of its bytes.
-#[deprecated(since = "0.11.0", note = "use `safe_transmute_one_to_bytes()` instead")]
-pub fn guarded_transmute_to_bytes_pod<T: PodTransmutable>(from: &T) -> &[u8] {
-    unsafe { guarded_transmute_to_bytes(from) }
+pub fn transmute_one_to_bytes<T: PodTransmutable>(from: &T) -> &[u8] {
+    unsafe { transmute_to_bytes_unchecked(from) }
 }
 
 /// Transmute a slice of arbitrary types into a slice of their bytes.
@@ -149,10 +143,10 @@ pub fn guarded_transmute_to_bytes_pod<T: PodTransmutable>(from: &T) -> &[u8] {
 /// Some `u16`s:
 ///
 /// ```
-/// # use safe_transmute::safe_transmute_to_bytes;
+/// # use safe_transmute::transmute_to_bytes;
 /// # include!("../tests/test_util/le_to_native.rs");
 /// # fn main() {
-/// assert_eq!(safe_transmute_to_bytes(&[0x0123u16, 0x4567u16]),
+/// assert_eq!(transmute_to_bytes(&[0x0123u16, 0x4567u16]),
 /// # /*
 ///            &[0x23, 0x01, 0x67, 0x45]);
 /// # */
@@ -163,7 +157,7 @@ pub fn guarded_transmute_to_bytes_pod<T: PodTransmutable>(from: &T) -> &[u8] {
 /// An arbitrary type:
 ///
 /// ```
-/// # use safe_transmute::{PodTransmutable, safe_transmute_to_bytes};
+/// # use safe_transmute::{PodTransmutable, transmute_to_bytes};
 /// #[repr(C)]
 /// #[derive(Clone, Copy)]
 /// struct Gene {
@@ -172,7 +166,7 @@ pub fn guarded_transmute_to_bytes_pod<T: PodTransmutable>(from: &T) -> &[u8] {
 /// }
 /// unsafe impl PodTransmutable for Gene {}
 ///
-/// assert_eq!(safe_transmute_to_bytes(&[Gene {
+/// assert_eq!(transmute_to_bytes(&[Gene {
 ///                                          x1: 0x42,
 ///                                          x2: 0x69,
 ///                                      },
@@ -182,14 +176,14 @@ pub fn guarded_transmute_to_bytes_pod<T: PodTransmutable>(from: &T) -> &[u8] {
 ///                                      }]),
 ///            &[0x42, 0x69, 0x12, 0x48]);
 /// ```
-pub fn safe_transmute_to_bytes<T: PodTransmutable>(from: &[T]) -> &[u8] {
-    unsafe { guarded_transmute_to_bytes_many(from) }
+pub fn transmute_to_bytes<T: PodTransmutable>(from: &[T]) -> &[u8] {
+    unsafe { transmute_to_bytes_many_unchecked(from) }
 }
 
 /// Transmute a slice of arbitrary types into a slice of their bytes.
-#[deprecated(since = "0.11.0", note = "use `safe_transmute_to_bytes()` instead")]
+#[deprecated(since = "0.11.0", note = "use `transmute_to_bytes()` instead")]
 pub fn guarded_transmute_to_bytes_pod_many<T: PodTransmutable>(from: &[T]) -> &[u8] {
-    safe_transmute_to_bytes(from)
+    transmute_to_bytes(from)
 }
 
 /// Transmute a vector of elements of an arbitrary type into a vector of their
@@ -205,10 +199,10 @@ pub fn guarded_transmute_to_bytes_pod_many<T: PodTransmutable>(from: &[T]) -> &[
 /// Some `u16`s:
 ///
 /// ```
-/// # use safe_transmute::to_bytes::guarded_transmute_to_bytes_vec;
+/// # use safe_transmute::to_bytes::transmute_to_bytes_vec;
 /// # include!("../tests/test_util/le_to_native.rs");
 /// # fn main() {
-/// assert_eq!(guarded_transmute_to_bytes_vec(vec![0x0123u16, 0x4567u16]),
+/// assert_eq!(transmute_to_bytes_vec(vec![0x0123u16, 0x4567u16]),
 /// # /*
 ///            vec![0x23, 0x01, 0x67, 0x45]);
 /// # */
@@ -219,7 +213,7 @@ pub fn guarded_transmute_to_bytes_pod_many<T: PodTransmutable>(from: &[T]) -> &[
 /// An arbitrary type:
 ///
 /// ```
-/// # use safe_transmute::to_bytes::guarded_transmute_to_bytes_vec;
+/// # use safe_transmute::to_bytes::transmute_to_bytes_vec;
 /// #[repr(C)]
 /// #[derive(Clone, Copy)]
 /// struct Gene {
@@ -227,18 +221,18 @@ pub fn guarded_transmute_to_bytes_pod_many<T: PodTransmutable>(from: &[T]) -> &[
 ///     x2: u8,
 /// }
 ///
-/// assert_eq!(guarded_transmute_to_bytes_vec(vec![Gene {
-///                                                    x1: 0x42,
-///                                                    x2: 0x69,
-///                                                },
-///                                                Gene {
-///                                                    x1: 0x12,
-///                                                    x2: 0x48,
-///                                                }]),
+/// assert_eq!(transmute_to_bytes_vec(vec![Gene {
+///                                            x1: 0x42,
+///                                            x2: 0x69,
+///                                        },
+///                                        Gene {
+///                                            x1: 0x12,
+///                                            x2: 0x48,
+///                                        }]),
 ///            vec![0x42, 0x69, 0x12, 0x48]);
 /// ```
 #[cfg(feature = "std")]
-pub fn guarded_transmute_to_bytes_vec<T>(mut from: Vec<T>) -> Vec<u8> {
+pub fn transmute_to_bytes_vec<T>(mut from: Vec<T>) -> Vec<u8> {
     unsafe {
         let capacity = from.capacity() * size_of::<T>();
         let len = from.len() * size_of::<T>();
@@ -250,54 +244,8 @@ pub fn guarded_transmute_to_bytes_vec<T>(mut from: Vec<T>) -> Vec<u8> {
 
 /// Transmute a vector of POD types into a vector of their bytes,
 /// using the same memory buffer as the former.
-///
-/// # Examples
-///
-/// Some `u16`s:
-///
-/// ```
-/// # use safe_transmute::safe_transmute_to_bytes_vec;
-/// # include!("../tests/test_util/le_to_native.rs");
-/// # fn main() {
-/// assert_eq!(safe_transmute_to_bytes_vec(vec![0x0123u16, 0x4567u16]),
-/// # /*
-///            vec![0x23, 0x01, 0x67, 0x45]);
-/// # */
-/// #          vec![0x23, 0x01, 0x67, 0x45].le_to_native::<u16>());
-/// # }
-/// ```
-///
-/// An arbitrary type:
-///
-/// ```
-/// # use safe_transmute::{PodTransmutable, safe_transmute_to_bytes_vec};
-/// #[repr(C)]
-/// #[derive(Clone, Copy)]
-/// struct Gene {
-///     x1: u8,
-///     x2: u8,
-/// }
-/// unsafe impl PodTransmutable for Gene {}
-///
-/// assert_eq!(safe_transmute_to_bytes_vec(vec![Gene {
-///                                                 x1: 0x42,
-///                                                 x2: 0x69,
-///                                             },
-///                                             Gene {
-///                                                 x1: 0x12,
-///                                                 x2: 0x48,
-///                                             }]),
-///            vec![0x42, 0x69, 0x12, 0x48]);
-/// ```
 #[cfg(feature = "std")]
-pub fn safe_transmute_to_bytes_vec<T: PodTransmutable>(from: Vec<T>) -> Vec<u8> {
-    unsafe { guarded_transmute_to_bytes_vec(from) }
-}
-
-/// Transmute a vector of POD types into a vector of their bytes,
-/// using the same memory buffer as the former.
-#[cfg(feature = "std")]
-#[deprecated(since = "0.11.0", note = "use `safe_transmute_to_bytes_vec()` instead")]
+#[deprecated(since = "0.11.0", note = "use `transmute_to_bytes_vec()` instead")]
 pub fn guarded_transmute_to_bytes_pod_vec<T: PodTransmutable>(from: Vec<T>) -> Vec<u8> {
-    safe_transmute_to_bytes_vec(from)
+    transmute_to_bytes_vec(from)
 }

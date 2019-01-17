@@ -12,9 +12,9 @@ use core::fmt;
 /// # Examples
 ///
 /// ```
-/// # use safe_transmute::{ErrorReason, Error, guarded_transmute_bool_pedantic};
+/// # use safe_transmute::{ErrorReason, Error, transmute_bool_pedantic};
 /// # unsafe {
-/// assert_eq!(guarded_transmute_bool_pedantic(&[0x05]),
+/// assert_eq!(transmute_bool_pedantic(&[0x05]),
 ///            Err(Error::InvalidValue));
 /// # }
 /// ```
