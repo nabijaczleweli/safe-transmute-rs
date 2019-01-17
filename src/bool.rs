@@ -32,7 +32,7 @@ use self::super::Error;
 /// ```
 #[inline]
 pub fn bytes_are_bool(v: &[u8]) -> bool {
-    let _ = transmute::<bool, u8>;
+    let _bool_must_be_1_byte_pls_report = transmute::<bool, u8>;
     v.iter().cloned().all(byte_is_bool)
 }
 
