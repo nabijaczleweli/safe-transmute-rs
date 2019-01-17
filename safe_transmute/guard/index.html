@@ -3,87 +3,45 @@
 <p>In order to check whether a value would fit in the given
 slice with no extra trailing bytes:</p>
 
-<pre class="rust rust-example-rendered">
-<span class="ident">SingleValueGuard</span>::<span class="ident">check</span>::<span class="op">&lt;</span><span class="ident">u32</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span>[<span class="number">0x00</span>, <span class="number">0x01</span>, <span class="number">0x00</span>, <span class="number">0x02</span>])<span class="question-mark">?</span>;</pre>
+<div class="example-wrap"><pre class="rust rust-example-rendered">
+<span class="ident">SingleValueGuard</span>::<span class="ident">check</span>::<span class="op">&lt;</span><span class="ident">u32</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span>[<span class="number">0x00</span>, <span class="number">0x01</span>, <span class="number">0x00</span>, <span class="number">0x02</span>])<span class="question-mark">?</span>;</pre></div>
 <p>Different guard types implement different checking strategies.
 For example, the pedantic guard type <a href="struct.PedanticGuard.html"><code>PedanticGuard</code></a> requires
 the slice to have space for at least one value, and not have
 extraneous bytes at the end.</p>
 
-<pre class="rust rust-example-rendered">
-<span class="ident">PedanticGuard</span>::<span class="ident">check</span>::<span class="op">&lt;</span><span class="ident">u16</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span>[<span class="number">0xAA</span>, <span class="number">0xAA</span>, <span class="number">0xBB</span>, <span class="number">0xBB</span>, <span class="number">0xCC</span>, <span class="number">0xCC</span>])<span class="question-mark">?</span>;</pre>
+<div class="example-wrap"><pre class="rust rust-example-rendered">
+<span class="ident">PedanticGuard</span>::<span class="ident">check</span>::<span class="op">&lt;</span><span class="ident">u16</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span>[<span class="number">0xAA</span>, <span class="number">0xAA</span>, <span class="number">0xBB</span>, <span class="number">0xBB</span>, <span class="number">0xCC</span>, <span class="number">0xCC</span>])<span class="question-mark">?</span>;</pre></div>
 <p><a href="struct.PermissiveGuard.html"><code>PermissiveGuard</code></a>, on the other hand, will accept any memory slice.</p>
 
-<pre class="rust rust-example-rendered">
-<span class="ident">PermissiveGuard</span>::<span class="ident">check</span>::<span class="op">&lt;</span><span class="ident">i16</span><span class="op">&gt;</span>(<span class="string">b&quot;covfefe&quot;</span>)<span class="question-mark">?</span>;</pre>
+<div class="example-wrap"><pre class="rust rust-example-rendered">
+<span class="ident">PermissiveGuard</span>::<span class="ident">check</span>::<span class="op">&lt;</span><span class="ident">i16</span><span class="op">&gt;</span>(<span class="string">b&quot;covfefe&quot;</span>)<span class="question-mark">?</span>;</pre></div>
 <p>If the check fails, the resulting <a href="../type.GuardError.html"><code>GuardError</code></a> value describes why.</p>
 
-<pre class="rust rust-example-rendered">
+<div class="example-wrap"><pre class="rust rust-example-rendered">
 <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">PedanticGuard</span>::<span class="ident">check</span>::<span class="op">&lt;</span><span class="ident">i16</span><span class="op">&gt;</span>(<span class="string">b&quot;covfefe&quot;</span>),
            <span class="prelude-val">Err</span>(<span class="ident">GuardError</span> {
                <span class="ident">required</span>: <span class="number">2</span>,
                <span class="ident">actual</span>: <span class="number">7</span>,
                <span class="ident">reason</span>: <span class="ident">ErrorReason</span>::<span class="ident">InexactByteCount</span>,
-           }));</pre>
+           }));</pre></div>
 <h1 id="note" class="section-header"><a href="#note">Note</a></h1>
 <p>Regardless of the chosen strategy, guarded transmutation functions will
 always ensure that no out of bounds access is attempted. All functions will
 restrict the output to spatially safe portions of the input. The guard
 API exists to establish expectations in the conversion process.</p>
 </div><h2 id='structs' class='section-header'><a href="#structs">Structs</a></h2>
-<table>
-                       <tr class=' module-item'>
-                           <td><a class="struct" href="struct.AllOrNothingGuard.html"
-                                  title='struct safe_transmute::guard::AllOrNothingGuard'>AllOrNothingGuard</a></td>
-                           <td class='docblock-short'>
-                                <p>An all-or-nothing guard: The byte slice should not have extraneous data, but can be
+<table><tr class='module-item'><td><a class="struct" href="struct.AllOrNothingGuard.html" title='safe_transmute::guard::AllOrNothingGuard struct'>AllOrNothingGuard</a></td><td class='docblock-short'><p>An all-or-nothing guard: The byte slice should not have extraneous data, but can be
 empty, unlike <code>PedanticGuard</code>.</p>
-
-                           </td>
-                       </tr>
-                       <tr class=' module-item'>
-                           <td><a class="struct" href="struct.PedanticGuard.html"
-                                  title='struct safe_transmute::guard::PedanticGuard'>PedanticGuard</a></td>
-                           <td class='docblock-short'>
-                                <p>Pedantic guard: The byte slice must have at least enough bytes to fill a single
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.PedanticGuard.html" title='safe_transmute::guard::PedanticGuard struct'>PedanticGuard</a></td><td class='docblock-short'><p>Pedantic guard: The byte slice must have at least enough bytes to fill a single
 instance of a type, and should not have extraneous data.</p>
-
-                           </td>
-                       </tr>
-                       <tr class=' module-item'>
-                           <td><a class="struct" href="struct.PermissiveGuard.html"
-                                  title='struct safe_transmute::guard::PermissiveGuard'>PermissiveGuard</a></td>
-                           <td class='docblock-short'>
-                                <p>Permissive guard: The resulting slice would have as many instances of a type as will
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.PermissiveGuard.html" title='safe_transmute::guard::PermissiveGuard struct'>PermissiveGuard</a></td><td class='docblock-short'><p>Permissive guard: The resulting slice would have as many instances of a type as will
 fit, rounded down. Therefore, this guard will never yield an error.</p>
-
-                           </td>
-                       </tr>
-                       <tr class=' module-item'>
-                           <td><a class="struct" href="struct.SingleManyGuard.html"
-                                  title='struct safe_transmute::guard::SingleManyGuard'>SingleManyGuard</a></td>
-                           <td class='docblock-short'>
-                                <p>A single-or-many guard: The byte slice must have at least enough bytes to fill a single
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.SingleManyGuard.html" title='safe_transmute::guard::SingleManyGuard struct'>SingleManyGuard</a></td><td class='docblock-short'><p>A single-or-many guard: The byte slice must have at least enough bytes to fill a single
 instance of a type, and extraneous data is ignored.</p>
-
-                           </td>
-                       </tr>
-                       <tr class=' module-item'>
-                           <td><a class="struct" href="struct.SingleValueGuard.html"
-                                  title='struct safe_transmute::guard::SingleValueGuard'>SingleValueGuard</a></td>
-                           <td class='docblock-short'>
-                                <p>Single value guard: The byte slice must have exactly enough bytes to fill a single
+</td></tr><tr class='module-item'><td><a class="struct" href="struct.SingleValueGuard.html" title='safe_transmute::guard::SingleValueGuard struct'>SingleValueGuard</a></td><td class='docblock-short'><p>Single value guard: The byte slice must have exactly enough bytes to fill a single
 instance of a type.</p>
-
-                           </td>
-                       </tr></table><h2 id='traits' class='section-header'><a href="#traits">Traits</a></h2>
-<table>
-                       <tr class=' module-item'>
-                           <td><a class="trait" href="trait.Guard.html"
-                                  title='trait safe_transmute::guard::Guard'>Guard</a></td>
-                           <td class='docblock-short'>
-                                <p>The trait describes types which define boundary checking strategies.
+</td></tr></table><h2 id='traits' class='section-header'><a href="#traits">Traits</a></h2>
+<table><tr class='module-item'><td><a class="trait" href="trait.Guard.html" title='safe_transmute::guard::Guard trait'>Guard</a></td><td class='docblock-short'><p>The trait describes types which define boundary checking strategies.
 See the <a href="index.html">module-level documentation</a> for more details.</p>
-
-                           </td>
-                       </tr></table></section><section id="search" class="content hidden"></section><section class="footer"></section><aside id="help" class="hidden"><div><h1 class="hidden">Help</h1><div class="shortcuts"><h2>Keyboard Shortcuts</h2><dl><dt><kbd>?</kbd></dt><dd>Show this help dialog</dd><dt><kbd>S</kbd></dt><dd>Focus the search field</dd><dt><kbd>↑</kbd></dt><dd>Move up in search results</dd><dt><kbd>↓</kbd></dt><dd>Move down in search results</dd><dt><kbd>↹</kbd></dt><dd>Switch tab</dd><dt><kbd>&#9166;</kbd></dt><dd>Go to active search result</dd><dt><kbd>+</kbd></dt><dd>Expand all sections</dd><dt><kbd>-</kbd></dt><dd>Collapse all sections</dd></dl></div><div class="infos"><h2>Search Tricks</h2><p>Prefix searches with a type followed by a colon (e.g. <code>fn:</code>) to restrict the search to a given type.</p><p>Accepted types are: <code>fn</code>, <code>mod</code>, <code>struct</code>, <code>enum</code>, <code>trait</code>, <code>type</code>, <code>macro</code>, and <code>const</code>.</p><p>Search functions by type signature (e.g. <code>vec -> usize</code> or <code>* -> vec</code>)</p><p>Search multiple things at once by splitting your query with comma (e.g. <code>str,u8</code> or <code>String,struct:Vec,test</code>)</p></div></div></aside><script>window.rootPath = "../../";window.currentCrate = "safe_transmute";</script><script src="../../aliases.js"></script><script src="../../main.js"></script><script defer src="../../search-index.js"></script></body></html>
+</td></tr></table></section><section id="search" class="content hidden"></section><section class="footer"></section><aside id="help" class="hidden"><div><h1 class="hidden">Help</h1><div class="shortcuts"><h2>Keyboard Shortcuts</h2><dl><dt><kbd>?</kbd></dt><dd>Show this help dialog</dd><dt><kbd>S</kbd></dt><dd>Focus the search field</dd><dt><kbd>↑</kbd></dt><dd>Move up in search results</dd><dt><kbd>↓</kbd></dt><dd>Move down in search results</dd><dt><kbd>↹</kbd></dt><dd>Switch tab</dd><dt><kbd>&#9166;</kbd></dt><dd>Go to active search result</dd><dt><kbd>+</kbd></dt><dd>Expand all sections</dd><dt><kbd>-</kbd></dt><dd>Collapse all sections</dd></dl></div><div class="infos"><h2>Search Tricks</h2><p>Prefix searches with a type followed by a colon (e.g. <code>fn:</code>) to restrict the search to a given type.</p><p>Accepted types are: <code>fn</code>, <code>mod</code>, <code>struct</code>, <code>enum</code>, <code>trait</code>, <code>type</code>, <code>macro</code>, and <code>const</code>.</p><p>Search functions by type signature (e.g. <code>vec -> usize</code> or <code>* -> vec</code>)</p><p>Search multiple things at once by splitting your query with comma (e.g. <code>str,u8</code> or <code>String,struct:Vec,test</code>)</p></div></div></aside><script>window.rootPath = "../../";window.currentCrate = "safe_transmute";</script><script src="../../aliases.js"></script><script src="../../main.js"></script><script defer src="../../search-index.js"></script></body></html>
