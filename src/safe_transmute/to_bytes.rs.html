@@ -298,6 +298,9 @@
 <span id="298">298</span>
 <span id="299">299</span>
 <span id="300">300</span>
+<span id="301">301</span>
+<span id="302">302</span>
+<span id="303">303</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! Functions for transmutation *from* a concrete type *to* bytes.</span>
 
@@ -493,8 +496,13 @@
     <span class="ident">safe_transmute_to_bytes</span>(<span class="ident">from</span>)
 }
 
-<span class="doccomment">/// Transmute a vector of arbitrary types into a vector of their bytes,</span>
-<span class="doccomment">/// using the same memory buffer as the former.</span>
+<span class="doccomment">/// Transmute a vector of elements of an arbitrary type into a vector of their</span>
+<span class="doccomment">/// bytes, using the same memory buffer as the former.</span>
+<span class="doccomment">/// </span>
+<span class="doccomment">/// The original nature of the elements in the vector is forgotten. This means</span>
+<span class="doccomment">/// that, although this function is memory safe, applying it on a vector with</span>
+<span class="doccomment">/// a `Drop` implementation is likely to result in memory leaks and other</span>
+<span class="doccomment">/// kinds of misbehavior.</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// # Examples</span>
 <span class="doccomment">///</span>
@@ -504,13 +512,11 @@
 <span class="doccomment">/// # use safe_transmute::to_bytes::guarded_transmute_to_bytes_vec;</span>
 <span class="doccomment">/// # include!(&quot;../tests/test_util/le_to_native.rs&quot;);</span>
 <span class="doccomment">/// # fn main() {</span>
-<span class="doccomment">/// # unsafe {</span>
 <span class="doccomment">/// assert_eq!(guarded_transmute_to_bytes_vec(vec![0x0123u16, 0x4567u16]),</span>
 <span class="doccomment">/// # /*</span>
 <span class="doccomment">///            vec![0x23, 0x01, 0x67, 0x45]);</span>
 <span class="doccomment">/// # */</span>
 <span class="doccomment">/// #          vec![0x23, 0x01, 0x67, 0x45].le_to_native::&lt;u16&gt;());</span>
-<span class="doccomment">/// # }</span>
 <span class="doccomment">/// # }</span>
 <span class="doccomment">/// ```</span>
 <span class="doccomment">///</span>
@@ -525,7 +531,6 @@
 <span class="doccomment">///     x2: u8,</span>
 <span class="doccomment">/// }</span>
 <span class="doccomment">///</span>
-<span class="doccomment">/// # unsafe {</span>
 <span class="doccomment">/// assert_eq!(guarded_transmute_to_bytes_vec(vec![Gene {</span>
 <span class="doccomment">///                                                    x1: 0x42,</span>
 <span class="doccomment">///                                                    x2: 0x69,</span>
@@ -535,15 +540,16 @@
 <span class="doccomment">///                                                    x2: 0x48,</span>
 <span class="doccomment">///                                                }]),</span>
 <span class="doccomment">///            vec![0x42, 0x69, 0x12, 0x48]);</span>
-<span class="doccomment">/// # }</span>
 <span class="doccomment">/// ```</span>
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;std&quot;</span>)]</span>
-<span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">guarded_transmute_to_bytes_vec</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(<span class="kw-2">mut</span> <span class="ident">from</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span> {
-    <span class="kw">let</span> <span class="ident">capacity</span> <span class="op">=</span> <span class="ident">from</span>.<span class="ident">capacity</span>() <span class="op">*</span> <span class="ident">size_of</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>();
-    <span class="kw">let</span> <span class="ident">len</span> <span class="op">=</span> <span class="ident">from</span>.<span class="ident">len</span>() <span class="op">*</span> <span class="ident">size_of</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>();
-    <span class="kw">let</span> <span class="ident">ptr</span> <span class="op">=</span> <span class="ident">from</span>.<span class="ident">as_mut_ptr</span>();
-    <span class="ident">forget</span>(<span class="ident">from</span>);
-    <span class="ident">Vec</span>::<span class="ident">from_raw_parts</span>(<span class="ident">ptr</span> <span class="kw">as</span> <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">u8</span>, <span class="ident">len</span>, <span class="ident">capacity</span>)
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">guarded_transmute_to_bytes_vec</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(<span class="kw-2">mut</span> <span class="ident">from</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span> {
+    <span class="kw">unsafe</span> {
+        <span class="kw">let</span> <span class="ident">capacity</span> <span class="op">=</span> <span class="ident">from</span>.<span class="ident">capacity</span>() <span class="op">*</span> <span class="ident">size_of</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>();
+        <span class="kw">let</span> <span class="ident">len</span> <span class="op">=</span> <span class="ident">from</span>.<span class="ident">len</span>() <span class="op">*</span> <span class="ident">size_of</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>();
+        <span class="kw">let</span> <span class="ident">ptr</span> <span class="op">=</span> <span class="ident">from</span>.<span class="ident">as_mut_ptr</span>();
+        <span class="ident">forget</span>(<span class="ident">from</span>);
+        <span class="ident">Vec</span>::<span class="ident">from_raw_parts</span>(<span class="ident">ptr</span> <span class="kw">as</span> <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">u8</span>, <span class="ident">len</span>, <span class="ident">capacity</span>)
+    }
 }
 
 <span class="doccomment">/// Transmute a vector of POD types into a vector of their bytes,</span>
