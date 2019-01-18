@@ -192,8 +192,13 @@ pub fn guarded_transmute_to_bytes_pod_many<T: PodTransmutable>(from: &[T]) -> &[
     safe_transmute_to_bytes(from)
 }
 
-/// Transmute a vector of arbitrary types into a vector of their bytes,
-/// using the same memory buffer as the former.
+/// Transmute a vector of elements of an arbitrary type into a vector of their
+/// bytes, using the same memory buffer as the former.
+/// 
+/// The original nature of the elements in the vector is forgotten. This means
+/// that, although this function is memory safe, applying it on a vector with
+/// a `Drop` implementation is likely to result in memory leaks and other
+/// kinds of misbehavior.
 ///
 /// # Examples
 ///
@@ -203,13 +208,11 @@ pub fn guarded_transmute_to_bytes_pod_many<T: PodTransmutable>(from: &[T]) -> &[
 /// # use safe_transmute::to_bytes::guarded_transmute_to_bytes_vec;
 /// # include!("../tests/test_util/le_to_native.rs");
 /// # fn main() {
-/// # unsafe {
 /// assert_eq!(guarded_transmute_to_bytes_vec(vec![0x0123u16, 0x4567u16]),
 /// # /*
 ///            vec![0x23, 0x01, 0x67, 0x45]);
 /// # */
 /// #          vec![0x23, 0x01, 0x67, 0x45].le_to_native::<u16>());
-/// # }
 /// # }
 /// ```
 ///
@@ -224,7 +227,6 @@ pub fn guarded_transmute_to_bytes_pod_many<T: PodTransmutable>(from: &[T]) -> &[
 ///     x2: u8,
 /// }
 ///
-/// # unsafe {
 /// assert_eq!(guarded_transmute_to_bytes_vec(vec![Gene {
 ///                                                    x1: 0x42,
 ///                                                    x2: 0x69,
@@ -234,15 +236,16 @@ pub fn guarded_transmute_to_bytes_pod_many<T: PodTransmutable>(from: &[T]) -> &[
 ///                                                    x2: 0x48,
 ///                                                }]),
 ///            vec![0x42, 0x69, 0x12, 0x48]);
-/// # }
 /// ```
 #[cfg(feature = "std")]
-pub unsafe fn guarded_transmute_to_bytes_vec<T>(mut from: Vec<T>) -> Vec<u8> {
-    let capacity = from.capacity() * size_of::<T>();
-    let len = from.len() * size_of::<T>();
-    let ptr = from.as_mut_ptr();
-    forget(from);
-    Vec::from_raw_parts(ptr as *mut u8, len, capacity)
+pub fn guarded_transmute_to_bytes_vec<T>(mut from: Vec<T>) -> Vec<u8> {
+    unsafe {
+        let capacity = from.capacity() * size_of::<T>();
+        let len = from.len() * size_of::<T>();
+        let ptr = from.as_mut_ptr();
+        forget(from);
+        Vec::from_raw_parts(ptr as *mut u8, len, capacity)
+    }
 }
 
 /// Transmute a vector of POD types into a vector of their bytes,
