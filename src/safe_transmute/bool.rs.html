@@ -153,42 +153,6 @@
 <span id="153">153</span>
 <span id="154">154</span>
 <span id="155">155</span>
-<span id="156">156</span>
-<span id="157">157</span>
-<span id="158">158</span>
-<span id="159">159</span>
-<span id="160">160</span>
-<span id="161">161</span>
-<span id="162">162</span>
-<span id="163">163</span>
-<span id="164">164</span>
-<span id="165">165</span>
-<span id="166">166</span>
-<span id="167">167</span>
-<span id="168">168</span>
-<span id="169">169</span>
-<span id="170">170</span>
-<span id="171">171</span>
-<span id="172">172</span>
-<span id="173">173</span>
-<span id="174">174</span>
-<span id="175">175</span>
-<span id="176">176</span>
-<span id="177">177</span>
-<span id="178">178</span>
-<span id="179">179</span>
-<span id="180">180</span>
-<span id="181">181</span>
-<span id="182">182</span>
-<span id="183">183</span>
-<span id="184">184</span>
-<span id="185">185</span>
-<span id="186">186</span>
-<span id="187">187</span>
-<span id="188">188</span>
-<span id="189">189</span>
-<span id="190">190</span>
-<span id="191">191</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! Functions for safe transmutation to `bool`.</span>
 <span class="doccomment">//!</span>
@@ -206,9 +170,9 @@
 
 
 <span class="kw">use</span> <span class="self">self</span>::<span class="kw">super</span>::<span class="ident">guard</span>::{<span class="ident">PermissiveGuard</span>, <span class="ident">PedanticGuard</span>, <span class="ident">Guard</span>};
-<span class="kw">use</span> <span class="self">self</span>::<span class="kw">super</span>::<span class="ident">base</span>::<span class="ident">guarded_transmute_many</span>;
+<span class="kw">use</span> <span class="self">self</span>::<span class="kw">super</span>::<span class="ident">base</span>::<span class="ident">transmute_many</span>;
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;std&quot;</span>)]</span>
-<span class="kw">use</span> <span class="self">self</span>::<span class="kw">super</span>::<span class="ident">base</span>::<span class="ident">guarded_transmute_vec</span>;
+<span class="kw">use</span> <span class="self">self</span>::<span class="kw">super</span>::<span class="ident">base</span>::<span class="ident">transmute_vec</span>;
 <span class="kw">use</span> <span class="ident">core</span>::<span class="ident">mem</span>::<span class="ident">transmute</span>;
 <span class="kw">use</span> <span class="self">self</span>::<span class="kw">super</span>::<span class="ident">Error</span>;
 
@@ -235,9 +199,9 @@
     <span class="kw">unsafe</span> { <span class="ident">b</span> <span class="op">==</span> <span class="ident">transmute</span>::<span class="op">&lt;</span><span class="kw">_</span>, <span class="ident">u8</span><span class="op">&gt;</span>(<span class="bool-val">false</span>) <span class="op">||</span> <span class="ident">b</span> <span class="op">==</span> <span class="ident">transmute</span>::<span class="op">&lt;</span><span class="kw">_</span>, <span class="ident">u8</span><span class="op">&gt;</span>(<span class="bool-val">true</span>) }
 }
 
-<span class="kw">fn</span> <span class="ident">guarded_transmute_bool</span><span class="op">&lt;</span><span class="ident">G</span>: <span class="ident">Guard</span><span class="op">&gt;</span>(<span class="ident">bytes</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>]) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="kw-2">&amp;</span>[<span class="ident">bool</span>], <span class="ident">Error</span><span class="op">&gt;</span> {
+<span class="kw">fn</span> <span class="ident">transmute_bool</span><span class="op">&lt;</span><span class="ident">G</span>: <span class="ident">Guard</span><span class="op">&gt;</span>(<span class="ident">bytes</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>]) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="kw-2">&amp;</span>[<span class="ident">bool</span>], <span class="ident">Error</span><span class="op">&gt;</span> {
     <span class="ident">check_bool</span>(<span class="ident">bytes</span>)<span class="question-mark">?</span>;
-    <span class="kw">unsafe</span> { <span class="ident">guarded_transmute_many</span>::<span class="op">&lt;</span><span class="kw">_</span>, <span class="ident">G</span><span class="op">&gt;</span>(<span class="ident">bytes</span>) }
+    <span class="kw">unsafe</span> { <span class="ident">transmute_many</span>::<span class="op">&lt;</span><span class="kw">_</span>, <span class="ident">G</span><span class="op">&gt;</span>(<span class="ident">bytes</span>) }
 }
 
 <span class="doccomment">/// Helper function for returning an error if any of the bytes does not make a</span>
@@ -258,25 +222,17 @@
 <span class="doccomment">/// # Examples</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// ```</span>
-<span class="doccomment">/// # use safe_transmute::{Error, safe_transmute_bool_permissive};</span>
+<span class="doccomment">/// # use safe_transmute::{Error, transmute_bool_permissive};</span>
 <span class="doccomment">/// # fn run() -&gt; Result&lt;(), Error&gt; {</span>
-<span class="doccomment">/// assert_eq!(safe_transmute_bool_permissive(&amp;[0x00, 0x01, 0x00, 0x01])?,</span>
+<span class="doccomment">/// assert_eq!(transmute_bool_permissive(&amp;[0x00, 0x01, 0x00, 0x01])?,</span>
 <span class="doccomment">///            &amp;[false, true, false, true]);</span>
-<span class="doccomment">/// assert_eq!(safe_transmute_bool_permissive(&amp;[])?, &amp;[]);</span>
+<span class="doccomment">/// assert_eq!(transmute_bool_permissive(&amp;[])?, &amp;[]);</span>
 <span class="doccomment">/// # Ok(())</span>
 <span class="doccomment">/// # }</span>
 <span class="doccomment">/// # run().unwrap()</span>
 <span class="doccomment">/// ```</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">safe_transmute_bool_permissive</span>(<span class="ident">bytes</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>]) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="kw-2">&amp;</span>[<span class="ident">bool</span>], <span class="ident">Error</span><span class="op">&gt;</span> {
-    <span class="ident">guarded_transmute_bool</span>::<span class="op">&lt;</span><span class="ident">PermissiveGuard</span><span class="op">&gt;</span>(<span class="ident">bytes</span>)
-}
-
-<span class="doccomment">/// View a byte slice as a slice of boolean values.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// The resulting slice will have as many instances of `bool` as will fit, can be empty.</span>
-<span class="attribute">#[<span class="ident">deprecated</span>(<span class="ident">since</span> <span class="op">=</span> <span class="string">&quot;0.11.0&quot;</span>, <span class="ident">note</span> <span class="op">=</span> <span class="string">&quot;use `safe_transmute_bool_permissive()` instead&quot;</span>)]</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">guarded_transmute_bool_permissive</span>(<span class="ident">bytes</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>]) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="kw-2">&amp;</span>[<span class="ident">bool</span>], <span class="ident">Error</span><span class="op">&gt;</span> {
-    <span class="ident">guarded_transmute_bool</span>::<span class="op">&lt;</span><span class="ident">PermissiveGuard</span><span class="op">&gt;</span>(<span class="ident">bytes</span>)
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">transmute_bool_permissive</span>(<span class="ident">bytes</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>]) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="kw-2">&amp;</span>[<span class="ident">bool</span>], <span class="ident">Error</span><span class="op">&gt;</span> {
+    <span class="ident">transmute_bool</span>::<span class="op">&lt;</span><span class="ident">PermissiveGuard</span><span class="op">&gt;</span>(<span class="ident">bytes</span>)
 }
 
 <span class="doccomment">/// View a byte slice as a slice of boolean values.</span>
@@ -286,25 +242,17 @@
 <span class="doccomment">/// # Examples</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// ```</span>
-<span class="doccomment">/// # use safe_transmute::{Error, safe_transmute_bool_pedantic};</span>
+<span class="doccomment">/// # use safe_transmute::{Error, transmute_bool_pedantic};</span>
 <span class="doccomment">/// # fn run() -&gt; Result&lt;(), Error&gt; {</span>
-<span class="doccomment">/// assert_eq!(safe_transmute_bool_pedantic(&amp;[0x01, 0x01, 0x01, 0x01])?,</span>
+<span class="doccomment">/// assert_eq!(transmute_bool_pedantic(&amp;[0x01, 0x01, 0x01, 0x01])?,</span>
 <span class="doccomment">///            &amp;[true, true, true, true]);</span>
-<span class="doccomment">/// assert!(safe_transmute_bool_pedantic(&amp;[]).is_err());</span>
+<span class="doccomment">/// assert!(transmute_bool_pedantic(&amp;[]).is_err());</span>
 <span class="doccomment">/// # Ok(())</span>
 <span class="doccomment">/// # }</span>
 <span class="doccomment">/// # run().unwrap()</span>
 <span class="doccomment">/// ```</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">safe_transmute_bool_pedantic</span>(<span class="ident">bytes</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>]) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="kw-2">&amp;</span>[<span class="ident">bool</span>], <span class="ident">Error</span><span class="op">&gt;</span> {
-    <span class="ident">guarded_transmute_bool</span>::<span class="op">&lt;</span><span class="ident">PedanticGuard</span><span class="op">&gt;</span>(<span class="ident">bytes</span>)
-}
-
-<span class="doccomment">/// View a byte slice as a slice of boolean values.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// The byte slice must have at least enough bytes to fill a single `bool`.</span>
-<span class="attribute">#[<span class="ident">deprecated</span>(<span class="ident">since</span> <span class="op">=</span> <span class="string">&quot;0.11.0&quot;</span>, <span class="ident">note</span> <span class="op">=</span> <span class="string">&quot;use `safe_transmute_bool_pedantic()` instead&quot;</span>)]</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">guarded_transmute_bool_pedantic</span>(<span class="ident">bytes</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>]) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="kw-2">&amp;</span>[<span class="ident">bool</span>], <span class="ident">Error</span><span class="op">&gt;</span> {
-    <span class="ident">safe_transmute_bool_pedantic</span>(<span class="ident">bytes</span>)
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">transmute_bool_pedantic</span>(<span class="ident">bytes</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>]) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="kw-2">&amp;</span>[<span class="ident">bool</span>], <span class="ident">Error</span><span class="op">&gt;</span> {
+    <span class="ident">transmute_bool</span>::<span class="op">&lt;</span><span class="ident">PedanticGuard</span><span class="op">&gt;</span>(<span class="ident">bytes</span>)
 }
 
 <span class="doccomment">/// Trasform a byte vector into a vector of bool.</span>
@@ -315,33 +263,23 @@
 <span class="doccomment">/// # Examples</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// ```</span>
-<span class="doccomment">/// # use safe_transmute::{Error, safe_transmute_bool_vec_permissive};</span>
+<span class="doccomment">/// # use safe_transmute::{Error, transmute_bool_vec_permissive};</span>
 <span class="doccomment">/// # fn run() -&gt; Result&lt;(), Error&gt; {</span>
-<span class="doccomment">/// assert_eq!(safe_transmute_bool_vec_permissive(vec![0x00, 0x01, 0x00, 0x01])?,</span>
+<span class="doccomment">/// assert_eq!(transmute_bool_vec_permissive(vec![0x00, 0x01, 0x00, 0x01])?,</span>
 <span class="doccomment">///            vec![false, true, false, true]);</span>
-<span class="doccomment">/// assert_eq!(safe_transmute_bool_vec_permissive(vec![0x01, 0x00, 0x00, 0x00, 0x01])?,</span>
+<span class="doccomment">/// assert_eq!(transmute_bool_vec_permissive(vec![0x01, 0x00, 0x00, 0x00, 0x01])?,</span>
 <span class="doccomment">///            vec![true, false, false, false, true]);</span>
-<span class="doccomment">/// assert_eq!(safe_transmute_bool_vec_permissive(vec![]), Ok(vec![]));</span>
+<span class="doccomment">/// assert_eq!(transmute_bool_vec_permissive(vec![]), Ok(vec![]));</span>
 <span class="doccomment">/// # Ok(())</span>
 <span class="doccomment">/// # }</span>
 <span class="doccomment">/// # run().unwrap()</span>
 <span class="doccomment">/// ```</span>
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;std&quot;</span>)]</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">safe_transmute_bool_vec_permissive</span>(<span class="ident">bytes</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span>, <span class="ident">Error</span><span class="op">&gt;</span> {
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">transmute_bool_vec_permissive</span>(<span class="ident">bytes</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span>, <span class="ident">Error</span><span class="op">&gt;</span> {
     <span class="ident">check_bool</span>(<span class="kw-2">&amp;</span><span class="ident">bytes</span>)<span class="question-mark">?</span>;
     <span class="comment">// Alignment guarantees are ensured, and all values have been checked,</span>
     <span class="comment">// so the conversion is safe.</span>
-    <span class="kw">unsafe</span> { <span class="ident">guarded_transmute_vec</span>::<span class="op">&lt;</span><span class="kw">_</span>, <span class="ident">PermissiveGuard</span><span class="op">&gt;</span>(<span class="ident">bytes</span>) }
-}
-
-<span class="doccomment">/// Trasform a byte vector into a vector of bool.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// The vector&#39;s allocated byte buffer will be reused when possible, and</span>
-<span class="doccomment">/// have as many instances of a type as will fit, rounded down.</span>
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;std&quot;</span>)]</span>
-<span class="attribute">#[<span class="ident">deprecated</span>(<span class="ident">since</span> <span class="op">=</span> <span class="string">&quot;0.11.0&quot;</span>, <span class="ident">note</span> <span class="op">=</span> <span class="string">&quot;use `safe_transmute_bool_vec_permissive()` instead&quot;</span>)]</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">guarded_transmute_bool_vec_permissive</span>(<span class="ident">bytes</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span>, <span class="ident">Error</span><span class="op">&gt;</span> {
-    <span class="ident">safe_transmute_bool_vec_permissive</span>(<span class="ident">bytes</span>)
+    <span class="kw">unsafe</span> { <span class="ident">transmute_vec</span>::<span class="op">&lt;</span><span class="kw">_</span>, <span class="ident">PermissiveGuard</span><span class="op">&gt;</span>(<span class="ident">bytes</span>) }
 }
 
 <span class="doccomment">/// Transform a byte vector into a vector of bool.</span>
@@ -352,34 +290,24 @@
 <span class="doccomment">/// # Examples</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// ```</span>
-<span class="doccomment">/// # use safe_transmute::{Error, safe_transmute_bool_vec_pedantic};</span>
+<span class="doccomment">/// # use safe_transmute::{Error, transmute_bool_vec_pedantic};</span>
 <span class="doccomment">/// # fn run() -&gt; Result&lt;(), Error&gt; {</span>
-<span class="doccomment">/// assert_eq!(safe_transmute_bool_vec_pedantic(vec![0x00, 0x01, 0x00, 0x01])?,</span>
+<span class="doccomment">/// assert_eq!(transmute_bool_vec_pedantic(vec![0x00, 0x01, 0x00, 0x01])?,</span>
 <span class="doccomment">///            vec![false, true, false, true]);</span>
 <span class="doccomment">///</span>
-<span class="doccomment">/// assert!(safe_transmute_bool_vec_pedantic(vec![]).is_err());</span>
+<span class="doccomment">/// assert!(transmute_bool_vec_pedantic(vec![]).is_err());</span>
 <span class="doccomment">///</span>
-<span class="doccomment">/// assert!(safe_transmute_bool_vec_pedantic(vec![0x04, 0x00, 0xED]).is_err());</span>
+<span class="doccomment">/// assert!(transmute_bool_vec_pedantic(vec![0x04, 0x00, 0xED]).is_err());</span>
 <span class="doccomment">/// # Ok(())</span>
 <span class="doccomment">/// # }</span>
 <span class="doccomment">/// # run().unwrap()</span>
 <span class="doccomment">/// ```</span>
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;std&quot;</span>)]</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">safe_transmute_bool_vec_pedantic</span>(<span class="ident">bytes</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span>, <span class="ident">Error</span><span class="op">&gt;</span> {
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">transmute_bool_vec_pedantic</span>(<span class="ident">bytes</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span>, <span class="ident">Error</span><span class="op">&gt;</span> {
     <span class="ident">check_bool</span>(<span class="kw-2">&amp;</span><span class="ident">bytes</span>)<span class="question-mark">?</span>;
     <span class="comment">// alignment guarantees are ensured, and all values have been checked,</span>
     <span class="comment">// so the conversion is safe.</span>
-    <span class="kw">unsafe</span> { <span class="ident">guarded_transmute_vec</span>::<span class="op">&lt;</span><span class="kw">_</span>, <span class="ident">PedanticGuard</span><span class="op">&gt;</span>(<span class="ident">bytes</span>) }
-}
-
-<span class="doccomment">/// Transform a byte vector into a vector of bool.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// The vector&#39;s allocated byte buffer will be reused when possible, and</span>
-<span class="doccomment">/// should not have extraneous data.</span>
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;std&quot;</span>)]</span>
-<span class="attribute">#[<span class="ident">deprecated</span>(<span class="ident">since</span> <span class="op">=</span> <span class="string">&quot;0.11.0&quot;</span>, <span class="ident">note</span> <span class="op">=</span> <span class="string">&quot;use `safe_transmute_bool_vec_pedantic()` instead&quot;</span>)]</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">guarded_transmute_bool_vec_pedantic</span>(<span class="ident">bytes</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span>, <span class="ident">Error</span><span class="op">&gt;</span> {
-    <span class="ident">safe_transmute_bool_vec_pedantic</span>(<span class="ident">bytes</span>)
+    <span class="kw">unsafe</span> { <span class="ident">transmute_vec</span>::<span class="op">&lt;</span><span class="kw">_</span>, <span class="ident">PedanticGuard</span><span class="op">&gt;</span>(<span class="ident">bytes</span>) }
 }
 </pre></div>
 </section><section id="search" class="content hidden"></section><section class="footer"></section><aside id="help" class="hidden"><div><h1 class="hidden">Help</h1><div class="shortcuts"><h2>Keyboard Shortcuts</h2><dl><dt><kbd>?</kbd></dt><dd>Show this help dialog</dd><dt><kbd>S</kbd></dt><dd>Focus the search field</dd><dt><kbd>↑</kbd></dt><dd>Move up in search results</dd><dt><kbd>↓</kbd></dt><dd>Move down in search results</dd><dt><kbd>↹</kbd></dt><dd>Switch tab</dd><dt><kbd>&#9166;</kbd></dt><dd>Go to active search result</dd><dt><kbd>+</kbd></dt><dd>Expand all sections</dd><dt><kbd>-</kbd></dt><dd>Collapse all sections</dd></dl></div><div class="infos"><h2>Search Tricks</h2><p>Prefix searches with a type followed by a colon (e.g. <code>fn:</code>) to restrict the search to a given type.</p><p>Accepted types are: <code>fn</code>, <code>mod</code>, <code>struct</code>, <code>enum</code>, <code>trait</code>, <code>type</code>, <code>macro</code>, and <code>const</code>.</p><p>Search functions by type signature (e.g. <code>vec -> usize</code> or <code>* -> vec</code>)</p><p>Search multiple things at once by splitting your query with comma (e.g. <code>str,u8</code> or <code>String,struct:Vec,test</code>)</p></div></div></aside><script>window.rootPath = "../../";window.currentCrate = "safe_transmute";</script><script src="../../aliases.js"></script><script src="../../main.js"></script><script src="../../source-files.js"></script><script src="../../source-script.js"></script><script defer src="../../search-index.js"></script></body></html>

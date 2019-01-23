@@ -398,7 +398,7 @@
 <span class="doccomment">/// # Examples</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// ```no_run</span>
-<span class="doccomment">/// # use safe_transmute::base::guarded_transmute_many;</span>
+<span class="doccomment">/// # use safe_transmute::base::transmute_many;</span>
 <span class="doccomment">/// # use safe_transmute::SingleManyGuard;</span>
 <span class="doccomment">/// # include!(&quot;../tests/test_util/le_to_native.rs&quot;);</span>
 <span class="doccomment">/// # fn main() {</span>
@@ -406,15 +406,15 @@
 <span class="doccomment">/// unsafe {</span>
 <span class="doccomment">/// # /*</span>
 <span class="doccomment">///     assert_eq!(</span>
-<span class="doccomment">///         guarded_transmute_many::&lt;u16, SingleManyGuard&gt;(&amp;[0x00, 0x01, 0x00, 0x02])?,</span>
+<span class="doccomment">///         transmute_many::&lt;u16, SingleManyGuard&gt;(&amp;[0x00, 0x01, 0x00, 0x02])?,</span>
 <span class="doccomment">/// # */</span>
-<span class="doccomment">/// #   assert_eq!(guarded_transmute_many::&lt;u16, SingleManyGuard&gt;(&amp;[0x00, 0x01, 0x00, 0x02].le_to_native::&lt;u16&gt;()).unwrap(),</span>
+<span class="doccomment">/// #   assert_eq!(transmute_many::&lt;u16, SingleManyGuard&gt;(&amp;[0x00, 0x01, 0x00, 0x02].le_to_native::&lt;u16&gt;()).unwrap(),</span>
 <span class="doccomment">///         &amp;[0x0100, 0x0200]</span>
 <span class="doccomment">///     );</span>
 <span class="doccomment">/// }</span>
 <span class="doccomment">/// # }</span>
 <span class="doccomment">/// ```</span>
-<span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">guarded_transmute_many</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">G</span>: <span class="ident">Guard</span><span class="op">&gt;</span>(<span class="ident">bytes</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>]) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="kw-2">&amp;</span>[<span class="ident">T</span>], <span class="ident">Error</span><span class="op">&gt;</span> {
+<span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">transmute_many</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">G</span>: <span class="ident">Guard</span><span class="op">&gt;</span>(<span class="ident">bytes</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>]) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="kw-2">&amp;</span>[<span class="ident">T</span>], <span class="ident">Error</span><span class="op">&gt;</span> {
     <span class="ident">G</span>::<span class="ident">check</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(<span class="ident">bytes</span>)<span class="question-mark">?</span>;
     <span class="prelude-val">Ok</span>(<span class="ident">slice</span>::<span class="ident">from_raw_parts</span>(<span class="ident">bytes</span>.<span class="ident">as_ptr</span>() <span class="kw">as</span> <span class="kw-2">*</span><span class="kw">const</span> <span class="ident">T</span>, <span class="ident">bytes</span>.<span class="ident">len</span>() <span class="op">/</span> <span class="ident">size_of</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>()))
 }
@@ -424,7 +424,7 @@
 <span class="doccomment">/// The resulting slice will have as many instances of a type as will fit,</span>
 <span class="doccomment">/// rounded down. The permissive guard is a no-op, which makes it possible for</span>
 <span class="doccomment">/// this function to return a slice directly. It is therefore equivalent to</span>
-<span class="doccomment">/// `guarded_transmute_many::&lt;_, PermissiveGuard&gt;(bytes).unwrap()`.</span>
+<span class="doccomment">/// `transmute_many::&lt;_, PermissiveGuard&gt;(bytes).unwrap()`.</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// # Safety</span>
 <span class="doccomment">///</span>
@@ -440,23 +440,23 @@
 <span class="doccomment">/// # Examples</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// ```no_run</span>
-<span class="doccomment">/// # use safe_transmute::base::guarded_transmute_many_permissive;</span>
+<span class="doccomment">/// # use safe_transmute::base::transmute_many_permissive;</span>
 <span class="doccomment">/// # include!(&quot;../tests/test_util/le_to_native.rs&quot;);</span>
 <span class="doccomment">/// # fn main() {</span>
 <span class="doccomment">/// // Little-endian</span>
 <span class="doccomment">/// unsafe {</span>
 <span class="doccomment">/// # /*</span>
 <span class="doccomment">///     assert_eq!(</span>
-<span class="doccomment">///         guarded_transmute_many_permissive::&lt;u16&gt;(&amp;[0x00, 0x01, 0x00, 0x02]),</span>
+<span class="doccomment">///         transmute_many_permissive::&lt;u16&gt;(&amp;[0x00, 0x01, 0x00, 0x02]),</span>
 <span class="doccomment">/// # */</span>
-<span class="doccomment">/// #   assert_eq!(guarded_transmute_many_permissive::&lt;u16&gt;(&amp;[0x00, 0x01, 0x00, 0x02].le_to_native::&lt;u16&gt;()),</span>
+<span class="doccomment">/// #   assert_eq!(transmute_many_permissive::&lt;u16&gt;(&amp;[0x00, 0x01, 0x00, 0x02].le_to_native::&lt;u16&gt;()),</span>
 <span class="doccomment">///         &amp;[0x0100, 0x0200]</span>
 <span class="doccomment">///     );</span>
 <span class="doccomment">/// }</span>
 <span class="doccomment">/// # }</span>
 <span class="doccomment">/// ```</span>
-<span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">guarded_transmute_many_permissive</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(<span class="ident">bytes</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>]) <span class="op">-&gt;</span> <span class="kw-2">&amp;</span>[<span class="ident">T</span>] {
-    <span class="ident">guarded_transmute_many</span>::<span class="op">&lt;</span><span class="kw">_</span>, <span class="ident">PermissiveGuard</span><span class="op">&gt;</span>(<span class="ident">bytes</span>).<span class="ident">expect</span>(<span class="string">&quot;permissive guard should never fail&quot;</span>)
+<span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">transmute_many_permissive</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(<span class="ident">bytes</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>]) <span class="op">-&gt;</span> <span class="kw-2">&amp;</span>[<span class="ident">T</span>] {
+    <span class="ident">transmute_many</span>::<span class="op">&lt;</span><span class="kw">_</span>, <span class="ident">PermissiveGuard</span><span class="op">&gt;</span>(<span class="ident">bytes</span>).<span class="ident">expect</span>(<span class="string">&quot;permissive guard should never fail&quot;</span>)
 }
 
 <span class="doccomment">/// Transform a byte vector into a vector of an arbitrary type.</span>
@@ -480,32 +480,32 @@
 <span class="doccomment">///</span>
 <span class="doccomment">/// ```no_run</span>
 <span class="doccomment">/// # use safe_transmute::guard::PermissiveGuard;</span>
-<span class="doccomment">/// # use safe_transmute::base::guarded_transmute_vec;</span>
+<span class="doccomment">/// # use safe_transmute::base::transmute_vec;</span>
 <span class="doccomment">/// # include!(&quot;../tests/test_util/le_to_native.rs&quot;);</span>
 <span class="doccomment">/// # fn main() {</span>
 <span class="doccomment">/// // Little-endian</span>
 <span class="doccomment">/// unsafe {</span>
 <span class="doccomment">/// # /*</span>
 <span class="doccomment">///     assert_eq!(</span>
-<span class="doccomment">///         guarded_transmute_vec::&lt;u16, PermissiveGuard&gt;(vec![0x00, 0x01, 0x00, 0x02])?,</span>
+<span class="doccomment">///         transmute_vec::&lt;u16, PermissiveGuard&gt;(vec![0x00, 0x01, 0x00, 0x02])?,</span>
 <span class="doccomment">/// # */</span>
-<span class="doccomment">/// # assert_eq!(guarded_transmute_vec::&lt;u16, PermissiveGuard&gt;(vec![0x00, 0x01, 0x00, 0x02].le_to_native::&lt;u16&gt;()).unwrap(),</span>
+<span class="doccomment">/// # assert_eq!(transmute_vec::&lt;u16, PermissiveGuard&gt;(vec![0x00, 0x01, 0x00, 0x02].le_to_native::&lt;u16&gt;()).unwrap(),</span>
 <span class="doccomment">///         vec![0x0100, 0x0200]</span>
 <span class="doccomment">///     );</span>
 <span class="doccomment">/// # /*</span>
 <span class="doccomment">///     assert_eq!(</span>
-<span class="doccomment">///         guarded_transmute_vec::&lt;u32, PermissiveGuard&gt;(vec![0x04, 0x00, 0x00, 0x00, 0xED])?,</span>
+<span class="doccomment">///         transmute_vec::&lt;u32, PermissiveGuard&gt;(vec![0x04, 0x00, 0x00, 0x00, 0xED])?,</span>
 <span class="doccomment">/// # */</span>
-<span class="doccomment">/// # assert_eq!(guarded_transmute_vec::&lt;u32, PermissiveGuard&gt;(</span>
+<span class="doccomment">/// # assert_eq!(transmute_vec::&lt;u32, PermissiveGuard&gt;(</span>
 <span class="doccomment">/// #                vec![0x04, 0x00, 0x00, 0x00, 0xED].le_to_native::&lt;u32&gt;()).unwrap(),</span>
 <span class="doccomment">///         vec![0x0000_0004]</span>
 <span class="doccomment">///     );</span>
-<span class="doccomment">///     assert_eq!(guarded_transmute_vec::&lt;u16, PermissiveGuard&gt;(vec![0xED]), Ok(vec![]));</span>
+<span class="doccomment">///     assert_eq!(transmute_vec::&lt;u16, PermissiveGuard&gt;(vec![0xED]), Ok(vec![]));</span>
 <span class="doccomment">/// }</span>
 <span class="doccomment">/// # }</span>
 <span class="doccomment">/// ```</span>
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;std&quot;</span>)]</span>
-<span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">guarded_transmute_vec</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">G</span>: <span class="ident">Guard</span><span class="op">&gt;</span>(<span class="kw-2">mut</span> <span class="ident">bytes</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>, <span class="ident">Error</span><span class="op">&gt;</span> {
+<span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">transmute_vec</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">G</span>: <span class="ident">Guard</span><span class="op">&gt;</span>(<span class="kw-2">mut</span> <span class="ident">bytes</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>, <span class="ident">Error</span><span class="op">&gt;</span> {
     <span class="ident">G</span>::<span class="ident">check</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="ident">bytes</span>)<span class="question-mark">?</span>;
     <span class="kw">let</span> <span class="ident">ptr</span> <span class="op">=</span> <span class="ident">bytes</span>.<span class="ident">as_mut_ptr</span>();
     <span class="kw">let</span> <span class="ident">capacity</span> <span class="op">=</span> <span class="ident">bytes</span>.<span class="ident">capacity</span>() <span class="op">/</span> <span class="ident">size_of</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>();
@@ -532,32 +532,32 @@
 <span class="doccomment">/// # Examples</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// ```no_run</span>
-<span class="doccomment">/// # use safe_transmute::base::guarded_transmute_vec_permissive;</span>
+<span class="doccomment">/// # use safe_transmute::base::transmute_vec_permissive;</span>
 <span class="doccomment">/// # include!(&quot;../tests/test_util/le_to_native.rs&quot;);</span>
 <span class="doccomment">/// # fn main() {</span>
 <span class="doccomment">/// // Little-endian</span>
 <span class="doccomment">/// unsafe {</span>
 <span class="doccomment">/// # /*</span>
 <span class="doccomment">///     assert_eq!(</span>
-<span class="doccomment">///         guarded_transmute_vec_permissive::&lt;u16&gt;(vec![0x00, 0x01, 0x00, 0x02]),</span>
+<span class="doccomment">///         transmute_vec_permissive::&lt;u16&gt;(vec![0x00, 0x01, 0x00, 0x02]),</span>
 <span class="doccomment">/// # */</span>
-<span class="doccomment">/// # assert_eq!(guarded_transmute_vec_permissive::&lt;u16&gt;(vec![0x00, 0x01, 0x00, 0x02].le_to_native::&lt;u16&gt;()),</span>
+<span class="doccomment">/// # assert_eq!(transmute_vec_permissive::&lt;u16&gt;(vec![0x00, 0x01, 0x00, 0x02].le_to_native::&lt;u16&gt;()),</span>
 <span class="doccomment">///         vec![0x0100, 0x0200]</span>
 <span class="doccomment">///     );</span>
 <span class="doccomment">/// # /*</span>
 <span class="doccomment">///     assert_eq!(</span>
-<span class="doccomment">///         guarded_transmute_vec_permissive::&lt;u32&gt;(vec![0x04, 0x00, 0x00, 0x00, 0xED]),</span>
+<span class="doccomment">///         transmute_vec_permissive::&lt;u32&gt;(vec![0x04, 0x00, 0x00, 0x00, 0xED]),</span>
 <span class="doccomment">/// # */</span>
-<span class="doccomment">/// # assert_eq!(guarded_transmute_vec_permissive::&lt;u32&gt;(vec![0x04, 0x00, 0x00, 0x00, 0xED].le_to_native::&lt;u32&gt;()),</span>
+<span class="doccomment">/// # assert_eq!(transmute_vec_permissive::&lt;u32&gt;(vec![0x04, 0x00, 0x00, 0x00, 0xED].le_to_native::&lt;u32&gt;()),</span>
 <span class="doccomment">///         vec![0x0000_0004]</span>
 <span class="doccomment">///     );</span>
-<span class="doccomment">///     assert_eq!(guarded_transmute_vec_permissive::&lt;u16&gt;(vec![0xED]), vec![]);</span>
+<span class="doccomment">///     assert_eq!(transmute_vec_permissive::&lt;u16&gt;(vec![0xED]), vec![]);</span>
 <span class="doccomment">/// }</span>
 <span class="doccomment">/// # }</span>
 <span class="doccomment">/// ```</span>
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;std&quot;</span>)]</span>
-<span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">guarded_transmute_vec_permissive</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(<span class="ident">bytes</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
-    <span class="ident">guarded_transmute_vec</span>::<span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">PermissiveGuard</span><span class="op">&gt;</span>(<span class="ident">bytes</span>).<span class="ident">expect</span>(<span class="string">&quot;permissive guard should never fail&quot;</span>)
+<span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">transmute_vec_permissive</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(<span class="ident">bytes</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
+    <span class="ident">transmute_vec</span>::<span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">PermissiveGuard</span><span class="op">&gt;</span>(<span class="ident">bytes</span>).<span class="ident">expect</span>(<span class="string">&quot;permissive guard should never fail&quot;</span>)
 }
 </pre></div>
 </section><section id="search" class="content hidden"></section><section class="footer"></section><aside id="help" class="hidden"><div><h1 class="hidden">Help</h1><div class="shortcuts"><h2>Keyboard Shortcuts</h2><dl><dt><kbd>?</kbd></dt><dd>Show this help dialog</dd><dt><kbd>S</kbd></dt><dd>Focus the search field</dd><dt><kbd>↑</kbd></dt><dd>Move up in search results</dd><dt><kbd>↓</kbd></dt><dd>Move down in search results</dd><dt><kbd>↹</kbd></dt><dd>Switch tab</dd><dt><kbd>&#9166;</kbd></dt><dd>Go to active search result</dd><dt><kbd>+</kbd></dt><dd>Expand all sections</dd><dt><kbd>-</kbd></dt><dd>Collapse all sections</dd></dl></div><div class="infos"><h2>Search Tricks</h2><p>Prefix searches with a type followed by a colon (e.g. <code>fn:</code>) to restrict the search to a given type.</p><p>Accepted types are: <code>fn</code>, <code>mod</code>, <code>struct</code>, <code>enum</code>, <code>trait</code>, <code>type</code>, <code>macro</code>, and <code>const</code>.</p><p>Search functions by type signature (e.g. <code>vec -> usize</code> or <code>* -> vec</code>)</p><p>Search multiple things at once by splitting your query with comma (e.g. <code>str,u8</code> or <code>String,struct:Vec,test</code>)</p></div></div></aside><script>window.rootPath = "../../";window.currentCrate = "safe_transmute";</script><script src="../../aliases.js"></script><script src="../../main.js"></script><script src="../../source-files.js"></script><script src="../../source-script.js"></script><script defer src="../../search-index.js"></script></body></html>
