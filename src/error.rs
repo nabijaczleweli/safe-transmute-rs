@@ -1,10 +1,12 @@
 //! Detectable and recoverable-from transmutation precondition errors.
 
-#[cfg(feature = "std")]
-use crate::PodTransmutable;
-use core::fmt;
+
 #[cfg(feature = "std")]
 use std::error::Error as StdError;
+#[cfg(feature = "std")]
+use self::super::PodTransmutable;
+use core::fmt;
+
 
 /// A transmutation error. This type describes possible errors originating
 /// from operations in this crate.
@@ -24,7 +26,7 @@ pub enum Error {
     /// The given data slice is not properly aligned for the target type.
     Unaligned(UnalignedError),
     /// The given data vector is not properly aligned for the target type.
-    /// 
+    ///
     /// Does not exist in `no_std`.
     #[cfg(feature = "std")]
     UnalignedVec(UnalignedVecError),
@@ -74,6 +76,7 @@ impl From<UnalignedVecError> for Error {
         Error::UnalignedVec(o)
     }
 }
+
 
 /// A slice boundary guard error, usually created by a
 /// [`Guard`](./guard/trait.Guard.html).
@@ -174,10 +177,11 @@ impl UnalignedError {
     pub fn with_vec(self, vec: Vec<u8>) -> UnalignedVecError {
         UnalignedVecError {
             offset: self.offset,
-            vec,
+            vec: vec,
         }
     }
 }
+
 
 /// Unaligned vector transmutation error.
 ///
@@ -199,9 +203,9 @@ impl UnalignedVecError {
     /// Create a copy of the data and transmute it. As the new vector will be
     /// properly aligned for accessing values of type `T`, this operation will
     /// never fail.
-    /// 
+    ///
     /// # Safety
-    /// 
+    ///
     /// The byte data in the vector needs to correspond to a valid contiguous
     /// sequence of `T` values.
     pub unsafe fn copy_unchecked<T>(&self) -> Vec<T> {
