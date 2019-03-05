@@ -2,8 +2,8 @@
 //!
 //! Functions in this module are guarded from out-of-bounds memory access as
 //! well as from unaligned access, returning errors on both cases. Moreover,
-//! only a [`PodTransmutable`](trait.PodTransmutable.html)) can be used as the
-//! transmute target, thus ensuring full safety.
+//! only a [`TriviallyTransmutable`](trait.TriviallyTransmutable.html)) can be
+//! used as the transmute target, thus ensuring full safety.
 //!
 //! Unless this was previously imposed by certain means, the functions in this
 //! module may arbitrarily fail due to unaligned memory access. It is up to the
@@ -11,15 +11,15 @@
 //! target type.
 
 
-use self::super::pod::{PodTransmutable, transmute_pod_many, transmute_pod};
+use self::super::trivial::{TriviallyTransmutable, transmute_trivial_many, transmute_trivial};
 use self::super::guard::{SingleValueGuard, PermissiveGuard, PedanticGuard, Guard};
 use self::super::Error;
 #[cfg(feature = "std")]
-use self::super::pod::transmute_pod_vec;
+use self::super::trivial::transmute_trivial_vec;
 use self::super::align::check_alignment;
 
 
-/// Transmute a byte slice into a single instance of a POD.
+/// Transmute a byte slice into a single instance of a trivially transmutable type.
 ///
 /// The byte slice must have at least enough bytes to fill a single instance of a type,
 /// extraneous data is ignored.
@@ -45,12 +45,12 @@ use self::super::align::check_alignment;
 /// # assert_eq!(transmute_one::<u32>(&[0x00, 0x00, 0x00, 0x01].le_to_native::<u32>()).unwrap(), 0x0100_0000);
 /// # }
 /// ```
-pub fn transmute_one<T: PodTransmutable>(bytes: &[u8]) -> Result<T, Error> {
+pub fn transmute_one<T: TriviallyTransmutable>(bytes: &[u8]) -> Result<T, Error> {
     check_alignment::<_, T>(bytes)?;
-    unsafe { transmute_pod(bytes) }
+    unsafe { transmute_trivial(bytes) }
 }
 
-/// Transmute a byte slice into a single instance of a POD.
+/// Transmute a byte slice into a single instance of a trivially transmutable type.
 ///
 /// The byte slice must have exactly enough bytes to fill a single instance of a type.
 ///
@@ -76,10 +76,10 @@ pub fn transmute_one<T: PodTransmutable>(bytes: &[u8]) -> Result<T, Error> {
 /// # assert_eq!(transmute_one_pedantic::<u16>(&[0x0F, 0x0E].le_to_native::<u16>()).unwrap(), 0x0E0F);
 /// # }
 /// ```
-pub fn transmute_one_pedantic<T: PodTransmutable>(bytes: &[u8]) -> Result<T, Error> {
+pub fn transmute_one_pedantic<T: TriviallyTransmutable>(bytes: &[u8]) -> Result<T, Error> {
     SingleValueGuard::check::<T>(bytes)?;
     check_alignment::<_, T>(bytes)?;
-    unsafe { transmute_pod(bytes) }
+    unsafe { transmute_trivial(bytes) }
 }
 
 /// Transmute a byte slice into a sequence of values of the given type.
@@ -106,9 +106,9 @@ pub fn transmute_one_pedantic<T: PodTransmutable>(bytes: &[u8]) -> Result<T, Err
 ///            &[0x0100, 0x0200]);
 /// # }
 /// ```
-pub fn transmute_many<T: PodTransmutable, G: Guard>(bytes: &[u8]) -> Result<&[T], Error> {
+pub fn transmute_many<T: TriviallyTransmutable, G: Guard>(bytes: &[u8]) -> Result<&[T], Error> {
     check_alignment::<_, T>(bytes)?;
-    unsafe { transmute_pod_many::<_, G>(bytes) }
+    unsafe { transmute_trivial_many::<_, G>(bytes) }
 }
 
 /// Transmute a byte slice into a sequence of values of the given type.
@@ -126,7 +126,7 @@ pub fn transmute_many<T: PodTransmutable, G: Guard>(bytes: &[u8]) -> Result<&[T]
 /// # use safe_transmute::transmute_many_permissive;
 /// assert_eq!(transmute_many_permissive::<u16>(&[0x00]), Ok([].as_ref()));
 /// ```
-pub fn transmute_many_permissive<T: PodTransmutable>(bytes: &[u8]) -> Result<&[T], Error> {
+pub fn transmute_many_permissive<T: TriviallyTransmutable>(bytes: &[u8]) -> Result<&[T], Error> {
     transmute_many::<T, PermissiveGuard>(bytes)
 }
 
@@ -154,7 +154,7 @@ pub fn transmute_many_permissive<T: PodTransmutable>(bytes: &[u8]) -> Result<&[T
 ///            &[0x0E0F, 0x0B0A]);
 /// # }
 /// ```
-pub fn transmute_many_pedantic<T: PodTransmutable>(bytes: &[u8]) -> Result<&[T], Error> {
+pub fn transmute_many_pedantic<T: TriviallyTransmutable>(bytes: &[u8]) -> Result<&[T], Error> {
     transmute_many::<T, PedanticGuard>(bytes)
 }
 
@@ -192,9 +192,9 @@ pub fn transmute_many_pedantic<T: PodTransmutable>(bytes: &[u8]) -> Result<&[T],
 /// # }
 /// ```
 #[cfg(feature = "std")]
-pub fn transmute_vec<T: PodTransmutable, G: Guard>(bytes: Vec<u8>) -> Result<Vec<T>, Error> {
+pub fn transmute_vec<T: TriviallyTransmutable, G: Guard>(bytes: Vec<u8>) -> Result<Vec<T>, Error> {
     match check_alignment::<_, T>(&bytes) {
-        Ok(_) => unsafe { transmute_pod_vec::<T, G>(bytes) },
+        Ok(_) => unsafe { transmute_trivial_vec::<T, G>(bytes) },
         Err(e) => Err(e.with_vec(bytes).into()),
     }
 }
@@ -233,7 +233,7 @@ pub fn transmute_vec<T: PodTransmutable, G: Guard>(bytes: Vec<u8>) -> Result<Vec
 /// # }
 /// ```
 #[cfg(feature = "std")]
-pub fn transmute_vec_permissive<T: PodTransmutable>(bytes: Vec<u8>) -> Result<Vec<T>, Error> {
+pub fn transmute_vec_permissive<T: TriviallyTransmutable>(bytes: Vec<u8>) -> Result<Vec<T>, Error> {
     transmute_vec::<T, PermissiveGuard>(bytes)
 }
 
@@ -268,6 +268,6 @@ pub fn transmute_vec_permissive<T: PodTransmutable>(bytes: Vec<u8>) -> Result<Ve
 /// # }
 /// ```
 #[cfg(feature = "std")]
-pub fn transmute_vec_pedantic<T: PodTransmutable>(bytes: Vec<u8>) -> Result<Vec<T>, Error> {
+pub fn transmute_vec_pedantic<T: TriviallyTransmutable>(bytes: Vec<u8>) -> Result<Vec<T>, Error> {
     transmute_vec::<T, PedanticGuard>(bytes)
 }

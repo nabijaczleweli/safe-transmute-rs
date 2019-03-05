@@ -1,7 +1,7 @@
 //! Functions for transmutation *from* a concrete type *to* bytes.
 
 
-use self::super::PodTransmutable;
+use self::super::TriviallyTransmutable;
 use core::mem::size_of;
 #[cfg(feature = "std")]
 use core::mem::forget;
@@ -96,7 +96,8 @@ pub unsafe fn transmute_to_bytes_many_unchecked<T>(from: &[T]) -> &[u8] {
     slice::from_raw_parts(from.as_ptr() as *const u8, from.len() * size_of::<T>())
 }
 
-/// Transmute a single instance of a POD type into a slice of its bytes.
+/// Transmute a single instance of a trivially transmutable type into a slice
+/// of its bytes.
 ///
 /// # Examples
 ///
@@ -117,14 +118,14 @@ pub unsafe fn transmute_to_bytes_many_unchecked<T>(from: &[T]) -> &[u8] {
 /// An arbitrary type:
 ///
 /// ```
-/// # use safe_transmute::{PodTransmutable, transmute_one_to_bytes};
+/// # use safe_transmute::{TriviallyTransmutable, transmute_one_to_bytes};
 /// #[repr(C)]
 /// #[derive(Clone, Copy)]
 /// struct Gene {
 ///     x1: u8,
 ///     x2: u8,
 /// }
-/// unsafe impl PodTransmutable for Gene {}
+/// unsafe impl TriviallyTransmutable for Gene {}
 ///
 /// assert_eq!(transmute_one_to_bytes(&Gene {
 ///                x1: 0x42,
@@ -132,7 +133,7 @@ pub unsafe fn transmute_to_bytes_many_unchecked<T>(from: &[T]) -> &[u8] {
 ///            }),
 ///            &[0x42, 0x69]);
 /// ```
-pub fn transmute_one_to_bytes<T: PodTransmutable>(from: &T) -> &[u8] {
+pub fn transmute_one_to_bytes<T: TriviallyTransmutable>(from: &T) -> &[u8] {
     unsafe { transmute_to_bytes_unchecked(from) }
 }
 
@@ -157,14 +158,14 @@ pub fn transmute_one_to_bytes<T: PodTransmutable>(from: &T) -> &[u8] {
 /// An arbitrary type:
 ///
 /// ```
-/// # use safe_transmute::{PodTransmutable, transmute_to_bytes};
+/// # use safe_transmute::{TriviallyTransmutable, transmute_to_bytes};
 /// #[repr(C)]
 /// #[derive(Clone, Copy)]
 /// struct Gene {
 ///     x1: u8,
 ///     x2: u8,
 /// }
-/// unsafe impl PodTransmutable for Gene {}
+/// unsafe impl TriviallyTransmutable for Gene {}
 ///
 /// assert_eq!(transmute_to_bytes(&[Gene {
 ///                                          x1: 0x42,
@@ -176,13 +177,13 @@ pub fn transmute_one_to_bytes<T: PodTransmutable>(from: &T) -> &[u8] {
 ///                                      }]),
 ///            &[0x42, 0x69, 0x12, 0x48]);
 /// ```
-pub fn transmute_to_bytes<T: PodTransmutable>(from: &[T]) -> &[u8] {
+pub fn transmute_to_bytes<T: TriviallyTransmutable>(from: &[T]) -> &[u8] {
     unsafe { transmute_to_bytes_many_unchecked(from) }
 }
 
 /// Transmute a slice of arbitrary types into a slice of their bytes.
 #[deprecated(since = "0.11.0", note = "use `transmute_to_bytes()` instead")]
-pub fn guarded_transmute_to_bytes_pod_many<T: PodTransmutable>(from: &[T]) -> &[u8] {
+pub fn guarded_transmute_to_bytes_pod_many<T: TriviallyTransmutable>(from: &[T]) -> &[u8] {
     transmute_to_bytes(from)
 }
 
@@ -242,10 +243,10 @@ pub fn transmute_to_bytes_vec<T>(mut from: Vec<T>) -> Vec<u8> {
     }
 }
 
-/// Transmute a vector of POD types into a vector of their bytes,
+/// Transmute a vector of trivially transmutable values into a vector of their bytes,
 /// using the same memory buffer as the former.
 #[cfg(feature = "std")]
 #[deprecated(since = "0.11.0", note = "use `transmute_to_bytes_vec()` instead")]
-pub fn guarded_transmute_to_bytes_pod_vec<T: PodTransmutable>(from: Vec<T>) -> Vec<u8> {
+pub fn guarded_transmute_to_bytes_pod_vec<T: TriviallyTransmutable>(from: Vec<T>) -> Vec<u8> {
     transmute_to_bytes_vec(from)
 }

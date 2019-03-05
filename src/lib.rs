@@ -14,7 +14,8 @@
 //!   caller.
 //! - The [`guard`](guard/index.html) module contains the **Guard API**, which
 //!   imposes slice boundary restrictions in a conversion.
-//! - The [`pod`](pod/index.html) module introduces the `PodTransmutable`
+//! - The [`trivial`](trivial/index.html) module introduces the
+//!   [`TriviallyTransmutable`](trivial/trait.TriviallyTransmutable.html)
 //!   trait, which statically ensures that any bit combination makes a valid
 //!   value for a given type. The functions in this module are safer than
 //!   [`base`](base/index.html), but still do not prevent unaligned memory access.
@@ -115,7 +116,7 @@ pub mod base;
 pub mod bool;
 pub mod error;
 pub mod guard;
-pub mod pod;
+pub mod trivial;
 pub mod util;
 pub mod to_bytes;
 
@@ -126,7 +127,7 @@ pub use self::full::{transmute_vec_permissive, transmute_vec_pedantic, transmute
 
 pub use self::guard::{SingleValueGuard, PermissiveGuard, SingleManyGuard, PedanticGuard, Guard};
 pub use self::error::{ErrorReason, GuardError, Error};
-pub use self::pod::PodTransmutable;
+pub use self::trivial::TriviallyTransmutable;
 
 pub use self::to_bytes::{transmute_one_to_bytes, transmute_to_bytes};
 #[cfg(feature = "std")]
