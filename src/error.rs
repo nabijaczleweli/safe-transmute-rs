@@ -24,6 +24,7 @@ pub enum Error {
     /// The given data slice is not properly aligned for the target type.
     Unaligned(UnalignedError),
     /// The given data vector is not properly aligned for the target type.
+    /// 
     /// Does not exist in `no_std`.
     #[cfg(feature = "std")]
     UnalignedVec(UnalignedVecError),
@@ -178,7 +179,7 @@ impl UnalignedError {
     }
 }
 
-/// Unaligned vector translation error.
+/// Unaligned vector transmutation error.
 ///
 /// Returned when the given data vector is not properly aligned for the
 /// target type. It would have been properly aligned if `offset` bytes were
