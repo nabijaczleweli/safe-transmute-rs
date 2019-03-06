@@ -1,12 +1,13 @@
-//! Trivial transmutation, content-wise
+//! Transmutation of trivial objects
 //!
 //! Functions in this module are guarded from out-of-bounds memory access and
 //! from unsafe transmutation target types through the use of the
 //! [`TriviallyTransmutable`](trait.TriviallyTransmutable.html)) trait.
+//! 
 //! If a certain type can be safely constructed out of any byte combination,
 //! then it may implement this trait. This is the case for primitive integer
 //! types (e.g. `i32`, `u32`, `i64`), arrays of other trivially transmutable
-//! types, and `repr(C)` structs composed.
+//! types, and `repr(C)` structs composed of trivially transmutable values.
 //!
 //! However, they are still not entirely safe because the source data may not
 //! be correctly aligned for reading and writing a value of the target type.
@@ -41,12 +42,12 @@ use self::super::Error;
 /// # Safety
 ///
 /// It is only safe to implement `TriviallyTransmutable` for a type `T` if it
-/// is safe for a slice of any arbitrary data `&[u8]` of length `sizeof<T>()`
-/// and _well aligned_ for reads and writes of `T` to be
-/// [`transmute()`](https://doc.rust-lang.org/stable/std/mem/fn.transmute.html)d
-/// to a unit-length `&[T]`, without any other conversion operation being required.
+/// is safe to read or write a value `T` at the pointer of an arbitrary slice
+/// `&[u8]`, of length `sizeof<T>()`, as long as the same slice is 
+/// *well aligned* in memory for reading and writing a `T`.
 ///
-/// Consult the [Transmutes section](https://doc.rust-lang.org/nomicon/transmutes.html) of the Nomicon for more details.
+/// Consult the [Transmutes section](https://doc.rust-lang.org/nomicon/transmutes.html)
+/// of the Nomicon for more details.
 pub unsafe trait TriviallyTransmutable: Copy {}
 
 
