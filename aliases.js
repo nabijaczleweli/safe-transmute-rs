@@ -1,2 +1,2 @@
 var ALIASES = {};
-ALIASES['safe_transmute'] = {};
+ALIASES["safe_transmute"] = {};
