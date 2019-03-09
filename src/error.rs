@@ -4,7 +4,7 @@
 #[cfg(feature = "std")]
 use std::error::Error as StdError;
 #[cfg(feature = "std")]
-use self::super::PodTransmutable;
+use self::super::TriviallyTransmutable;
 use core::fmt;
 
 
@@ -219,9 +219,9 @@ impl UnalignedVecError {
     /// Create a copy of the data and transmute it. As `T` is safely
     /// transmutable, and the new vector will be properly aligned for accessing
     /// values of type `T`, this operation is safe and will never fail.
-    pub fn copy<T: PodTransmutable>(&self) -> Vec<T> {
+    pub fn copy<T: TriviallyTransmutable>(&self) -> Vec<T> {
         unsafe {
-            // no value checks needed thanks to `PodTransmutable`
+            // no value checks needed thanks to `TriviallyTransmutable`
             self.copy_unchecked::<T>()
         }
     }
