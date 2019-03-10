@@ -135,6 +135,7 @@
 <span id="135">135</span>
 <span id="136">136</span>
 <span id="137">137</span>
+<span id="138">138</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! This crate contains checked implementations of transmutation procedures, some of which</span>
 <span class="doccomment">//! ensure memory safety.</span>
@@ -152,7 +153,8 @@
 <span class="doccomment">//!   caller.</span>
 <span class="doccomment">//! - The [`guard`](guard/index.html) module contains the **Guard API**, which</span>
 <span class="doccomment">//!   imposes slice boundary restrictions in a conversion.</span>
-<span class="doccomment">//! - The [`pod`](pod/index.html) module introduces the `PodTransmutable`</span>
+<span class="doccomment">//! - The [`trivial`](trivial/index.html) module introduces the</span>
+<span class="doccomment">//!   [`TriviallyTransmutable`](trivial/trait.TriviallyTransmutable.html)</span>
 <span class="doccomment">//!   trait, which statically ensures that any bit combination makes a valid</span>
 <span class="doccomment">//!   value for a given type. The functions in this module are safer than</span>
 <span class="doccomment">//!   [`base`](base/index.html), but still do not prevent unaligned memory access.</span>
@@ -253,7 +255,7 @@
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">bool</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">error</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">guard</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">pod</span>;
+<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">trivial</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">util</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">to_bytes</span>;
 
@@ -264,7 +266,7 @@
 
 <span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span>::<span class="ident">guard</span>::{<span class="ident">SingleValueGuard</span>, <span class="ident">PermissiveGuard</span>, <span class="ident">SingleManyGuard</span>, <span class="ident">PedanticGuard</span>, <span class="ident">Guard</span>};
 <span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span>::<span class="ident">error</span>::{<span class="ident">ErrorReason</span>, <span class="ident">GuardError</span>, <span class="ident">Error</span>};
-<span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span>::<span class="ident">pod</span>::<span class="ident">PodTransmutable</span>;
+<span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span>::<span class="ident">trivial</span>::<span class="ident">TriviallyTransmutable</span>;
 
 <span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span>::<span class="ident">to_bytes</span>::{<span class="ident">transmute_one_to_bytes</span>, <span class="ident">transmute_to_bytes</span>};
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;std&quot;</span>)]</span>
