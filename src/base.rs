@@ -187,10 +187,10 @@ pub unsafe fn transmute_many_permissive<T>(bytes: &[u8]) -> &[T] {
 /// Vector transmutations are **exceptionally** dangerous because of
 /// the constraints imposed by
 /// [`Vec::from_raw_parts`](https://doc.rust-lang.org/std/vec/struct.Vec.html#method.from_raw_parts).
-/// 
-/// Unless _all_ of the following requirements are fulfilled, this operation
+///
+/// Unless *all* of the following requirements are fulfilled, this operation
 /// may result in undefined behavior.
-/// 
+///
 /// - The target type `T` must have the same size and minimum alignment as the
 ///   type `S`.
 /// - The vector's data needs to correspond to a valid contiguous sequence of

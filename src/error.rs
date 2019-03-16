@@ -1,15 +1,16 @@
 //! Detectable and recoverable-from transmutation precondition errors.
 
 
-#[cfg(feature = "std")]
-use std::error::Error as StdError;
-#[cfg(feature = "std")]
-use core::mem::{size_of, align_of};
 use core::fmt;
 #[cfg(feature = "std")]
 use core::marker::PhantomData;
 #[cfg(feature = "std")]
-use super::trivial::TriviallyTransmutable;
+use std::error::Error as StdError;
+#[cfg(feature = "std")]
+use core::mem::{align_of, size_of};
+#[cfg(feature = "std")]
+use self::super::trivial::TriviallyTransmutable;
+
 
 /// A transmutation error. This type describes possible errors originating
 /// from operations in this crate. The two type parameters represent the
@@ -36,9 +37,9 @@ pub enum Error<S, T> {
     /// The data contains an invalid value for the target type.
     InvalidValue,
 
+    /// Do not use this!
     #[cfg(not(feature = "std"))]
     #[doc(hidden)]
-    /// Do not use this!
     None(::core::marker::PhantomData<(S, T)>),
 }
 
@@ -95,6 +96,7 @@ impl<S, T> From<UnalignedError> for Error<S, T> {
         Error::Unaligned(o)
     }
 }
+
 
 /// A slice boundary guard error, usually created by a
 /// [`Guard`](./guard/trait.Guard.html).
@@ -163,6 +165,7 @@ impl ErrorReason {
     }
 }
 
+
 /// Unaligned memory access error.
 ///
 /// Returned when the given data slice is not properly aligned for the target
@@ -188,13 +191,14 @@ impl fmt::Display for UnalignedError {
     }
 }
 
+
 /// Incompatible vector transmutation error.
 ///
 /// Returned when the element type `T` does not allow a safe vector
 /// transmutation to the target element type `U`. This happens when either
 /// the size or minimum memory alignment requirements are not met:
-/// 
-/// - `std::mem::align_of::<T>() != std::mem::align_of::<U>()` 
+///
+/// - `std::mem::align_of::<T>() != std::mem::align_of::<U>()`
 /// - `std::mem::size_of::<T>() != std::mem::size_of::<U>()`
 #[cfg(feature = "std")]
 #[derive(Clone, Eq, Hash, PartialEq)]
@@ -210,7 +214,7 @@ impl<S, T> IncompatibleVecTargetError<S, T> {
     /// Create an error with the given vector.
     pub fn new(vec: Vec<S>) -> Self {
         IncompatibleVecTargetError {
-            vec,
+            vec: vec,
             target: PhantomData,
         }
     }
@@ -235,8 +239,7 @@ impl<S, T> IncompatibleVecTargetError<S, T> {
     /// transmutable, and the new vector will be properly allocated for accessing
     /// values of type `U`, this operation is safe and will never fail.
     pub fn copy(&self) -> Vec<T>
-    where
-        T: TriviallyTransmutable,
+        where T: TriviallyTransmutable
     {
         unsafe {
             // no value checks needed thanks to `TriviallyTransmutable`
@@ -250,7 +253,7 @@ impl<S, T> From<IncompatibleVecTargetError<S, T>> for Error<S, T> {
     fn from(e: IncompatibleVecTargetError<S, T>) -> Self {
         Error::IncompatibleVecTarget(e)
     }
-} 
+}
 
 #[cfg(feature = "std")]
 impl<S, T> fmt::Debug for IncompatibleVecTargetError<S, T> {
@@ -274,13 +277,11 @@ impl<S, T> StdError for IncompatibleVecTargetError<S, T> {
 #[cfg(feature = "std")]
 impl<S, T> fmt::Display for IncompatibleVecTargetError<S, T> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(
-            f,
-            "incompatible target type (size: {}, align: {}) for transmutation from source (size: {}, align: {})",
-            size_of::<T>(),
-            align_of::<T>(),
-            size_of::<S>(),
-            align_of::<S>()
-        )
+        write!(f,
+               "incompatible target type (size: {}, align: {}) for transmutation from source (size: {}, align: {})",
+               size_of::<T>(),
+               align_of::<T>(),
+               size_of::<S>(),
+               align_of::<S>())
     }
 }

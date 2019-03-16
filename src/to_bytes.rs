@@ -192,14 +192,18 @@ pub fn guarded_transmute_to_bytes_pod_many<S: TriviallyTransmutable>(from: &[S])
 ///
 /// This is equivalent to calling [`full::transmute_vec`](../full/fn.transmute_vec.html) where
 /// the target type is `u8`.
-/// 
+///
 /// # Errors
 ///
 /// An error is returned if the minimum memory alignment requirements are not
 /// the same between `S` and `u8`:
-/// 
-/// `std::mem::align_of::<S>() != 1`.
-/// 
+///
+/// ```
+/// # /*
+/// std::mem::align_of::<S>() != 1
+/// # */
+/// ```
+///
 /// The only truly safe way of doing this is to create a transmuted slice
 /// view of the vector or make a copy anyway.
 ///

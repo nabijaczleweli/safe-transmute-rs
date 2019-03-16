@@ -3,7 +3,7 @@
 //! Functions in this module are guarded from out-of-bounds memory access and
 //! from unsafe transmutation target types through the use of the
 //! [`TriviallyTransmutable`](trait.TriviallyTransmutable.html)) trait.
-//! 
+//!
 //! If a certain type can be safely constructed out of any byte combination,
 //! then it may implement this trait. This is the case for primitive integer
 //! types (e.g. `i32`, `u32`, `i64`), arrays of other trivially transmutable
@@ -43,7 +43,7 @@ use self::super::Error;
 ///
 /// It is only safe to implement `TriviallyTransmutable` for a type `T` if it
 /// is safe to read or write a value `T` at the pointer of an arbitrary slice
-/// `&[u8]`, of length `sizeof<T>()`, as long as the same slice is 
+/// `&[u8]`, of length `size_of<T>()`, as long as the same slice is
 /// *well aligned* in memory for reading and writing a `T`.
 ///
 /// Consult the [Transmutes section](https://doc.rust-lang.org/nomicon/transmutes.html)
@@ -241,10 +241,10 @@ pub unsafe fn guarded_transmute_pod_many_pedantic<T: TriviallyTransmutable>(byte
 /// Vector transmutations are **exceptionally** dangerous because of
 /// the constraints imposed by
 /// [`Vec::from_raw_parts`](https://doc.rust-lang.org/std/vec/struct.Vec.html#method.from_raw_parts).
-/// 
-/// Unless _all_ of the following requirements are fulfilled, this operation
+///
+/// Unless *all* of the following requirements are fulfilled, this operation
 /// may result in undefined behavior.
-/// 
+///
 /// - The target type `T` must have the same size and minimum memory alignment
 ///   requirements as the type `S`.
 ///

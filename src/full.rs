@@ -13,10 +13,12 @@
 
 use self::super::trivial::{TriviallyTransmutable, transmute_trivial_many, transmute_trivial};
 use self::super::guard::{SingleValueGuard, PermissiveGuard, PedanticGuard, Guard};
-use self::super::Error;
 #[cfg(feature = "std")]
 use self::super::error::IncompatibleVecTargetError;
+#[cfg(feature = "std")]
+use core::mem::{align_of, size_of, forget};
 use self::super::align::check_alignment;
+use self::super::Error;
 
 
 /// Transmute a byte slice into a single instance of a trivially transmutable type.
@@ -161,15 +163,15 @@ pub fn transmute_many_pedantic<T: TriviallyTransmutable>(bytes: &[u8]) -> Result
 /// Transform a vector into a vector of values with the given target type.
 ///
 /// The resulting vector will reuse the allocated byte buffer when successful.
-/// 
+///
 /// # Errors
 ///
-/// An error is returned if _either_ the size or the minimum memory 
+/// An error is returned if *either* the size or the minimum memory
 /// requirements are not the same between `S` and `U`:
-/// 
+///
 /// - `std::mem::size_of::<S>() != std::mem::size_of::<T>()`
 /// - `std::mem::align_of::<S>() != std::mem::align_of::<T>()`
-/// 
+///
 /// Otherwise, the only truly safe way of doing this is to create a transmuted
 /// slice view of the vector, or make a copy anyway. The
 /// [`IncompatibleVecTargetError`](../error/struct.IncompatibleVecTargetError.html) error
@@ -190,7 +192,7 @@ pub fn transmute_many_pedantic<T: TriviallyTransmutable>(bytes: &[u8]) -> Result
 /// ```
 #[cfg(feature = "std")]
 pub fn transmute_vec<S: TriviallyTransmutable, T: TriviallyTransmutable>(mut vec: Vec<S>) -> Result<Vec<T>, Error<S, T>> {
-    if ::std::mem::align_of::<S>() != ::std::mem::align_of::<T>() || ::std::mem::size_of::<S>() != ::std::mem::size_of::<T>() {
+    if align_of::<S>() != align_of::<T>() || size_of::<S>() != size_of::<T>() {
         return Err(IncompatibleVecTargetError::new(vec).into());
     }
 
@@ -198,7 +200,7 @@ pub fn transmute_vec<S: TriviallyTransmutable, T: TriviallyTransmutable>(mut vec
         let capacity = vec.capacity();
         let len = vec.len();
         let ptr = vec.as_mut_ptr();
-        ::std::mem::forget(vec);
+        forget(vec);
         Ok(Vec::from_raw_parts(ptr as *mut T, len, capacity))
     }
 }
