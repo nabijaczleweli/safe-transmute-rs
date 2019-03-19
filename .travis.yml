@@ -18,10 +18,12 @@ matrix:
       rust: stable
       services: docker
       sudo: required
+    - env: LANGUAGE=Rust MIRI=miri
+      language: rust
+      rust: nightly-$(curl -SL 'https://rust-lang.github.io/rustup-components-history/' | awk '/<th.*>miri<\/th>/,/<\/tr>/' | awk '/[[:digit:]]{4}-[[:digit:]]{2}-[[:digit:]]{2}/ { print gensub(/[[:space:]]/, "", "g", gensub(/<[^>]+>/, "", "g")) }')
     - env: LANGUAGE=Rust CARGO_DEFAULT_FEATURES=--no-default-features
       language: rust
       rust: stable
-
   allow_failures:
     - rust: beta
     - rust: nightly
@@ -36,21 +38,27 @@ before_script:
       rustup target add $CROSS_TARGET;
       cargo install cross --force;
     fi
+  - if [ ! -z "$MIRI" ]; then
+      rustup component add miri;
+      CARGO_WHEN_BUILDING="cargo miri";
+    else
+      CARGO_WHEN_BUILDING="cargo";
+    fi
   - if [ "$CLIPPY" ]; then
       CLIPPY_INSTALLED=0 && (rustup component add clippy-preview || cargo install --git https://github.com/rust-lang/rust-clippy clippy -f) && CLIPPY_INSTALLED=1;
     fi
 
 script:
-  - cargo build --verbose
+  - $CARGO_WHEN_BUILDING build --verbose
   - if [ ! -z "$CROSS_TARGET" ]; then
       cross test --verbose --target $CROSS_TARGET $CARGO_DEFAULT_FEATURES;
     else
-      cargo test --verbose $CARGO_DEFAULT_FEATURES;
+      $CARGO_WHEN_BUILDING test --verbose $CARGO_DEFAULT_FEATURES;
     fi
   - if [ "$CLIPPY_INSTALLED" == 1 ]; then
-      cargo clippy;
+      $CARGO_WHEN_BUILDING clippy;
     fi
-  - if [ "$TRAVIS_TAG" ]; then cargo build --verbose --release; fi
+  - if [ "$TRAVIS_TAG" ]; then $CARGO_WHEN_BUILDING build --verbose --release; fi
 
 after_success:
   - curl -SL https://keybase.io/nabijaczleweli/key.asc | gpg --import
