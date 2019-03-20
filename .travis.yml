@@ -20,7 +20,13 @@ matrix:
       sudo: required
     - env: LANGUAGE=Rust MIRI=miri MIRI_RUST_VERSION="nightly-$(curl -SL 'https://rust-lang.github.io/rustup-components-history/' | awk '/<th.*>miri<\/th>/,/<\/tr>/' | awk '/[[:digit:]]{4}-[[:digit:]]{2}-[[:digit:]]{2}/ { print gensub(/[[:space:]]/, "", "g", gensub(/<[^>]+>/, "", "g")) }')"
       language: rust
-      rust: $MIRI_RUST_VERSION
+      rust: '$MIRI_RUST_VERSION'
+    - env: LANGUAGE=Rust MIRI=miri MIRI_RUST_VERSION="nightly-$(curl -SL 'https://rust-lang.github.io/rustup-components-history/' | awk '/<th.*>miri<\/th>/,/<\/tr>/' | awk '/[[:digit:]]{4}-[[:digit:]]{2}-[[:digit:]]{2}/ { print gensub(/[[:space:]]/, "", "g", gensub(/<[^>]+>/, "", "g")) }')"
+      language: rust
+      rust: \'$MIRI_RUST_VERSION\'
+    - env: LANGUAGE=Rust MIRI=miri MIRI_RUST_VERSION="nightly-$(curl -SL 'https://rust-lang.github.io/rustup-components-history/' | awk '/<th.*>miri<\/th>/,/<\/tr>/' | awk '/[[:digit:]]{4}-[[:digit:]]{2}-[[:digit:]]{2}/ { print gensub(/[[:space:]]/, "", "g", gensub(/<[^>]+>/, "", "g")) }')"
+      language: rust
+      rust: "\'$MIRI_RUST_VERSION\'"
     - env: LANGUAGE=Rust CARGO_DEFAULT_FEATURES=--no-default-features
       language: rust
       rust: stable
