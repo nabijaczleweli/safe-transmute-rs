@@ -18,7 +18,7 @@ matrix:
       rust: stable
       services: docker
       sudo: required
-    - env: LANGUAGE=Rust MIRI=miri
+    - env: LANGUAGE=Rust MIRI=true
       language: rust
       rust: nightly
     - env: LANGUAGE=Rust CARGO_DEFAULT_FEATURES=--no-default-features
@@ -44,25 +44,26 @@ before_script:
          rustup toolchain install "$MIRI_RUST_VERSION" &&
          rustup default "$MIRI_RUST_VERSION" &&
          rustup component add miri);
-      CARGO_WHEN_BUILDING="cargo miri";
-    else
-      CARGO_WHEN_BUILDING="cargo";
     fi
   - if [ "$CLIPPY" ]; then
       CLIPPY_INSTALLED=0 && (rustup component add clippy-preview || cargo install --git https://github.com/rust-lang/rust-clippy clippy -f) && CLIPPY_INSTALLED=1;
     fi
 
 script:
-  - $CARGO_WHEN_BUILDING build --verbose
+  - if [ -z "$MIRI" ]; then
+      cargo build --verbose;
+    fi
   - if [ ! -z "$CROSS_TARGET" ]; then
       cross test --verbose --target $CROSS_TARGET $CARGO_DEFAULT_FEATURES;
+    elif [ ! -z "$MIRI" ]; then
+      cargo miri test --verbose $CARGO_DEFAULT_FEATURES;
     else
-      $CARGO_WHEN_BUILDING test --verbose $CARGO_DEFAULT_FEATURES;
+      cargo test --verbose $CARGO_DEFAULT_FEATURES;
     fi
   - if [ "$CLIPPY_INSTALLED" == 1 ]; then
-      $CARGO_WHEN_BUILDING clippy;
+      cargo clippy;
     fi
-  - if [ "$TRAVIS_TAG" ]; then $CARGO_WHEN_BUILDING build --verbose --release; fi
+  - if [ "$TRAVIS_TAG" ]; then cargo build --verbose --release; fi
 
 after_success:
   - curl -SL https://keybase.io/nabijaczleweli/key.asc | gpg --import
