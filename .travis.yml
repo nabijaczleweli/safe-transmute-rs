@@ -18,15 +18,9 @@ matrix:
       rust: stable
       services: docker
       sudo: required
-    - env: LANGUAGE=Rust MIRI=miri MIRI_RUST_VERSION="nightly-$(curl -SL 'https://rust-lang.github.io/rustup-components-history/' | awk '/<th.*>miri<\/th>/,/<\/tr>/' | awk '/[[:digit:]]{4}-[[:digit:]]{2}-[[:digit:]]{2}/ { print gensub(/[[:space:]]/, "", "g", gensub(/<[^>]+>/, "", "g")) }')"
+    - env: LANGUAGE=Rust MIRI=miri
       language: rust
-      rust: '$MIRI_RUST_VERSION'
-    - env: LANGUAGE=Rust MIRI=miri MIRI_RUST_VERSION="nightly-$(curl -SL 'https://rust-lang.github.io/rustup-components-history/' | awk '/<th.*>miri<\/th>/,/<\/tr>/' | awk '/[[:digit:]]{4}-[[:digit:]]{2}-[[:digit:]]{2}/ { print gensub(/[[:space:]]/, "", "g", gensub(/<[^>]+>/, "", "g")) }')"
-      language: rust
-      rust: \'$MIRI_RUST_VERSION\'
-    - env: LANGUAGE=Rust MIRI=miri MIRI_RUST_VERSION="nightly-$(curl -SL 'https://rust-lang.github.io/rustup-components-history/' | awk '/<th.*>miri<\/th>/,/<\/tr>/' | awk '/[[:digit:]]{4}-[[:digit:]]{2}-[[:digit:]]{2}/ { print gensub(/[[:space:]]/, "", "g", gensub(/<[^>]+>/, "", "g")) }')"
-      language: rust
-      rust: "\'$MIRI_RUST_VERSION\'"
+      rust: nightly
     - env: LANGUAGE=Rust CARGO_DEFAULT_FEATURES=--no-default-features
       language: rust
       rust: stable
@@ -45,7 +39,11 @@ before_script:
       cargo install cross --force;
     fi
   - if [ ! -z "$MIRI" ]; then
-      rustup component add miri;
+      rustup component add miri ||
+        (MIRI_RUST_VERSION="nightly-$(curl -SL 'https://rust-lang.github.io/rustup-components-history/' | awk '/<th.*>miri<\/th>/,/<\/tr>/' | awk '/[[:digit:]]{4}-[[:digit:]]{2}-[[:digit:]]{2}/ { print gensub(/[[:space:]]/, "", "g", gensub(/<[^>]+>/, "", "g")) }')" &&
+         rustup toolchain install "$MIRI_RUST_VERSION" &&
+         rustup default "$MIRI_RUST_VERSION" &&
+         rustup component add miri);
       CARGO_WHEN_BUILDING="cargo miri";
     else
       CARGO_WHEN_BUILDING="cargo";
