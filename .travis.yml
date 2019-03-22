@@ -43,7 +43,8 @@ before_script:
         (MIRI_RUST_VERSION="nightly-$(curl -SL 'https://rust-lang.github.io/rustup-components-history/' | awk '/<th.*>miri<\/th>/,/<\/tr>/' | awk '/[[:digit:]]{4}-[[:digit:]]{2}-[[:digit:]]{2}/ { print gensub(/[[:space:]]/, "", "g", gensub(/<[^>]+>/, "", "g")) }')" &&
          rustup toolchain install "$MIRI_RUST_VERSION" &&
          rustup default "$MIRI_RUST_VERSION" &&
-         rustup component add miri);
+         rustup component add miri) &&
+        cargo miri setup;
     fi
   - if [ "$CLIPPY" ]; then
       CLIPPY_INSTALLED=0 && (rustup component add clippy-preview || cargo install --git https://github.com/rust-lang/rust-clippy clippy -f) && CLIPPY_INSTALLED=1;
@@ -56,7 +57,7 @@ script:
   - if [ ! -z "$CROSS_TARGET" ]; then
       cross test --verbose --target $CROSS_TARGET $CARGO_DEFAULT_FEATURES;
     elif [ ! -z "$MIRI" ]; then
-      echo | cargo miri test --verbose $CARGO_DEFAULT_FEATURES;
+      cargo miri test --verbose $CARGO_DEFAULT_FEATURES;
     else
       cargo test --verbose $CARGO_DEFAULT_FEATURES;
     fi
