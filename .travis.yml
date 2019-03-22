@@ -56,7 +56,7 @@ script:
   - if [ ! -z "$CROSS_TARGET" ]; then
       cross test --verbose --target $CROSS_TARGET $CARGO_DEFAULT_FEATURES;
     elif [ ! -z "$MIRI" ]; then
-      cargo miri test --verbose $CARGO_DEFAULT_FEATURES;
+      echo | cargo miri test --verbose $CARGO_DEFAULT_FEATURES;
     else
       cargo test --verbose $CARGO_DEFAULT_FEATURES;
     fi
