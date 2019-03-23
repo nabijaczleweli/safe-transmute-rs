@@ -9,15 +9,13 @@
 /// // the vector's data is guaranteed to be aligned for access as a u32
 /// assert_eq!((vec.as_ptr() as usize) % align_of::<u32>(), 0);
 /// ```
-/// 
+///
 /// # Safety
-/// 
-/// The resulting vector must then be deallocated with the function
-/// `dealloc_aligned_vec`, with exactly the same type parameter `T`.
-/// 
-/// **It is UB if the vector is modified, or not moved into
-/// `dealloc_aligned_vec`.**
-
+///
+/// The resulting vector must then be deallocated with
+/// `dealloc_aligned_vec()`, and the exact same `T` parameter.
+///
+/// Modifying or not moving into `dealloc_aligned_vec()` *will* yield UB.
 #[cfg(feature = "std")]
 unsafe fn aligned_vec<T>(bytes: &[u8]) -> Vec<u8> {
     use core::mem::{align_of, forget, size_of};
@@ -30,7 +28,7 @@ unsafe fn aligned_vec<T>(bytes: &[u8]) -> Vec<u8> {
         vec_len
     };
 
-    // the following code allocates a `Vec<T>` and turns it into
+    // The following code allocates a `Vec<T>` and turns it into
     // a `Vec<u8>`. Assuming that this vector will not be dropped
     // in this state, reading bytes from it is safe.
     #[allow(unused_unsafe)]
@@ -53,9 +51,9 @@ unsafe fn aligned_vec<T>(bytes: &[u8]) -> Vec<u8> {
 /// Deallocate a vector created by `aligned_vec`.
 ///
 /// # Safety
-/// 
-/// Obviously, this should not be called on a vector which was not created by
-/// `aligned_vec`. The type parameter `T` must also match the one used to
+///
+/// Shall not be called on a vector not created by `aligned_vec()`.
+/// The `T` parameter must also match the one used to
 /// create the vector.
 #[cfg(feature = "std")]
 unsafe fn dealloc_aligned_vec<T>(vec: Vec<u8>) {

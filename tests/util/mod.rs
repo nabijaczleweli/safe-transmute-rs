@@ -1,8 +1,8 @@
+#[cfg(feature = "std")]
+use self::super::{dealloc_aligned_vec, aligned_vec};
 use safe_transmute::align::check_alignment;
 use safe_transmute::util;
 use core::mem::align_of;
-#[cfg(feature = "std")]
-use super::{aligned_vec, dealloc_aligned_vec};
 use core::{f32, f64};
 
 
@@ -45,6 +45,21 @@ fn smoke_check_alignment_from_8() {
 }
 
 #[cfg(feature = "std")]
+#[test]
+fn test_aligned_vec() {
+    check_aligned_vec_with::<u32>(&[0xFF, 0xFF, 0x03, 0x00]);
+
+    check_aligned_vec_with::<u16>(&[]);
+    check_aligned_vec_with::<i32>(&[]);
+    check_aligned_vec_with::<u64>(&[]);
+
+    check_aligned_vec_with::<u64>(&[0]);
+    check_aligned_vec_with::<u32>(&[1, 2]);
+    check_aligned_vec_with::<u64>(&[1, 2, 3]);
+    check_aligned_vec_with::<u64>(&[0xAA; 20]);
+}
+
+#[cfg(feature = "std")]
 fn check_aligned_vec_with<T>(bytes: &[u8]) {
     unsafe {
         let vec: Vec<u8> = aligned_vec::<T>(bytes);
@@ -52,17 +67,4 @@ fn check_aligned_vec_with<T>(bytes: &[u8]) {
         assert_eq!(&*vec, bytes);
         dealloc_aligned_vec::<T>(vec);
     }
-}
-
-#[cfg(feature = "std")]
-#[test]
-fn test_aligned_vec() {
-    check_aligned_vec_with::<u32>(&[0xFF, 0xFF, 0x03, 0x00]);
-    check_aligned_vec_with::<u16>(&[]);
-    check_aligned_vec_with::<i32>(&[]);
-    check_aligned_vec_with::<u64>(&[]);
-    check_aligned_vec_with::<u64>(&[0]);
-    check_aligned_vec_with::<u32>(&[1, 2]);
-    check_aligned_vec_with::<u64>(&[1, 2, 3]);
-    check_aligned_vec_with::<u64>(&[0xAA; 20]);
 }

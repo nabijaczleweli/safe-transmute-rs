@@ -24,6 +24,7 @@ fn too_short() {
 fn just_enough() {
     let word = [0x0100_0020];
     let bytes = transmute_to_bytes(&word);
+
     unsafe {
         assert_eq!(from_bytes_pedantic::<u32>(bytes), Ok(0x0100_0020));
     }

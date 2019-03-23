@@ -21,7 +21,6 @@ fn too_short() {
 
 #[test]
 fn just_enough() {
-
     let words: &[u16] = &[0x0100, 0x0200, 0x0300];
     let bytes = transmute_to_bytes(words);
 
