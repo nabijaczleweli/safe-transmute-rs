@@ -1,11 +1,10 @@
 //! Detectable and recoverable-from transmutation precondition errors.
 
 
-use core::fmt;
+use core::{fmt, ptr};
 use core::marker::PhantomData;
 #[cfg(feature = "std")]
 use std::error::Error as StdError;
-#[cfg(feature = "std")]
 use core::mem::{align_of, size_of};
 #[cfg(feature = "std")]
 use self::super::trivial::TriviallyTransmutable;
@@ -161,12 +160,11 @@ impl ErrorReason {
 /// sequence of `T` values.
 #[cfg(feature = "std")]
 unsafe fn copy_to_vec_unchecked<S, T>(data: &[S]) -> Vec<T> {
-    let len = data.len() * core::mem::size_of::<S>() / core::mem::size_of::<T>();
+    let len = data.len() * size_of::<S>() / size_of::<T>();
+
     let mut out = Vec::with_capacity(len);
-    core::ptr::copy_nonoverlapping(
-        data.as_ptr() as *const u8,
-        out.as_mut_ptr() as *mut u8,
-        len * core::mem::size_of::<T>());
+    ptr::copy_nonoverlapping(data.as_ptr() as *const u8, out.as_mut_ptr() as *mut u8, len * size_of::<T>());
+
     out.set_len(len);
     out
 }
@@ -183,14 +181,15 @@ pub struct UnalignedError<'a, S, T> {
     pub offset: usize,
     /// A slice of the original source data.
     pub source: &'a [S],
+
     phantom: PhantomData<T>,
 }
 
 impl<'a, S, T> UnalignedError<'a, S, T> {
     pub fn new(offset: usize, source: &'a [S]) -> Self {
         UnalignedError {
-            offset,
-            source,
+            offset: offset,
+            source: source,
             phantom: PhantomData,
         }
     }
