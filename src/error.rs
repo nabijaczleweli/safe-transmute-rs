@@ -1,10 +1,13 @@
 //! Detectable and recoverable-from transmutation precondition errors.
 
 
-use core::{fmt, ptr};
+use core::fmt;
+#[cfg(feature = "std")]
+use core::ptr;
 use core::marker::PhantomData;
 #[cfg(feature = "std")]
 use std::error::Error as StdError;
+#[cfg(feature = "std")]
 use core::mem::{align_of, size_of};
 #[cfg(feature = "std")]
 use self::super::trivial::TriviallyTransmutable;
