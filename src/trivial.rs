@@ -134,7 +134,7 @@ unsafe impl<T: TriviallyTransmutable> TriviallyTransmutable for [T; 32] {}
 /// }
 /// # }
 /// ```
-pub unsafe fn transmute_trivial<T: TriviallyTransmutable>(bytes: &[u8]) -> Result<T, Error> {
+pub unsafe fn transmute_trivial<T: TriviallyTransmutable>(bytes: &[u8]) -> Result<T, Error<u8, T>> {
     from_bytes::<T>(bytes)
 }
 
@@ -172,7 +172,7 @@ pub unsafe fn transmute_trivial<T: TriviallyTransmutable>(bytes: &[u8]) -> Resul
 /// }
 /// # }
 /// ```
-pub unsafe fn transmute_trivial_pedantic<T: TriviallyTransmutable>(bytes: &[u8]) -> Result<T, Error> {
+pub unsafe fn transmute_trivial_pedantic<T: TriviallyTransmutable>(bytes: &[u8]) -> Result<T, Error<u8, T>> {
     PedanticGuard::check::<T>(bytes)?;
     from_bytes(bytes)
 }
@@ -210,7 +210,7 @@ pub unsafe fn transmute_trivial_pedantic<T: TriviallyTransmutable>(bytes: &[u8])
 /// }
 /// # }
 /// ```
-pub unsafe fn transmute_trivial_many<T: TriviallyTransmutable, G: Guard>(bytes: &[u8]) -> Result<&[T], Error> {
+pub unsafe fn transmute_trivial_many<T: TriviallyTransmutable, G: Guard>(bytes: &[u8]) -> Result<&[T], Error<u8, T>> {
     transmute_many::<T, G>(bytes)
 }
 
@@ -218,7 +218,7 @@ pub unsafe fn transmute_trivial_many<T: TriviallyTransmutable, G: Guard>(bytes: 
 ///
 /// The resulting slice will have as many instances of a type as will fit, rounded down.
 #[deprecated(since = "0.11.0", note = "see `trivial::transmute_many()` with `PermissiveGuard` for the equivalent behavior")]
-pub unsafe fn guarded_transmute_pod_many_permissive<T: TriviallyTransmutable>(bytes: &[u8]) -> Result<&[T], Error> {
+pub unsafe fn guarded_transmute_pod_many_permissive<T: TriviallyTransmutable>(bytes: &[u8]) -> Result<&[T], Error<u8, T>> {
     Ok(transmute_many::<T, PermissiveGuard>(bytes)?)
 }
 
@@ -227,76 +227,39 @@ pub unsafe fn guarded_transmute_pod_many_permissive<T: TriviallyTransmutable>(by
 /// The byte slice must have at least enough bytes to fill a single instance of a type,
 /// and should not have extraneous data.
 #[deprecated(since = "0.11.0", note = "see `trivial::transmute_many()` with `PedanticGuard` for the equivalent behavior")]
-pub unsafe fn guarded_transmute_pod_many_pedantic<T: TriviallyTransmutable>(bytes: &[u8]) -> Result<&[T], Error> {
+pub unsafe fn guarded_transmute_pod_many_pedantic<T: TriviallyTransmutable>(bytes: &[u8]) -> Result<&[T], Error<u8, T>> {
     transmute_many::<T, PedanticGuard>(bytes)
 }
 
-/// Transform a byte vector into a vector of trivially transmutable elements.
+
+/// Transform a vector into a vector of another element type.
 ///
-/// The resulting vec will reuse the allocated byte buffer when possible, and
-/// should have at least enough bytes to fill a single instance of a type.
-/// Extraneous data is ignored.
-///
-/// # Errors
-///
-/// An error is returned in one of the following situations:
-///
-/// - The data does not have enough bytes for a single value `T`.
+/// The vector's allocated byte buffer (if already allocated) will be reused.
 ///
 /// # Safety
 ///
-/// This function invokes undefined behavior if the data does not have a memory
-/// alignment compatible with `T`. If this cannot be ensured, you will have to
-/// make a copy of the data, or change how it was originally made.
+/// Vector transmutations are **exceptionally** dangerous because of
+/// the constraints imposed by
+/// [`Vec::from_raw_parts`](https://doc.rust-lang.org/std/vec/struct.Vec.html#method.from_raw_parts).
+/// 
+/// Unless _all_ of the following requirements are fulfilled, this operation
+/// may result in undefined behavior.
+/// 
+/// - The target type `U` must have the same size and minimum memory alignment
+///   requirements as the type `T`.
 ///
 /// # Examples
 ///
-/// ```no_run
+/// ```
 /// # use safe_transmute::trivial::transmute_trivial_vec;
-/// # use safe_transmute::SingleManyGuard;
-/// # include!("../tests/test_util/le_to_native.rs");
-/// # fn main() {
-/// // Little-endian
 /// unsafe {
-/// # /*
-///     assert_eq!(transmute_trivial_vec::<u16, SingleManyGuard>(vec![0x00, 0x01, 0x00, 0x02])?,
-/// # */
-/// #   assert_eq!(transmute_trivial_vec::<u16, SingleManyGuard>(
-/// #                  vec![0x00, 0x01, 0x00, 0x02].le_to_native::<u16>()).unwrap(),
-///            vec![0x0100, 0x0200]);
-/// # /*
-///     assert_eq!(transmute_trivial_vec::<u32, SingleManyGuard>(vec![0x04, 0x00, 0x00, 0x00, 0xED])?,
-/// # */
-/// #   assert_eq!(transmute_trivial_vec::<u32, SingleManyGuard>(
-/// #                  vec![0x04, 0x00, 0x00, 0x00, 0xED].le_to_native::<u32>()).unwrap(),
-///            vec![0x0000_0004]);
-///
-///     assert!(transmute_trivial_vec::<i16, SingleManyGuard>(vec![0xED]).is_err());
+///     assert_eq!(
+///         transmute_trivial_vec::<u8, i8>(vec![0x00, 0x01, 0x00, 0x02]),
+///         vec![0x00, 0x01, 0x00, 0x02]
+///     );
 /// }
-/// # }
 /// ```
 #[cfg(feature = "std")]
-pub unsafe fn transmute_trivial_vec<T: TriviallyTransmutable, G: Guard>(bytes: Vec<u8>) -> Result<Vec<T>, Error> {
-    transmute_vec::<T, G>(bytes)
-}
-
-/// Transform a byte vector into a vector of trivially transmutable elements.
-///
-/// The vector's allocated byte buffer will be reused when possible, and
-/// have as many instances of a type as will fit, rounded down.
-/// Extraneous data is ignored.
-#[cfg(feature = "std")]
-#[deprecated(since = "0.11.0", note = "see `trivial::transmute_vec()` with `PermissiveGuard` for the equivalent behavior")]
-pub unsafe fn guarded_transmute_pod_vec_permissive<T: TriviallyTransmutable>(bytes: Vec<u8>) -> Result<Vec<T>, Error> {
-    transmute_vec::<T, PermissiveGuard>(bytes).map_err(From::from)
-}
-
-/// Transform a byte vector into a vector of trivially transmutable elements.
-///
-/// The vector's allocated byte buffer will be reused when possible, and
-/// should not have extraneous data.
-#[cfg(feature = "std")]
-#[deprecated(since = "0.11.0", note = "see `trivial::transmute_vec()` with `PedanticGuard` for the equivalent behavior")]
-pub unsafe fn guarded_transmute_pod_vec_pedantic<T: TriviallyTransmutable>(bytes: Vec<u8>) -> Result<Vec<T>, Error> {
-    transmute_vec::<T, PedanticGuard>(bytes)
+pub unsafe fn transmute_trivial_vec<T: TriviallyTransmutable, U: TriviallyTransmutable>(vec: Vec<T>) -> Vec<U> {
+    transmute_vec::<T, U>(vec)
 }

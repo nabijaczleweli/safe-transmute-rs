@@ -46,7 +46,7 @@ use core::slice;
 /// }
 /// # }
 /// ```
-pub unsafe fn from_bytes<T: Copy>(bytes: &[u8]) -> Result<T, Error> {
+pub unsafe fn from_bytes<T: Copy>(bytes: &[u8]) -> Result<T, Error<u8, T>> {
     SingleManyGuard::check::<T>(bytes)?;
     Ok(slice::from_raw_parts(bytes.as_ptr() as *const T, 1)[0])
 }
@@ -88,7 +88,7 @@ pub unsafe fn from_bytes<T: Copy>(bytes: &[u8]) -> Result<T, Error> {
 /// }
 /// # }
 /// ```
-pub unsafe fn from_bytes_pedantic<T: Copy>(bytes: &[u8]) -> Result<T, Error> {
+pub unsafe fn from_bytes_pedantic<T: Copy>(bytes: &[u8]) -> Result<T, Error<u8, T>> {
     SingleValueGuard::check::<T>(bytes)?;
     Ok(slice::from_raw_parts(bytes.as_ptr() as *const T, 1)[0])
 }
@@ -133,7 +133,7 @@ pub unsafe fn from_bytes_pedantic<T: Copy>(bytes: &[u8]) -> Result<T, Error> {
 /// }
 /// # }
 /// ```
-pub unsafe fn transmute_many<T, G: Guard>(bytes: &[u8]) -> Result<&[T], Error> {
+pub unsafe fn transmute_many<T, G: Guard>(bytes: &[u8]) -> Result<&[T], Error<u8, T>> {
     G::check::<T>(bytes)?;
     Ok(slice::from_raw_parts(bytes.as_ptr() as *const T, bytes.len() / size_of::<T>()))
 }
@@ -178,103 +178,41 @@ pub unsafe fn transmute_many_permissive<T>(bytes: &[u8]) -> &[T] {
     transmute_many::<_, PermissiveGuard>(bytes).expect("permissive guard should never fail")
 }
 
-/// Transform a byte vector into a vector of an arbitrary type.
+/// Transform a vector into a vector of another element type.
 ///
 /// The vector's allocated byte buffer (if already allocated) will be reused.
-/// The required length of the vector depends on the chosen boundary guard.
-/// Please see the [Guard API](../guard/index.html).
 ///
 /// # Safety
 ///
-/// - This function does not perform memory alignment checks. The beginning of
-///   the slice data must be properly aligned for accessing vlues of type `T`.
-/// - The byte data needs to correspond to a valid contiguous sequence of `T`
-///   values. Types `T` with a `Drop` implementation are unlikely to be safe
-///   in this regard.
-///
-/// Failure to fulfill any of the requirements above may result in undefined
-/// behavior.
+/// Vector transmutations are **exceptionally** dangerous because of
+/// the constraints imposed by
+/// [`Vec::from_raw_parts`](https://doc.rust-lang.org/std/vec/struct.Vec.html#method.from_raw_parts).
+/// 
+/// Unless _all_ of the following requirements are fulfilled, this operation
+/// may result in undefined behavior.
+/// 
+/// - The target type `U` must have the same size and minimum alignment as the
+///   type `T`.
+/// - The vector's data needs to correspond to a valid contiguous sequence of
+///   `U` values. Types `U` with a `Drop` implementation are unlikely to be
+///   safe in this regard.
 ///
 /// # Examples
 ///
-/// ```no_run
-/// # use safe_transmute::guard::PermissiveGuard;
+/// ```
 /// # use safe_transmute::base::transmute_vec;
-/// # include!("../tests/test_util/le_to_native.rs");
-/// # fn main() {
-/// // Little-endian
 /// unsafe {
-/// # /*
 ///     assert_eq!(
-///         transmute_vec::<u16, PermissiveGuard>(vec![0x00, 0x01, 0x00, 0x02])?,
-/// # */
-/// # assert_eq!(transmute_vec::<u16, PermissiveGuard>(vec![0x00, 0x01, 0x00, 0x02].le_to_native::<u16>()).unwrap(),
-///         vec![0x0100, 0x0200]
+///         transmute_vec::<u8, i8>(vec![0x00, 0x01, 0x00, 0x02]),
+///         vec![0x00i8, 0x01i8, 0x00i8, 0x02i8]
 ///     );
-/// # /*
-///     assert_eq!(
-///         transmute_vec::<u32, PermissiveGuard>(vec![0x04, 0x00, 0x00, 0x00, 0xED])?,
-/// # */
-/// # assert_eq!(transmute_vec::<u32, PermissiveGuard>(
-/// #                vec![0x04, 0x00, 0x00, 0x00, 0xED].le_to_native::<u32>()).unwrap(),
-///         vec![0x0000_0004]
-///     );
-///     assert_eq!(transmute_vec::<u16, PermissiveGuard>(vec![0xED]), Ok(vec![]));
 /// }
-/// # }
 /// ```
 #[cfg(feature = "std")]
-pub unsafe fn transmute_vec<T, G: Guard>(mut bytes: Vec<u8>) -> Result<Vec<T>, Error> {
-    G::check::<T>(&bytes)?;
-    let ptr = bytes.as_mut_ptr();
-    let capacity = bytes.capacity() / size_of::<T>();
-    let len = bytes.len() / size_of::<T>();
-    forget(bytes);
-    Ok(Vec::from_raw_parts(ptr as *mut T, len, capacity))
-}
-
-/// Transform a byte vector into a vector of an arbitrary type.
-///
-/// The vector's allocated byte buffer (if already allocated) will be reused.
-///
-/// # Safety
-///
-/// - This function does not perform memory alignment checks. The beginning of
-///   the slice data must be properly aligned for accessing vlues of type `T`.
-/// - The byte data needs to correspond to a valid contiguous sequence of `T`
-///   values. Types `T` with a `Drop` implementation are unlikely to be safe
-///   in this regard.
-///
-/// Failure to fulfill any of the requirements above may result in undefined
-/// behavior.
-///
-/// # Examples
-///
-/// ```no_run
-/// # use safe_transmute::base::transmute_vec_permissive;
-/// # include!("../tests/test_util/le_to_native.rs");
-/// # fn main() {
-/// // Little-endian
-/// unsafe {
-/// # /*
-///     assert_eq!(
-///         transmute_vec_permissive::<u16>(vec![0x00, 0x01, 0x00, 0x02]),
-/// # */
-/// # assert_eq!(transmute_vec_permissive::<u16>(vec![0x00, 0x01, 0x00, 0x02].le_to_native::<u16>()),
-///         vec![0x0100, 0x0200]
-///     );
-/// # /*
-///     assert_eq!(
-///         transmute_vec_permissive::<u32>(vec![0x04, 0x00, 0x00, 0x00, 0xED]),
-/// # */
-/// # assert_eq!(transmute_vec_permissive::<u32>(vec![0x04, 0x00, 0x00, 0x00, 0xED].le_to_native::<u32>()),
-///         vec![0x0000_0004]
-///     );
-///     assert_eq!(transmute_vec_permissive::<u16>(vec![0xED]), vec![]);
-/// }
-/// # }
-/// ```
-#[cfg(feature = "std")]
-pub unsafe fn transmute_vec_permissive<T>(bytes: Vec<u8>) -> Vec<T> {
-    transmute_vec::<T, PermissiveGuard>(bytes).expect("permissive guard should never fail")
+pub unsafe fn transmute_vec<T, U>(mut vec: Vec<T>) -> Vec<U> {
+    let ptr = vec.as_mut_ptr();
+    let capacity = vec.capacity() * size_of::<T>() / size_of::<U>();
+    let len = vec.len() * size_of::<T>() / size_of::<U>();
+    forget(vec);
+    Vec::from_raw_parts(ptr as *mut U, len, capacity)
 }

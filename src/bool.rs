@@ -43,14 +43,14 @@ fn byte_is_bool(b: u8) -> bool {
     unsafe { b == transmute::<_, u8>(false) || b == transmute::<_, u8>(true) }
 }
 
-fn transmute_bool<G: Guard>(bytes: &[u8]) -> Result<&[bool], Error> {
+fn transmute_bool<G: Guard>(bytes: &[u8]) -> Result<&[bool], Error<u8, bool>> {
     check_bool(bytes)?;
     unsafe { transmute_many::<_, G>(bytes) }
 }
 
 /// Helper function for returning an error if any of the bytes does not make a
 /// valid `bool`.
-fn check_bool(bytes: &[u8]) -> Result<(), Error> {
+fn check_bool<T>(bytes: &[u8]) -> Result<(), Error<u8, T>> {
     if bytes_are_bool(bytes) {
         Ok(())
     } else {
@@ -67,7 +67,7 @@ fn check_bool(bytes: &[u8]) -> Result<(), Error> {
 ///
 /// ```
 /// # use safe_transmute::{Error, transmute_bool_permissive};
-/// # fn run() -> Result<(), Error> {
+/// # fn run() -> Result<(), Error<u8, bool>> {
 /// assert_eq!(transmute_bool_permissive(&[0x00, 0x01, 0x00, 0x01])?,
 ///            &[false, true, false, true]);
 /// assert_eq!(transmute_bool_permissive(&[])?, &[]);
@@ -75,7 +75,7 @@ fn check_bool(bytes: &[u8]) -> Result<(), Error> {
 /// # }
 /// # run().unwrap()
 /// ```
-pub fn transmute_bool_permissive(bytes: &[u8]) -> Result<&[bool], Error> {
+pub fn transmute_bool_permissive(bytes: &[u8]) -> Result<&[bool], Error<u8, bool>> {
     transmute_bool::<PermissiveGuard>(bytes)
 }
 
@@ -87,7 +87,7 @@ pub fn transmute_bool_permissive(bytes: &[u8]) -> Result<&[bool], Error> {
 ///
 /// ```
 /// # use safe_transmute::{Error, transmute_bool_pedantic};
-/// # fn run() -> Result<(), Error> {
+/// # fn run() -> Result<(), Error<u8, bool>> {
 /// assert_eq!(transmute_bool_pedantic(&[0x01, 0x01, 0x01, 0x01])?,
 ///            &[true, true, true, true]);
 /// assert!(transmute_bool_pedantic(&[]).is_err());
@@ -95,20 +95,19 @@ pub fn transmute_bool_permissive(bytes: &[u8]) -> Result<&[bool], Error> {
 /// # }
 /// # run().unwrap()
 /// ```
-pub fn transmute_bool_pedantic(bytes: &[u8]) -> Result<&[bool], Error> {
+pub fn transmute_bool_pedantic(bytes: &[u8]) -> Result<&[bool], Error<u8, bool>> {
     transmute_bool::<PedanticGuard>(bytes)
 }
 
 /// Trasform a byte vector into a vector of bool.
 ///
-/// The vector's allocated byte buffer will be reused when possible, and
-/// have as many instances of a type as will fit, rounded down.
+/// The vector's allocated byte buffer will be reused when possible.
 ///
 /// # Examples
 ///
 /// ```
 /// # use safe_transmute::{Error, transmute_bool_vec_permissive};
-/// # fn run() -> Result<(), Error> {
+/// # fn run() -> Result<(), Error<u8, bool>> {
 /// assert_eq!(transmute_bool_vec_permissive(vec![0x00, 0x01, 0x00, 0x01])?,
 ///            vec![false, true, false, true]);
 /// assert_eq!(transmute_bool_vec_permissive(vec![0x01, 0x00, 0x00, 0x00, 0x01])?,
@@ -119,23 +118,24 @@ pub fn transmute_bool_pedantic(bytes: &[u8]) -> Result<&[bool], Error> {
 /// # run().unwrap()
 /// ```
 #[cfg(feature = "std")]
-pub fn transmute_bool_vec_permissive(bytes: Vec<u8>) -> Result<Vec<bool>, Error> {
+pub fn transmute_bool_vec_permissive(bytes: Vec<u8>) -> Result<Vec<bool>, Error<u8, bool>> {
     check_bool(&bytes)?;
+    PermissiveGuard::check::<u8>(&bytes)?;
     // Alignment guarantees are ensured, and all values have been checked,
     // so the conversion is safe.
-    unsafe { transmute_vec::<_, PermissiveGuard>(bytes) }
+    unsafe { Ok(transmute_vec::<u8, bool>(bytes)) }
 }
 
 /// Transform a byte vector into a vector of bool.
 ///
 /// The vector's allocated byte buffer will be reused when possible, and
-/// should not have extraneous data.
+/// should not be empty.
 ///
 /// # Examples
 ///
 /// ```
 /// # use safe_transmute::{Error, transmute_bool_vec_pedantic};
-/// # fn run() -> Result<(), Error> {
+/// # fn run() -> Result<(), Error<u8, bool>> {
 /// assert_eq!(transmute_bool_vec_pedantic(vec![0x00, 0x01, 0x00, 0x01])?,
 ///            vec![false, true, false, true]);
 ///
@@ -147,9 +147,11 @@ pub fn transmute_bool_vec_permissive(bytes: Vec<u8>) -> Result<Vec<bool>, Error>
 /// # run().unwrap()
 /// ```
 #[cfg(feature = "std")]
-pub fn transmute_bool_vec_pedantic(bytes: Vec<u8>) -> Result<Vec<bool>, Error> {
+pub fn transmute_bool_vec_pedantic(bytes: Vec<u8>) -> Result<Vec<bool>, Error<u8, bool>> {
     check_bool(&bytes)?;
+    PedanticGuard::check::<u8>(&bytes)?;
+
     // alignment guarantees are ensured, and all values have been checked,
     // so the conversion is safe.
-    unsafe { transmute_vec::<_, PedanticGuard>(bytes) }
+    unsafe { Ok(transmute_vec::<u8, bool>(bytes)) }
 }

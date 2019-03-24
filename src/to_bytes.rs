@@ -2,9 +2,9 @@
 
 
 use self::super::TriviallyTransmutable;
-use core::mem::size_of;
 #[cfg(feature = "std")]
-use core::mem::forget;
+use self::super::Error;
+use core::mem::size_of;
 use core::slice;
 
 
@@ -189,64 +189,22 @@ pub fn guarded_transmute_to_bytes_pod_many<T: TriviallyTransmutable>(from: &[T])
 
 /// Transmute a vector of elements of an arbitrary type into a vector of their
 /// bytes, using the same memory buffer as the former.
+///
+/// This is equivalent to calling [`full::transmute_vec`](../full/fn.transmute_vec.html) where
+/// the target type is `u8`.
 /// 
-/// The original nature of the elements in the vector is forgotten. This means
-/// that, although this function is memory safe, applying it on a vector with
-/// a `Drop` implementation is likely to result in memory leaks and other
-/// kinds of misbehavior.
+/// # Errors
 ///
-/// # Examples
+/// An error is returned if the minimum memory alignment requirements are not
+/// the same between `T` and `u8`:
+/// 
+/// `std::mem::align_of::<T>() != 1`.
+/// 
+/// The only truly safe way of doing this is to create a transmuted slice
+/// view of the vector or make a copy anyway.
 ///
-/// Some `u16`s:
-///
-/// ```
-/// # use safe_transmute::to_bytes::transmute_to_bytes_vec;
-/// # include!("../tests/test_util/le_to_native.rs");
-/// # fn main() {
-/// assert_eq!(transmute_to_bytes_vec(vec![0x0123u16, 0x4567u16]),
-/// # /*
-///            vec![0x23, 0x01, 0x67, 0x45]);
-/// # */
-/// #          vec![0x23, 0x01, 0x67, 0x45].le_to_native::<u16>());
-/// # }
-/// ```
-///
-/// An arbitrary type:
-///
-/// ```
-/// # use safe_transmute::to_bytes::transmute_to_bytes_vec;
-/// #[repr(C)]
-/// #[derive(Clone, Copy)]
-/// struct Gene {
-///     x1: u8,
-///     x2: u8,
-/// }
-///
-/// assert_eq!(transmute_to_bytes_vec(vec![Gene {
-///                                            x1: 0x42,
-///                                            x2: 0x69,
-///                                        },
-///                                        Gene {
-///                                            x1: 0x12,
-///                                            x2: 0x48,
-///                                        }]),
-///            vec![0x42, 0x69, 0x12, 0x48]);
-/// ```
 #[cfg(feature = "std")]
-pub fn transmute_to_bytes_vec<T>(mut from: Vec<T>) -> Vec<u8> {
-    unsafe {
-        let capacity = from.capacity() * size_of::<T>();
-        let len = from.len() * size_of::<T>();
-        let ptr = from.as_mut_ptr();
-        forget(from);
-        Vec::from_raw_parts(ptr as *mut u8, len, capacity)
-    }
-}
-
-/// Transmute a vector of trivially transmutable values into a vector of their bytes,
-/// using the same memory buffer as the former.
-#[cfg(feature = "std")]
-#[deprecated(since = "0.11.0", note = "use `transmute_to_bytes_vec()` instead")]
-pub fn guarded_transmute_to_bytes_pod_vec<T: TriviallyTransmutable>(from: Vec<T>) -> Vec<u8> {
-    transmute_to_bytes_vec(from)
+pub fn transmute_to_bytes_vec<T: TriviallyTransmutable>(from: Vec<T>) -> Result<Vec<u8>, Error<T, u8>>
+{
+    super::full::transmute_vec::<T, u8>(from)
 }

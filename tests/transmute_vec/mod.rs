@@ -1,39 +1,40 @@
 #![cfg(feature = "std")]
 
-
-use safe_transmute::{SingleManyGuard, ErrorReason, GuardError, Error, transmute_vec};
-use self::super::{LeToNative, aligned_vec};
+use safe_transmute::error::IncompatibleVecTargetError;
+use safe_transmute::{transmute_vec, Error};
 
 #[test]
-fn too_short() {
-    assert_eq!(transmute_vec::<u16, SingleManyGuard>(aligned_vec::<u16>([].as_ref())),
-               Err(Error::Guard(GuardError {
-                   required: 16 / 8,
-                   actual: 0,
-                   reason: ErrorReason::NotEnoughBytes,
-               })));
-    assert_eq!(transmute_vec::<u16, SingleManyGuard>(aligned_vec::<u16>([0x00].as_ref())),
-               Err(Error::Guard(GuardError {
-                   required: 16 / 8,
-                   actual: 1,
-                   reason: ErrorReason::NotEnoughBytes,
-               })));
+fn bad_size() {
+    assert_eq!(
+        transmute_vec::<u16, [u16; 2]>(vec![]),
+        Err(Error::IncompatibleVecTarget(IncompatibleVecTargetError::new(vec![])))
+    );
+    assert_eq!(
+        transmute_vec::<u16, [u8; 4]>(vec![1, 2, 3]),
+        Err(Error::IncompatibleVecTarget(IncompatibleVecTargetError::new(vec![1, 2, 3])))
+    );
 }
 
 #[test]
 fn just_enough() {
-    assert_eq!(transmute_vec::<u16, SingleManyGuard>(aligned_vec::<u16>([0x00, 0x01].as_ref()).le_to_native::<u16>()),
-               Ok(vec![0x0100u16]));
-    assert_eq!(transmute_vec::<u16, SingleManyGuard>(aligned_vec::<u16>([0x00, 0x01, 0x00, 0x02].as_ref()).le_to_native::<u16>()),
-               Ok(vec![0x0100u16, 0x0200u16]));
+    assert_eq!(
+        transmute_vec::<u8, i8>(vec![0x00, 0x01]),
+        Ok(vec![0x00i8, 0x01i8])
+    );
+    assert_eq!(
+        transmute_vec::<u16, i16>(vec![0x0100u16, 0x0200u16]),
+        Ok(vec![0x0100i16, 0x0200i16])
+    );
 }
 
 #[test]
-fn too_much() {
-    assert_eq!(transmute_vec::<u16, SingleManyGuard>(aligned_vec::<u16>([0x00, 0x01, 0x00].as_ref()).le_to_native::<u16>()),
-               Ok(vec![0x0100u16]));
-    assert_eq!(transmute_vec::<u16, SingleManyGuard>(aligned_vec::<u16>([0x00, 0x01, 0x00, 0x02, 0x00].as_ref()).le_to_native::<u16>()),
-               Ok(vec![0x0100u16, 0x0200u16]));
-    assert_eq!(transmute_vec::<u16, SingleManyGuard>(aligned_vec::<u16>([0x00, 0x01, 0x00, 0x02, 0x00, 0x03, 0x00].as_ref()).le_to_native::<u16>()),
-               Ok(vec![0x0100u16, 0x0200u16, 0x0300u16]));
+fn bad_alignment() {
+    assert_eq!(
+        transmute_vec::<u16, [u8; 2]>(vec![8, 8, 8]),
+        Err(Error::IncompatibleVecTarget(IncompatibleVecTargetError::new(vec![8, 8, 8])))
+    );
+    assert_eq!(
+        transmute_vec::<u64, [u16; 4]>(vec![3, 2, 1]),
+        Err(Error::IncompatibleVecTarget(IncompatibleVecTargetError::new(vec![3, 2, 1])))
+    );
 }

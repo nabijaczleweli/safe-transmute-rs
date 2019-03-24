@@ -14,16 +14,12 @@ mod from_bytes_pedantic;
 
 mod base_transmute_vec;
 mod base_transmute_many;
-mod base_transmute_vec_pedantic;
 mod base_transmute_many_pedantic;
-mod base_transmute_vec_permissive;
 
 mod transmute_one;
 mod transmute_one_pedantic;
 mod transmute_many;
 mod transmute_vec;
-mod transmute_vec_pedantic;
-mod transmute_vec_permissive;
 mod transmute_bool_pedantic;
 mod transmute_bool_permissive;
 mod transmute_bool_vec_pedantic;

@@ -15,7 +15,7 @@ use self::super::trivial::{TriviallyTransmutable, transmute_trivial_many, transm
 use self::super::guard::{SingleValueGuard, PermissiveGuard, PedanticGuard, Guard};
 use self::super::Error;
 #[cfg(feature = "std")]
-use self::super::trivial::transmute_trivial_vec;
+use self::super::error::IncompatibleVecTargetError;
 use self::super::align::check_alignment;
 
 
@@ -45,7 +45,7 @@ use self::super::align::check_alignment;
 /// # assert_eq!(transmute_one::<u32>(&[0x00, 0x00, 0x00, 0x01].le_to_native::<u32>()).unwrap(), 0x0100_0000);
 /// # }
 /// ```
-pub fn transmute_one<T: TriviallyTransmutable>(bytes: &[u8]) -> Result<T, Error> {
+pub fn transmute_one<T: TriviallyTransmutable>(bytes: &[u8]) -> Result<T, Error<u8, T>> {
     check_alignment::<_, T>(bytes)?;
     unsafe { transmute_trivial(bytes) }
 }
@@ -76,7 +76,7 @@ pub fn transmute_one<T: TriviallyTransmutable>(bytes: &[u8]) -> Result<T, Error>
 /// # assert_eq!(transmute_one_pedantic::<u16>(&[0x0F, 0x0E].le_to_native::<u16>()).unwrap(), 0x0E0F);
 /// # }
 /// ```
-pub fn transmute_one_pedantic<T: TriviallyTransmutable>(bytes: &[u8]) -> Result<T, Error> {
+pub fn transmute_one_pedantic<T: TriviallyTransmutable>(bytes: &[u8]) -> Result<T, Error<u8, T>> {
     SingleValueGuard::check::<T>(bytes)?;
     check_alignment::<_, T>(bytes)?;
     unsafe { transmute_trivial(bytes) }
@@ -106,7 +106,7 @@ pub fn transmute_one_pedantic<T: TriviallyTransmutable>(bytes: &[u8]) -> Result<
 ///            &[0x0100, 0x0200]);
 /// # }
 /// ```
-pub fn transmute_many<T: TriviallyTransmutable, G: Guard>(bytes: &[u8]) -> Result<&[T], Error> {
+pub fn transmute_many<T: TriviallyTransmutable, G: Guard>(bytes: &[u8]) -> Result<&[T], Error<u8, T>> {
     check_alignment::<_, T>(bytes)?;
     unsafe { transmute_trivial_many::<_, G>(bytes) }
 }
@@ -126,7 +126,7 @@ pub fn transmute_many<T: TriviallyTransmutable, G: Guard>(bytes: &[u8]) -> Resul
 /// # use safe_transmute::transmute_many_permissive;
 /// assert_eq!(transmute_many_permissive::<u16>(&[0x00]), Ok([].as_ref()));
 /// ```
-pub fn transmute_many_permissive<T: TriviallyTransmutable>(bytes: &[u8]) -> Result<&[T], Error> {
+pub fn transmute_many_permissive<T: TriviallyTransmutable>(bytes: &[u8]) -> Result<&[T], Error<u8, T>> {
     transmute_many::<T, PermissiveGuard>(bytes)
 }
 
@@ -154,120 +154,51 @@ pub fn transmute_many_permissive<T: TriviallyTransmutable>(bytes: &[u8]) -> Resu
 ///            &[0x0E0F, 0x0B0A]);
 /// # }
 /// ```
-pub fn transmute_many_pedantic<T: TriviallyTransmutable>(bytes: &[u8]) -> Result<&[T], Error> {
+pub fn transmute_many_pedantic<T: TriviallyTransmutable>(bytes: &[u8]) -> Result<&[T], Error<u8, T>> {
     transmute_many::<T, PedanticGuard>(bytes)
 }
 
 /// Transform a byte vector into a vector of values.
 ///
 /// The resulting vec will reuse the allocated byte buffer when successful.
-///
+/// 
 /// # Errors
 ///
-/// An error is returned in one of the following situations:
-///
-/// - The data does not have a memory alignment compatible with `T`. You will
-///   have to make a copy anyway, or modify how the data was originally made.
-/// - The data does not comply with the given memory guard strategy.
+/// An error is returned if _either_ the size or the minimum memory 
+/// requirements are not the same between `T` and `U`:
+/// 
+/// - `std::mem::size_of::<T>() != std::mem::size_of::<U>()`
+/// - `std::mem::align_of::<T>() != std::mem::align_of::<U>()`
+/// 
+/// Otherwise, the only truly safe way of doing this is to create a transmuted
+/// slice view of the vector, or make a copy anyway. The
+/// [`IncompatibleVecTargetError`](../error/struct.IncompatibleVecTargetError.html) error
+/// type provides a means of making this copy to the intended target type.
 ///
 /// # Examples
 ///
-/// ```no_run
-/// # use safe_transmute::{transmute_vec, SingleManyGuard};
-/// # include!("../tests/test_util/le_to_native.rs");
-/// # fn main() {
-/// // Little-endian
-/// # /*
-/// assert_eq!(transmute_vec::<u16, SingleManyGuard>(vec![0x00, 0x01, 0x00, 0x02])?,
-/// # */
-/// # assert_eq!(transmute_vec::<u16, SingleManyGuard>(vec![0x00, 0x01, 0x00, 0x02].le_to_native::<u16>()).unwrap(),
-///            vec![0x0100, 0x0200]);
-/// # /*
-/// assert_eq!(transmute_vec::<u32, SingleManyGuard>(vec![0x04, 0x00, 0x00, 0x00, 0xED])?,
-/// # */
-/// # assert_eq!(transmute_vec::<u32, SingleManyGuard>(vec![0x04, 0x00, 0x00, 0x00, 0xED].le_to_native::<u32>()).unwrap(),
-///            vec![0x0000_0004]);
-///
-/// assert!(transmute_vec::<i16, SingleManyGuard>(vec![0xED]).is_err());
+/// ```
+/// # use safe_transmute::transmute_vec;
+/// # fn run() -> Result<(), Box<::std::error::Error>> {
+/// assert_eq!(transmute_vec::<u8, i8>(vec![0x00, 0x01, 0x00, 0x02])?,
+///            vec![0x00i8, 0x01i8, 0x00i8, 0x02i8]);
+/// assert_eq!(transmute_vec::<u8, i8>(vec![0x04, 0x00, 0x00, 0x00, 0xED])?,
+///            vec![0x04, 0x00, 0x00, 0x00, 0xEDi8]);
+/// # Ok(())
 /// # }
+/// # run().unwrap();
 /// ```
 #[cfg(feature = "std")]
-pub fn transmute_vec<T: TriviallyTransmutable, G: Guard>(bytes: Vec<u8>) -> Result<Vec<T>, Error> {
-    match check_alignment::<_, T>(&bytes) {
-        Ok(_) => unsafe { transmute_trivial_vec::<T, G>(bytes) },
-        Err(e) => Err(e.with_vec(bytes).into()),
+pub fn transmute_vec<T: TriviallyTransmutable, U: TriviallyTransmutable>(mut vec: Vec<T>) -> Result<Vec<U>, Error<T, U>> {
+    if ::std::mem::align_of::<T>() != ::std::mem::align_of::<U>() || ::std::mem::size_of::<T>() != ::std::mem::size_of::<U>() {
+        return Err(IncompatibleVecTargetError::new(vec).into());
     }
-}
 
-/// Transform a byte vector into a vector of values.
-///
-/// The vector's allocated byte buffer will be reused when possible, and
-/// have as many instances of a type as will fit, rounded down.
-/// Extraneous data is ignored.
-///
-/// # Errors
-///
-/// An error is returned in one of the following situations:
-///
-/// - The data does not have a memory alignment compatible with `T`. You will
-///   have to make a copy anyway, or modify how the data was originally made.
-///
-/// # Examples
-///
-/// ```no_run
-/// # use safe_transmute::transmute_vec_permissive;
-/// # include!("../tests/test_util/le_to_native.rs");
-/// # fn main() {
-/// // Little-endian
-/// # /*
-/// assert_eq!(transmute_vec_permissive::<u16>(vec![0x00, 0x01, 0x00, 0x02]),
-/// # */
-/// # assert_eq!(transmute_vec_permissive::<u16>(vec![0x00, 0x01, 0x00, 0x02].le_to_native::<u16>()),
-///            Ok(vec![0x0100, 0x0200]));
-/// # /*
-/// assert_eq!(transmute_vec_permissive::<u32>(vec![0x04, 0x00, 0x00, 0x00, 0xED]),
-/// # */
-/// # assert_eq!(transmute_vec_permissive::<u32>(vec![0x04, 0x00, 0x00, 0x00, 0xED].le_to_native::<u32>()),
-///            Ok(vec![0x0000_0004]));
-/// assert_eq!(transmute_vec_permissive::<u16>(vec![0xED]), Ok(vec![]));
-/// # }
-/// ```
-#[cfg(feature = "std")]
-pub fn transmute_vec_permissive<T: TriviallyTransmutable>(bytes: Vec<u8>) -> Result<Vec<T>, Error> {
-    transmute_vec::<T, PermissiveGuard>(bytes)
-}
-
-/// Transform a byte vector into a vector of values.
-///
-/// The vector's allocated byte buffer will be reused when possible, and
-/// should not have extraneous data.
-///
-/// # Errors
-///
-/// An error is returned in one of the following situations:
-///
-/// - The data does not have a memory alignment compatible with `T`. You will
-///   have to make a copy anyway, or modify how the data was originally made.
-/// - The data does not have enough bytes for a single value `T`.
-/// - The last chunk of the size of `T` is not large enough for a value, leaving extraneous bytes.
-///
-/// # Examples
-///
-/// ```no_run
-/// # use safe_transmute::transmute_vec_pedantic;
-/// # include!("../tests/test_util/le_to_native.rs");
-/// # fn main() {
-/// // Little-endian
-/// # /*
-/// assert_eq!(transmute_vec_pedantic::<u16>(vec![0x00, 0x01, 0x00, 0x02])?,
-/// # */
-/// # assert_eq!(transmute_vec_pedantic::<u16>(vec![0x00, 0x01, 0x00, 0x02].le_to_native::<u16>()).unwrap(),
-///            vec![0x0100, 0x0200]);
-///
-/// assert!(transmute_vec_pedantic::<u32>(vec![0x04, 0x00, 0x00, 0x00, 0xED]).is_err());
-/// # }
-/// ```
-#[cfg(feature = "std")]
-pub fn transmute_vec_pedantic<T: TriviallyTransmutable>(bytes: Vec<u8>) -> Result<Vec<T>, Error> {
-    transmute_vec::<T, PedanticGuard>(bytes)
+    unsafe {
+        let capacity = vec.capacity();
+        let len = vec.len();
+        let ptr = vec.as_mut_ptr();
+        ::std::mem::forget(vec);
+        Ok(Vec::from_raw_parts(ptr as *mut U, len, capacity))
+    }
 }
