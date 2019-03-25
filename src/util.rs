@@ -1,98 +1,89 @@
 //! Module containing various utility functions.
 
 
-/// Retrieve the result of a transmutation, copying the data if this cannot be
-/// done safely due to memory alignment constraints.
-/// 
-/// The macro, not unlike `try!`, will short-circuit certain errors with
-/// `return`, namely guard condition and invalid value errors. When the operation
-/// fails due to either an unaligned transmutation or an incompatible vector
-/// element transmutation target, the transmutation is once again attempted by
-/// copying (as in a `memcpy`) the output into a vector.
-/// 
-/// This expands into a single expression of type `Cow<[T]>`. where `T` is the
-/// target type.
-/// 
-/// 
+/// Retrieve the result of a transmutation,
+/// copying the data if it could not be safely performed due to memory alignment constraints.
+///
+/// This macro, akin to `try!()`, will short-circuit certain errors by
+/// `return`ing, namely guard condition and invalid value errors.
+///
+/// When the operation fails due to either an unaligned transmutation
+/// or an incompatible vector element transmutation target,
+/// the transmutation is reattempted by byte-copying (i.e. `memcpy()`ing)
+/// the input into a newly-allocated vector.
+///
+/// This expands into a single expression of type `Cow<[T]>`,
+/// where `T` is the target type.
+///
 /// # Example
-/// 
+///
 /// ```
-/// # #![cfg(feature = "std")]
 /// # #[macro_use]
 /// # extern crate safe_transmute;
-/// # use safe_transmute::{transmute_many, SingleManyGuard};
-/// # fn run() -> Result<(), Box<::std::error::Error>> {
-/// let bytes = &[0x00, 0x01, 0x12, 0x34, 0x00]; // 1 byte unused
-/// let hwords = try_copy!(transmute_many::<u16, SingleManyGuard>(bytes));
-/// assert_eq!(
-///     &*hwords,
-///     &[
-///         u16::from_be(0x0001),
-///         u16::from_be(0x1234),
-///     ][..]);
+/// # use safe_transmute::{SingleManyGuard, transmute_many};
+/// # fn main() -> Result<(), Box<::std::error::Error>> {
+/// let bytes = &[0x00, 0x01, 0x12, 0x34,
+///               0x00]; // 1 spare byte
+/// let words = try_copy!(transmute_many::<u16, SingleManyGuard>(bytes));
+///
+/// assert_eq!(*words,
+///            [u16::from_be(0x0001), u16::from_be(0x1234)]);
 /// # Ok(())
-/// # }
-/// # fn main() {
-/// # run().unwrap()
 /// # }
 /// ```
 #[cfg(feature = "std")]
 #[macro_export]
 macro_rules! try_copy {
-    ($res: expr) => {{
+    ($res:expr) => {{
         use std::borrow::Cow;
 
         $res.map_err($crate::Error::from)
             .map(Cow::from)
             .or_else(|e| e.copy().map(Cow::Owned))?
-    }};
+    }}
 }
 
-/// Retrieve the result of a transmutation, copying the data if this cannot be
-/// done safely due to memory alignment constraints. It is equivalent to the
-/// macro [`try_copy!`](macro.try_copy.html), except that it does not check
-/// whether the target type is trivially transmutable.
-/// 
+/// Retrieve the result of a non-trivial transmutation,
+/// copying the data if it could not be safely performed due to memory alignment constraints.
+///
+/// Equivalent to [`try_copy!()`](macro.try_copy.html),
+/// except for not checking that the target type is trivially transmutable.
+///
 /// # Safety
-/// 
+///
 /// The source data needs to correspond to a valid contiguous sequence of
 /// `T` values.
-/// 
+///
 /// # Example
-/// 
+///
 /// ```
-/// # #![cfg(feature = "std")]
 /// # #[macro_use]
 /// # extern crate safe_transmute;
-/// # use safe_transmute::{transmute_many, SingleManyGuard};
-/// # fn run() -> Result<(), Box<::std::error::Error>> {
-/// let bytes = &[0x00, 0x01, 0x12, 0x34, 0x00]; // 1 byte unused
+/// # use safe_transmute::{SingleManyGuard, transmute_many};
+/// # fn main() -> Result<(), Box<::std::error::Error>> {
+/// let bytes = &[0x00, 0x01, 0x12, 0x34,
+///               0x00]; // 1 spare byte
 /// unsafe {
-///     let hwords = try_copy_unchecked!(transmute_many::<u16, SingleManyGuard>(bytes));
-///     assert_eq!(
-///         &*hwords,
-///         &[
-///             u16::from_be(0x0001),
-///             u16::from_be(0x1234),
-///         ][..]);
+///     let words = try_copy_unchecked!(transmute_many::<u16, SingleManyGuard>(bytes));
+///
+///     assert_eq!(*words,
+///                [u16::from_be(0x0001), u16::from_be(0x1234)]);
 /// }
 /// # Ok(())
-/// # }
-/// # fn main() {
-/// # run().unwrap()
 /// # }
 /// ```
 #[cfg(feature = "std")]
 #[macro_export]
 macro_rules! try_copy_unchecked {
-    ($res: expr) => {{
+    ($res:expr) => {{
         use std::borrow::Cow;
-        
+
         $res.map_err($crate::Error::from)
             .map(Cow::from)
             .or_else(|e| e.copy_unchecked().map(Cow::Owned))?
-    }};
+    }}
 }
+
 
 /// If the specified 32-bit float is a signaling NaN, make it a quiet NaN.
 ///

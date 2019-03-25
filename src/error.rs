@@ -41,12 +41,12 @@ pub enum Error<'a, S, T> {
 
 impl<'a, S, T> Error<'a, S, T> {
     /// Reattempt the failed transmutation if the failure was caused by either
-    /// an unaligned memory access or an incompatible vector element target.
-    /// Otherwise, this method returns the same error.
+    /// an unaligned memory access, or an incompatible vector element target.
+    ///
+    /// Otherwise return `self`.
     #[cfg(feature = "std")]
     pub fn copy(self) -> Result<Vec<T>, Error<'a, S, T>>
-    where
-        T: TriviallyTransmutable,
+        where T: TriviallyTransmutable
     {
         match self {
             Error::Unaligned(e) => Ok(e.copy()),
@@ -55,17 +55,17 @@ impl<'a, S, T> Error<'a, S, T> {
         }
     }
 
-    /// Reattempt the failed transmutation if the failure was caused by either
-    /// an unaligned memory access or an incompatible vector element target.
-    /// Otherwise, this method returns the same error.
-    /// 
+    /// Reattempt the failed non-trivial transmutation if the failure was caused by either
+    /// an unaligned memory access, or an incompatible vector element target.
+    ///
+    /// Otherwise return `self`.
+    ///
     /// # Safety
-    /// 
+    ///
     /// The source data needs to correspond to a valid contiguous sequence of
     /// `T` values.
     #[cfg(feature = "std")]
-    pub unsafe fn copy_unchecked(self) -> Result<Vec<T>, Error<'a, S, T>>
-    {
+    pub unsafe fn copy_unchecked(self) -> Result<Vec<T>, Error<'a, S, T>> {
         match self {
             Error::Unaligned(e) => Ok(e.copy_unchecked()),
             Error::IncompatibleVecTarget(e) => Ok(e.copy_unchecked()),
@@ -78,17 +78,14 @@ impl<'a, S, T> Error<'a, S, T> {
     /// the error value live longer than the context of transmutation.
     pub fn without_src<'z>(self) -> Error<'z, S, T> {
         match self {
-            Error::Unaligned(
-                UnalignedError {
-                    source: _,
-                    offset,
-                    phantom
-                }) => Error::Unaligned(UnalignedError {
+            Error::Unaligned(UnalignedError { source: _, offset, phantom }) => {
+                Error::Unaligned(UnalignedError {
                     source: &[],
-                    offset,
-                    phantom
-                }),
-            Error::Guard(e) => Error::Guard(e), 
+                    offset: offset,
+                    phantom: phantom,
+                })
+            }
+            Error::Guard(e) => Error::Guard(e),
             Error::InvalidValue => Error::InvalidValue,
             #[cfg(feature = "std")]
             Error::IncompatibleVecTarget(e) => Error::IncompatibleVecTarget(e),

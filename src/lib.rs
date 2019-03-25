@@ -39,32 +39,23 @@
 //! guard (at least one value, extraneous bytes are allowed):
 //!
 //! ```
-//! # use safe_transmute::{transmute_many, SingleManyGuard, Error};
-//! # include!("../tests/test_util/le_to_native.rs");
+//! # use safe_transmute::{SingleManyGuard, Error, transmute_many};
 //! # #[cfg(feature = "std")]
 //! # fn main() -> Result<(), Box<::std::error::Error>> {
 //! let bytes = &[0x00, 0x01, 0x12, 0x24,
-//!     0x00]; // spare byte, unused
+//!               0x00]; // 1 spare byte
 //! match transmute_many::<u16, SingleManyGuard>(bytes) {
-//!     Ok(hwords) => {
-//!         assert_eq!(
-//!             hwords,
-//!             &[
-//!                 u16::from_be(0x0001),
-//!                 u16::from_be(0x1224),
-//!             ][..]);
+//!     Ok(words) => {
+//!         assert_eq!(words,
+//!                    [u16::from_be(0x0001), u16::from_be(0x1224)]);
 //!     },
 //!     Err(Error::Unaligned(e)) => {
-//!         // whelp, we need a copy here
-//!         let hwords = e.copy();
-//!         assert_eq!(
-//!             &*hwords,
-//!             &[
-//!                 u16::from_be(0x0001),
-//!                 u16::from_be(0x1224),
-//!             ][..]);
+//!         // Copy needed, would otherwise trap on some archs
+//!         let words = e.copy();
+//!         assert_eq!(*words,
+//!                    [u16::from_be(0x0001), u16::from_be(0x1224)]);
 //!     },
-//!     Err(e) => panic!("We are not expecting this: {}", e),
+//!     Err(e) => panic!("Unexpected error: {}", e),
 //! }
 //! # Ok(())
 //! # }
@@ -74,49 +65,46 @@
 //!
 //! Since one may not always be able to ensure that a slice of bytes is well
 //! aligned for reading data of different constraints, such as from `u8` to
-//! `u16`, the operation may fail without a trivial means of prevention.
-//! As a remedy, the data can be copied byte-by-byte into a new vector with
-//! the help of the [`try_copy!`](macro.try_copy.html) macro.
-//! 
+//! `u16`, the operation may fail without a trivial way of preventing it.
+//!
+//! As a remedy, the data can instead be copied byte-for-byte to a new vector,
+//! with the help of the [`try_copy!()`](macro.try_copy.html) macro.
+//!
 //! ```
 //! # #[macro_use]
 //! # extern crate safe_transmute;
-//! # use safe_transmute::{transmute_many, SingleManyGuard, Error};
+//! # use safe_transmute::{SingleManyGuard, Error, transmute_many};
 //! # #[cfg(feature = "std")]
 //! # fn main() -> Result<(), Box<::std::error::Error>> {
-//! # let bytes = &[0x00, 0x01, 0x12, 0x24, 0x00];
-//! let hwords = try_copy!(transmute_many::<u16, SingleManyGuard>(bytes));
-//! assert_eq!(
-//!     &*hwords,
-//!     &[
-//!         u16::from_be(0x0001),
-//!         u16::from_be(0x1224),
-//!     ][..]);
+//! let bytes = &[0x00, 0x01, 0x12, 0x24, 0x00];
+//! let words = try_copy!(transmute_many::<u16, SingleManyGuard>(bytes));
+//!
+//! assert_eq!(*words,
+//!            [u16::from_be(0x0001), u16::from_be(0x1224)]);
 //! # Ok(())
 //! # }
 //! # #[cfg(not(feature = "std"))]
 //! # fn main() {}
 //! ```
-//! 
+//!
 //! View all bytes as a series of `u16`s:
 //!
 //! ```
 //! # #[macro_use]
 //! # extern crate safe_transmute;
-//! # use safe_transmute::{transmute_many_pedantic, Error};
+//! # use safe_transmute::{Error, transmute_many_pedantic};
 //! # include!("../tests/test_util/le_to_native.rs");
 //! # #[cfg(feature = "std")]
 //! # fn main() -> Result<(), Box<::std::error::Error>> {
-//! // assuming Little Endian machine
-//! # let bytes = [0x00, 0x01, 0x12, 0x34].le_to_native::<u16>();
-//! # let bytes = &bytes;
-//! # let transmuted = try_copy!(transmute_many_pedantic::<u16>(bytes).map_err(|e| e.without_src()));
+//! # let bytes = &[0x00, 0x01, 0x12, 0x34].le_to_native::<u16>();
+//! # let words = try_copy!(transmute_many_pedantic::<u16>(bytes).map_err(Error::without_src));
 //! # /*
+//! // Assuming little-endian
 //! let bytes = &[0x00, 0x01, 0x12, 0x34];
-//! let transmuted = try_copy!(transmute_many_pedantic::<u16>(bytes));
+//! let words = try_copy!(transmute_many_pedantic::<u16>(bytes));
 //! # */
-//! 
-//! assert_eq!(&*transmuted, &[0x0100, 0x3412][..]);
+//!
+//! assert_eq!(*words, [0x0100, 0x3412]);
 //! # Ok(())
 //! # }
 //! # #[cfg(not(feature = "std"))]
@@ -146,7 +134,7 @@
 //! # include!("../tests/test_util/le_to_native.rs");
 //! # fn main() {
 //! assert_eq!(transmute_to_bytes(&[0x0001u16,
-//!                                      0x1234u16]),
+//!                                 0x1234u16]),
 //! # /*
 //!            &[0x01, 0x00, 0x34, 0x12].le_to_native::<u16>());
 //! # */
