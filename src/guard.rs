@@ -6,9 +6,9 @@
 //! slice with no extra trailing bytes:
 //!
 //! ```
-//! # use safe_transmute::Error;
+//! # use safe_transmute::error::GuardError;
 //! # use safe_transmute::guard::{SingleValueGuard, Guard};
-//! # fn run() -> Result<(), Error> {
+//! # fn run() -> Result<(), GuardError> {
 //! SingleValueGuard::check::<u32>(&[0x00, 0x01, 0x00, 0x02])?;
 //! # Ok(())
 //! # }
@@ -21,9 +21,9 @@
 //! extraneous bytes at the end.
 //!
 //! ```
-//! # use safe_transmute::Error;
+//! # use safe_transmute::error::GuardError;
 //! # use safe_transmute::guard::{PedanticGuard, Guard};
-//! # fn run() -> Result<(), Error> {
+//! # fn run() -> Result<(), GuardError> {
 //! PedanticGuard::check::<u16>(&[0xAA, 0xAA, 0xBB, 0xBB, 0xCC, 0xCC])?;
 //! # Ok(())
 //! # }
@@ -33,9 +33,9 @@
 //! [`PermissiveGuard`](struct.PermissiveGuard.html), on the other hand, will accept any memory slice.
 //!
 //! ```
-//! # use safe_transmute::Error;
+//! # use safe_transmute::error::GuardError;
 //! # use safe_transmute::guard::{PermissiveGuard, Guard};
-//! # fn run() -> Result<(), Error> {
+//! # fn run() -> Result<(), GuardError> {
 //! PermissiveGuard::check::<i16>(b"covfefe")?;
 //! # Ok(())
 //! # }

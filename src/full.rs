@@ -183,7 +183,7 @@ pub fn transmute_many_pedantic<T: TriviallyTransmutable>(bytes: &[u8]) -> Result
 /// assert_eq!(transmute_vec::<u8, i8>(vec![0x00, 0x01, 0x00, 0x02])?,
 ///            vec![0x00i8, 0x01i8, 0x00i8, 0x02i8]);
 /// assert_eq!(transmute_vec::<u8, i8>(vec![0x04, 0x00, 0x00, 0x00, 0xED])?,
-///            vec![0x04, 0x00, 0x00, 0x00, 0xEDi8]);
+///            vec![0x04, 0x00, 0x00, 0x00, -0x13i8]);
 /// # Ok(())
 /// # }
 /// # run().unwrap();
