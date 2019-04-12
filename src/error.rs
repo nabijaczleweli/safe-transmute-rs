@@ -3,6 +3,8 @@
 
 #[cfg(feature = "std")]
 use std::error::Error as StdError;
+#[cfg(feature = "std")]
+use core::mem::{size_of, align_of};
 use core::fmt;
 #[cfg(feature = "std")]
 use core::marker::PhantomData;
@@ -253,7 +255,12 @@ impl<S, T> From<IncompatibleVecTargetError<S, T>> for Error<S, T> {
 #[cfg(feature = "std")]
 impl<S, T> fmt::Debug for IncompatibleVecTargetError<S, T> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        f.write_str("IncompatibleVecTargetError")
+        f.debug_struct("IncompatibleVecTargetError")
+            .field("size_of<S>", &size_of::<S>())
+            .field("align_of<S>", &align_of::<S>())
+            .field("size_of<T>", &size_of::<T>())
+            .field("align_of<T>", &align_of::<T>())
+            .finish()
     }
 }
 
@@ -261,13 +268,20 @@ impl<S, T> fmt::Debug for IncompatibleVecTargetError<S, T> {
 impl<S, T> StdError for IncompatibleVecTargetError<S, T>
 {
     fn description(&self) -> &str {
-        "incompatible target type for transmutation"
+        "incompatible target type"
     }
 }
 
 #[cfg(feature = "std")]
 impl<S, T> fmt::Display for IncompatibleVecTargetError<S, T> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "incompatible target type")
+        write!(
+            f,
+            "incompatible target type (size: {}, align: {}) for transmutation from source (size: {}, align: {})",
+            size_of::<T>(),
+            align_of::<T>(),
+            size_of::<S>(),
+            align_of::<S>()
+        )
     }
 }
