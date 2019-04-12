@@ -128,7 +128,7 @@ pub use self::full::transmute_vec;
 pub use self::guard::{SingleValueGuard, PermissiveGuard, SingleManyGuard, PedanticGuard, Guard};
 pub use self::error::{ErrorReason, GuardError, UnalignedError, Error};
 #[cfg(feature = "std")]
-pub use self::error::{UnalignedVecError, IncompatibleVecTargetError};
+pub use self::error::IncompatibleVecTargetError;
 pub use self::trivial::TriviallyTransmutable;
 
 pub use self::to_bytes::{transmute_one_to_bytes, transmute_to_bytes};

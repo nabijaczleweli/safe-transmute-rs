@@ -3,8 +3,6 @@
 
 #[cfg(feature = "std")]
 use std::error::Error as StdError;
-#[cfg(feature = "std")]
-use self::super::TriviallyTransmutable;
 use core::fmt;
 #[cfg(feature = "std")]
 use core::marker::PhantomData;
@@ -27,11 +25,6 @@ pub enum Error<T = (), U = ()> {
     Guard(GuardError),
     /// The given data slice is not properly aligned for the target type.
     Unaligned(UnalignedError),
-    /// The given data vector is not properly aligned in memory for the target type.
-    ///
-    /// Does not exist in `no_std`.
-    #[cfg(feature = "std")]
-    UnalignedVec(UnalignedVecError),
     /// The data vector's element type does not have the same size and minimum
     /// alignment as the target type.
     ///
@@ -53,8 +46,6 @@ impl<T, U> fmt::Debug for Error<T, U> {
             Error::Unaligned(e) => write!(f, "Unaligned({:?})", e),
             Error::InvalidValue => f.write_str("InvalidValue"),
             #[cfg(feature = "std")]
-            Error::UnalignedVec(e) => write!(f, "UnalignedVec({:?})", e),
-            #[cfg(feature = "std")]
             Error::IncompatibleVecTarget(_) => f.write_str("IncompatibleVecTarget"),
             #[cfg(not(feature = "std"))]
             Error::None(_) => unreachable!(),
@@ -68,7 +59,6 @@ impl<T, U> StdError for Error<T, U> {
         match self {
             Error::Guard(e) => e.description(),
             Error::Unaligned(e) => e.description(),
-            Error::UnalignedVec(e) => e.description(),
             Error::InvalidValue => "invalid target value",
             Error::IncompatibleVecTarget(e) => e.description(),
             #[cfg(not(feature = "std"))]
@@ -83,8 +73,6 @@ impl<T, U> fmt::Display for Error<T, U> {
             Error::Guard(e) => e.fmt(f),
             Error::Unaligned(e) => e.fmt(f),
             Error::InvalidValue => f.write_str("Invalid target value"),
-            #[cfg(feature = "std")]
-            Error::UnalignedVec(e) => e.fmt(f),
             #[cfg(feature = "std")]
             Error::IncompatibleVecTarget(e) => e.fmt(f),
             #[cfg(not(feature = "std"))]
@@ -104,14 +92,6 @@ impl<T, U> From<UnalignedError> for Error<T, U> {
         Error::Unaligned(o)
     }
 }
-
-#[cfg(feature = "std")]
-impl<T, U> From<UnalignedVecError> for Error<T, U> {
-    fn from(o: UnalignedVecError) -> Self {
-        Error::UnalignedVec(o)
-    }
-}
-
 
 /// A slice boundary guard error, usually created by a
 /// [`Guard`](./guard/trait.Guard.html).
@@ -204,78 +184,6 @@ impl fmt::Display for UnalignedError {
         write!(f, "data is unaligned (off by {} bytes)", self.offset)
     }
 }
-
-#[cfg(feature = "std")]
-impl UnalignedError {
-    /// Add a vector of bytes to make this an error of type
-    /// `UnalignedVecError`.
-    pub fn with_vec(self, vec: Vec<u8>) -> UnalignedVecError {
-        UnalignedVecError {
-            offset: self.offset,
-            vec: vec,
-        }
-    }
-}
-
-
-/// Unaligned vector transmutation error.
-///
-/// Returned when the given data vector is not properly aligned for the
-/// target type. It would have been properly aligned if `offset` bytes were
-/// shifted (discarded) from the front of the slice.
-#[cfg(feature = "std")]
-#[derive(Debug, Clone, Eq, Hash, PartialEq)]
-pub struct UnalignedVecError {
-    /// The required amount of bytes to discard at the front for the attempted
-    /// transmutation to be successful.
-    pub offset: usize,
-    /// The original vector.
-    pub vec: Vec<u8>,
-}
-
-#[cfg(feature = "std")]
-impl UnalignedVecError {
-    /// Create a copy of the data and transmute it. As the new vector will be
-    /// properly aligned for accessing values of type `T`, this operation will
-    /// never fail.
-    ///
-    /// # Safety
-    ///
-    /// The byte data in the vector needs to correspond to a valid contiguous
-    /// sequence of `T` values.
-    pub unsafe fn copy_unchecked<T>(&self) -> Vec<T> {
-        let len = self.vec.len() / core::mem::size_of::<T>();
-        let mut out = Vec::with_capacity(len);
-        out.set_len(len);
-        core::ptr::copy_nonoverlapping(self.vec.as_ptr() as *const u8, out.as_mut_ptr() as *mut u8, len * core::mem::size_of::<T>());
-        out
-    }
-
-    /// Create a copy of the data and transmute it. As `T` is safely
-    /// transmutable, and the new vector will be properly aligned for accessing
-    /// values of type `T`, this operation is safe and will never fail.
-    pub fn copy<T: TriviallyTransmutable>(&self) -> Vec<T> {
-        unsafe {
-            // no value checks needed thanks to `TriviallyTransmutable`
-            self.copy_unchecked::<T>()
-        }
-    }
-}
-
-#[cfg(feature = "std")]
-impl StdError for UnalignedVecError {
-    fn description(&self) -> &str {
-        "vector is unaligned"
-    }
-}
-
-#[cfg(feature = "std")]
-impl fmt::Display for UnalignedVecError {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "vector is unaligned (off by {} bytes)", self.offset)
-    }
-}
-
 
 /// Incompatible vector transmutation error.
 ///
