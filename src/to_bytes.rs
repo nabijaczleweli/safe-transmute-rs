@@ -204,7 +204,6 @@ pub fn guarded_transmute_to_bytes_pod_many<S: TriviallyTransmutable>(from: &[S])
 /// view of the vector or make a copy anyway.
 ///
 #[cfg(feature = "std")]
-pub fn transmute_to_bytes_vec<S: TriviallyTransmutable>(from: Vec<S>) -> Result<Vec<u8>, Error<S, u8>>
-{
+pub fn transmute_to_bytes_vec<S: TriviallyTransmutable>(from: Vec<S>) -> Result<Vec<u8>, Error<S, u8>> {
     super::full::transmute_vec::<S, u8>(from)
 }

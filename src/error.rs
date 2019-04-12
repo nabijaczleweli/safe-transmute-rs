@@ -265,8 +265,7 @@ impl<S, T> fmt::Debug for IncompatibleVecTargetError<S, T> {
 }
 
 #[cfg(feature = "std")]
-impl<S, T> StdError for IncompatibleVecTargetError<S, T>
-{
+impl<S, T> StdError for IncompatibleVecTargetError<S, T> {
     fn description(&self) -> &str {
         "incompatible target type"
     }
