@@ -19,7 +19,7 @@ use core::marker::PhantomData;
 /// assert_eq!(transmute_bool_pedantic(&[0x05]), Err(Error::InvalidValue));
 /// ```
 #[derive(Clone, PartialEq, Eq, Hash)]
-pub enum Error<T, U> {
+pub enum Error<S, T> {
     /// The data does not respect the target type's boundaries.
     Guard(GuardError),
     /// The given data slice is not properly aligned for the target type.
@@ -29,16 +29,16 @@ pub enum Error<T, U> {
     ///
     /// Does not exist in `no_std`.
     #[cfg(feature = "std")]
-    IncompatibleVecTarget(IncompatibleVecTargetError<T, U>),
+    IncompatibleVecTarget(IncompatibleVecTargetError<S, T>),
     /// The data contains an invalid value for the target type.
     InvalidValue,
 
     #[cfg(not(feature = "std"))]
     #[doc(hidden)]
-    None(::core::marker::PhantomData<(T, U)>),
+    None(::core::marker::PhantomData<(S, T)>),
 }
 
-impl<T, U> fmt::Debug for Error<T, U> {
+impl<S, T> fmt::Debug for Error<S, T> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match self {
             Error::Guard(e) => write!(f, "Guard({:?})", e),
@@ -53,7 +53,7 @@ impl<T, U> fmt::Debug for Error<T, U> {
 }
 
 #[cfg(feature = "std")]
-impl<T, U> StdError for Error<T, U> {
+impl<S, T> StdError for Error<S, T> {
     fn description(&self) -> &str {
         match self {
             Error::Guard(e) => e.description(),
@@ -66,7 +66,7 @@ impl<T, U> StdError for Error<T, U> {
     }
 }
 
-impl<T, U> fmt::Display for Error<T, U> {
+impl<S, T> fmt::Display for Error<S, T> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match self {
             Error::Guard(e) => e.fmt(f),
@@ -80,13 +80,13 @@ impl<T, U> fmt::Display for Error<T, U> {
     }
 }
 
-impl<T, U> From<GuardError> for Error<T, U> {
+impl<S, T> From<GuardError> for Error<S, T> {
     fn from(o: GuardError) -> Self {
         Error::Guard(o)
     }
 }
 
-impl<T, U> From<UnalignedError> for Error<T, U> {
+impl<S, T> From<UnalignedError> for Error<S, T> {
     fn from(o: UnalignedError) -> Self {
         Error::Unaligned(o)
     }
@@ -194,17 +194,17 @@ impl fmt::Display for UnalignedError {
 /// - `std::mem::size_of::<T>() != std::mem::size_of::<U>()`
 #[cfg(feature = "std")]
 #[derive(Clone, Eq, Hash, PartialEq)]
-pub struct IncompatibleVecTargetError<T, U> {
+pub struct IncompatibleVecTargetError<S, T> {
     /// The original vector.
-    pub vec: Vec<T>,
+    pub vec: Vec<S>,
     /// The target element type
-    target: PhantomData<U>,
+    target: PhantomData<T>,
 }
 
 #[cfg(feature = "std")]
-impl<T, U> IncompatibleVecTargetError<T, U> {
+impl<S, T> IncompatibleVecTargetError<S, T> {
     /// Create an error with the given vector.
-    pub fn new(vec: Vec<T>) -> Self {
+    pub fn new(vec: Vec<S>) -> Self {
         IncompatibleVecTargetError {
             vec,
             target: PhantomData,
@@ -219,18 +219,18 @@ impl<T, U> IncompatibleVecTargetError<T, U> {
     ///
     /// The byte data in the vector needs to correspond to a valid contiguous
     /// sequence of `U` values.
-    pub unsafe fn copy_unchecked(&self) -> Vec<U> {
-        let len = self.vec.len() * core::mem::size_of::<T>() / core::mem::size_of::<U>();
+    pub unsafe fn copy_unchecked(&self) -> Vec<T> {
+        let len = self.vec.len() * core::mem::size_of::<S>() / core::mem::size_of::<T>();
         let mut out = Vec::with_capacity(len);
-        core::ptr::copy_nonoverlapping(self.vec.as_ptr() as *const u8, out.as_mut_ptr() as *mut u8, len * core::mem::size_of::<U>());
+        core::ptr::copy_nonoverlapping(self.vec.as_ptr() as *const u8, out.as_mut_ptr() as *mut u8, len * core::mem::size_of::<T>());
         out.set_len(len);
         out
     }
 
-    /// Create a copy of the data and transmute it. As `T` is trivially
+    /// Create a copy of the data and transmute it. As `S` is trivially
     /// transmutable, and the new vector will be properly allocated for accessing
     /// values of type `U`, this operation is safe and will never fail.
-    pub fn copy(&self) -> Vec<U> {
+    pub fn copy(&self) -> Vec<T> {
         unsafe {
             // no value checks needed thanks to `TriviallyTransmutable`
             self.copy_unchecked()
@@ -239,21 +239,21 @@ impl<T, U> IncompatibleVecTargetError<T, U> {
 }
 
 #[cfg(feature = "std")]
-impl<T, U> From<IncompatibleVecTargetError<T, U>> for Error<T, U> {
-    fn from(e: IncompatibleVecTargetError<T, U>) -> Self {
+impl<S, T> From<IncompatibleVecTargetError<S, T>> for Error<S, T> {
+    fn from(e: IncompatibleVecTargetError<S, T>) -> Self {
         Error::IncompatibleVecTarget(e)
     }
 } 
 
 #[cfg(feature = "std")]
-impl<T, U> fmt::Debug for IncompatibleVecTargetError<T, U> {
+impl<S, T> fmt::Debug for IncompatibleVecTargetError<S, T> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         f.write_str("IncompatibleVecTargetError")
     }
 }
 
 #[cfg(feature = "std")]
-impl<T, U> StdError for IncompatibleVecTargetError<T, U>
+impl<S, T> StdError for IncompatibleVecTargetError<S, T>
 {
     fn description(&self) -> &str {
         "incompatible target type for transmutation"
@@ -261,7 +261,7 @@ impl<T, U> StdError for IncompatibleVecTargetError<T, U>
 }
 
 #[cfg(feature = "std")]
-impl<T, U> fmt::Display for IncompatibleVecTargetError<T, U> {
+impl<S, T> fmt::Display for IncompatibleVecTargetError<S, T> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "incompatible target type")
     }

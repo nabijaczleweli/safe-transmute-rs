@@ -165,10 +165,10 @@ pub fn transmute_many_pedantic<T: TriviallyTransmutable>(bytes: &[u8]) -> Result
 /// # Errors
 ///
 /// An error is returned if _either_ the size or the minimum memory 
-/// requirements are not the same between `T` and `U`:
+/// requirements are not the same between `S` and `U`:
 /// 
-/// - `std::mem::size_of::<T>() != std::mem::size_of::<U>()`
-/// - `std::mem::align_of::<T>() != std::mem::align_of::<U>()`
+/// - `std::mem::size_of::<S>() != std::mem::size_of::<T>()`
+/// - `std::mem::align_of::<S>() != std::mem::align_of::<T>()`
 /// 
 /// Otherwise, the only truly safe way of doing this is to create a transmuted
 /// slice view of the vector, or make a copy anyway. The
@@ -189,8 +189,8 @@ pub fn transmute_many_pedantic<T: TriviallyTransmutable>(bytes: &[u8]) -> Result
 /// # run().unwrap();
 /// ```
 #[cfg(feature = "std")]
-pub fn transmute_vec<T: TriviallyTransmutable, U: TriviallyTransmutable>(mut vec: Vec<T>) -> Result<Vec<U>, Error<T, U>> {
-    if ::std::mem::align_of::<T>() != ::std::mem::align_of::<U>() || ::std::mem::size_of::<T>() != ::std::mem::size_of::<U>() {
+pub fn transmute_vec<S: TriviallyTransmutable, T: TriviallyTransmutable>(mut vec: Vec<S>) -> Result<Vec<T>, Error<S, T>> {
+    if ::std::mem::align_of::<S>() != ::std::mem::align_of::<T>() || ::std::mem::size_of::<S>() != ::std::mem::size_of::<T>() {
         return Err(IncompatibleVecTargetError::new(vec).into());
     }
 
@@ -199,6 +199,6 @@ pub fn transmute_vec<T: TriviallyTransmutable, U: TriviallyTransmutable>(mut vec
         let len = vec.len();
         let ptr = vec.as_mut_ptr();
         ::std::mem::forget(vec);
-        Ok(Vec::from_raw_parts(ptr as *mut U, len, capacity))
+        Ok(Vec::from_raw_parts(ptr as *mut T, len, capacity))
     }
 }

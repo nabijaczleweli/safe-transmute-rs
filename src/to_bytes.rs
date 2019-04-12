@@ -46,8 +46,8 @@ use core::slice;
 ///                &[0x42, 0x69]);
 /// }
 /// ```
-pub unsafe fn transmute_to_bytes_unchecked<T>(from: &T) -> &[u8] {
-    slice::from_raw_parts(from as *const T as *const u8, size_of::<T>())
+pub unsafe fn transmute_to_bytes_unchecked<S>(from: &S) -> &[u8] {
+    slice::from_raw_parts(from as *const S as *const u8, size_of::<S>())
 }
 
 /// Transmute a slice of arbitrary types into a slice of their bytes.
@@ -92,8 +92,8 @@ pub unsafe fn transmute_to_bytes_unchecked<T>(from: &T) -> &[u8] {
 ///                &[0x42, 0x69, 0x12, 0x48]);
 /// }
 /// ```
-pub unsafe fn transmute_to_bytes_many_unchecked<T>(from: &[T]) -> &[u8] {
-    slice::from_raw_parts(from.as_ptr() as *const u8, from.len() * size_of::<T>())
+pub unsafe fn transmute_to_bytes_many_unchecked<S>(from: &[S]) -> &[u8] {
+    slice::from_raw_parts(from.as_ptr() as *const u8, from.len() * size_of::<S>())
 }
 
 /// Transmute a single instance of a trivially transmutable type into a slice
@@ -133,7 +133,7 @@ pub unsafe fn transmute_to_bytes_many_unchecked<T>(from: &[T]) -> &[u8] {
 ///            }),
 ///            &[0x42, 0x69]);
 /// ```
-pub fn transmute_one_to_bytes<T: TriviallyTransmutable>(from: &T) -> &[u8] {
+pub fn transmute_one_to_bytes<S: TriviallyTransmutable>(from: &S) -> &[u8] {
     unsafe { transmute_to_bytes_unchecked(from) }
 }
 
@@ -177,13 +177,13 @@ pub fn transmute_one_to_bytes<T: TriviallyTransmutable>(from: &T) -> &[u8] {
 ///                                      }]),
 ///            &[0x42, 0x69, 0x12, 0x48]);
 /// ```
-pub fn transmute_to_bytes<T: TriviallyTransmutable>(from: &[T]) -> &[u8] {
+pub fn transmute_to_bytes<S: TriviallyTransmutable>(from: &[S]) -> &[u8] {
     unsafe { transmute_to_bytes_many_unchecked(from) }
 }
 
 /// Transmute a slice of arbitrary types into a slice of their bytes.
 #[deprecated(since = "0.11.0", note = "use `transmute_to_bytes()` instead")]
-pub fn guarded_transmute_to_bytes_pod_many<T: TriviallyTransmutable>(from: &[T]) -> &[u8] {
+pub fn guarded_transmute_to_bytes_pod_many<S: TriviallyTransmutable>(from: &[S]) -> &[u8] {
     transmute_to_bytes(from)
 }
 
@@ -196,15 +196,15 @@ pub fn guarded_transmute_to_bytes_pod_many<T: TriviallyTransmutable>(from: &[T])
 /// # Errors
 ///
 /// An error is returned if the minimum memory alignment requirements are not
-/// the same between `T` and `u8`:
+/// the same between `S` and `u8`:
 /// 
-/// `std::mem::align_of::<T>() != 1`.
+/// `std::mem::align_of::<S>() != 1`.
 /// 
 /// The only truly safe way of doing this is to create a transmuted slice
 /// view of the vector or make a copy anyway.
 ///
 #[cfg(feature = "std")]
-pub fn transmute_to_bytes_vec<T: TriviallyTransmutable>(from: Vec<T>) -> Result<Vec<u8>, Error<T, u8>>
+pub fn transmute_to_bytes_vec<S: TriviallyTransmutable>(from: Vec<S>) -> Result<Vec<u8>, Error<S, u8>>
 {
-    super::full::transmute_vec::<T, u8>(from)
+    super::full::transmute_vec::<S, u8>(from)
 }

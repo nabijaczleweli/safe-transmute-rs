@@ -191,10 +191,10 @@ pub unsafe fn transmute_many_permissive<T>(bytes: &[u8]) -> &[T] {
 /// Unless _all_ of the following requirements are fulfilled, this operation
 /// may result in undefined behavior.
 /// 
-/// - The target type `U` must have the same size and minimum alignment as the
-///   type `T`.
+/// - The target type `T` must have the same size and minimum alignment as the
+///   type `S`.
 /// - The vector's data needs to correspond to a valid contiguous sequence of
-///   `U` values. Types `U` with a `Drop` implementation are unlikely to be
+///   `T` values. Types `T` with a `Drop` implementation are unlikely to be
 ///   safe in this regard.
 ///
 /// # Examples
@@ -209,10 +209,10 @@ pub unsafe fn transmute_many_permissive<T>(bytes: &[u8]) -> &[T] {
 /// }
 /// ```
 #[cfg(feature = "std")]
-pub unsafe fn transmute_vec<T, U>(mut vec: Vec<T>) -> Vec<U> {
+pub unsafe fn transmute_vec<S, T>(mut vec: Vec<S>) -> Vec<T> {
     let ptr = vec.as_mut_ptr();
-    let capacity = vec.capacity() * size_of::<T>() / size_of::<U>();
-    let len = vec.len() * size_of::<T>() / size_of::<U>();
+    let capacity = vec.capacity() * size_of::<S>() / size_of::<T>();
+    let len = vec.len() * size_of::<S>() / size_of::<T>();
     forget(vec);
-    Vec::from_raw_parts(ptr as *mut U, len, capacity)
+    Vec::from_raw_parts(ptr as *mut T, len, capacity)
 }

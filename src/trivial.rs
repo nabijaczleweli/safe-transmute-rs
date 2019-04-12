@@ -245,8 +245,8 @@ pub unsafe fn guarded_transmute_pod_many_pedantic<T: TriviallyTransmutable>(byte
 /// Unless _all_ of the following requirements are fulfilled, this operation
 /// may result in undefined behavior.
 /// 
-/// - The target type `U` must have the same size and minimum memory alignment
-///   requirements as the type `T`.
+/// - The target type `T` must have the same size and minimum memory alignment
+///   requirements as the type `S`.
 ///
 /// # Examples
 ///
@@ -260,6 +260,6 @@ pub unsafe fn guarded_transmute_pod_many_pedantic<T: TriviallyTransmutable>(byte
 /// }
 /// ```
 #[cfg(feature = "std")]
-pub unsafe fn transmute_trivial_vec<T: TriviallyTransmutable, U: TriviallyTransmutable>(vec: Vec<T>) -> Vec<U> {
-    transmute_vec::<T, U>(vec)
+pub unsafe fn transmute_trivial_vec<S: TriviallyTransmutable, T: TriviallyTransmutable>(vec: Vec<S>) -> Vec<T> {
+    transmute_vec::<S, T>(vec)
 }
