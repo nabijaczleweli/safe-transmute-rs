@@ -36,6 +36,7 @@ pub enum Error<S, T> {
 
     #[cfg(not(feature = "std"))]
     #[doc(hidden)]
+    /// Do not use this!
     None(::core::marker::PhantomData<(S, T)>),
 }
 
@@ -48,7 +49,7 @@ impl<S, T> fmt::Debug for Error<S, T> {
             #[cfg(feature = "std")]
             Error::IncompatibleVecTarget(_) => f.write_str("IncompatibleVecTarget"),
             #[cfg(not(feature = "std"))]
-            Error::None(_) => unreachable!(),
+            Error::None(_) => f.write_str("None"),
         }
     }
 }
@@ -62,7 +63,7 @@ impl<S, T> StdError for Error<S, T> {
             Error::InvalidValue => "invalid target value",
             Error::IncompatibleVecTarget(e) => e.description(),
             #[cfg(not(feature = "std"))]
-            Error::None(_) => unreachable!(),
+            Error::None(_) => "None (dummy error, do not use!)",
         }
     }
 }
@@ -76,7 +77,7 @@ impl<S, T> fmt::Display for Error<S, T> {
             #[cfg(feature = "std")]
             Error::IncompatibleVecTarget(e) => e.fmt(f),
             #[cfg(not(feature = "std"))]
-            Error::None(_) => unreachable!(),
+            Error::None(_) => f.write_str("None"),
         }
     }
 }
