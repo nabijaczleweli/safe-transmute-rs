@@ -9,9 +9,8 @@ use core::marker::PhantomData;
 
 
 /// A transmutation error. This type describes possible errors originating
-/// from operations in this crate. The two type parameters, when defined,
-/// represent the source element type and the target element type
-/// respectively.
+/// from operations in this crate. The two type parameters represent the
+/// source element type and the target element type respectively.
 ///
 /// # Examples
 ///
@@ -20,7 +19,7 @@ use core::marker::PhantomData;
 /// assert_eq!(transmute_bool_pedantic(&[0x05]), Err(Error::InvalidValue));
 /// ```
 #[derive(Clone, PartialEq, Eq, Hash)]
-pub enum Error<T = (), U = ()> {
+pub enum Error<T, U> {
     /// The data does not respect the target type's boundaries.
     Guard(GuardError),
     /// The given data slice is not properly aligned for the target type.
