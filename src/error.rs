@@ -6,7 +6,8 @@ use std::error::Error as StdError;
 use core::fmt;
 #[cfg(feature = "std")]
 use core::marker::PhantomData;
-
+#[cfg(feature = "std")]
+use super::trivial::TriviallyTransmutable;
 
 /// A transmutation error. This type describes possible errors originating
 /// from operations in this crate. The two type parameters represent the
@@ -230,7 +231,10 @@ impl<S, T> IncompatibleVecTargetError<S, T> {
     /// Create a copy of the data and transmute it. As `S` is trivially
     /// transmutable, and the new vector will be properly allocated for accessing
     /// values of type `U`, this operation is safe and will never fail.
-    pub fn copy(&self) -> Vec<T> {
+    pub fn copy(&self) -> Vec<T>
+    where
+        T: TriviallyTransmutable,
+    {
         unsafe {
             // no value checks needed thanks to `TriviallyTransmutable`
             self.copy_unchecked()
