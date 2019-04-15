@@ -158,7 +158,7 @@ pub fn transmute_many_pedantic<T: TriviallyTransmutable>(bytes: &[u8]) -> Result
     transmute_many::<T, PedanticGuard>(bytes)
 }
 
-/// Transform a byte vector into a vector of values.
+/// Transform a vector into a vector of values with the given target type.
 ///
 /// The resulting vector will reuse the allocated byte buffer when successful.
 /// 
