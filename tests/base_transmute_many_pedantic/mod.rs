@@ -1,6 +1,5 @@
-use safe_transmute::{PedanticGuard, ErrorReason, GuardError, Error};
+use safe_transmute::{PedanticGuard, ErrorReason, GuardError, Error, transmute_to_bytes};
 use safe_transmute::base::transmute_many;
-use self::super::LeToNative;
 
 #[test]
 fn too_short() {
@@ -22,11 +21,15 @@ fn too_short() {
 
 #[test]
 fn just_enough() {
+
+    let words: &[u16] = &[0x0100, 0x0200, 0x0300];
+    let bytes = transmute_to_bytes(words);
+
     unsafe {
-        assert_eq!(transmute_many::<u16, PedanticGuard>(&[0x00, 0x01].le_to_native::<u16>()),
-                   Ok([0x0100u16].into_iter().as_slice()));
-        assert_eq!(transmute_many::<u16, PedanticGuard>(&[0x00, 0x01, 0x00, 0x02].le_to_native::<u16>()),
-                   Ok([0x0100u16, 0x0200u16].into_iter().as_slice()));
+        assert_eq!(transmute_many::<u16, PedanticGuard>(&bytes[..2]),
+                   Ok(&words[..1]));
+        assert_eq!(transmute_many::<u16, PedanticGuard>(bytes),
+                   Ok(words));
     }
 }
 

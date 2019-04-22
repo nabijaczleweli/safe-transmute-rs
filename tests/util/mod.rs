@@ -2,7 +2,7 @@ use safe_transmute::align::check_alignment;
 use safe_transmute::util;
 use core::mem::align_of;
 #[cfg(feature = "std")]
-use super::aligned_vec;
+use super::{aligned_vec, dealloc_aligned_vec};
 use core::{f32, f64};
 
 
@@ -48,15 +48,50 @@ fn smoke_check_alignment_from_8() {
 #[test]
 fn test_aligned_vec() {
     let data: &[u8] = &[0xFF, 0xFF, 0x03, 0x00];
-    let vec = aligned_vec::<u32>(data);
-    assert_eq!((vec.as_ptr() as usize) % align_of::<u32>(), 0);
+    unsafe {
+        let vec = aligned_vec::<u32>(data);
+        assert_eq!((vec.as_ptr() as usize) % align_of::<u32>(), 0);
+        dealloc_aligned_vec::<u32>(vec);
+    }
 
-    assert_eq!(aligned_vec::<u16>([].as_ref()), vec![]);
-    assert_eq!(aligned_vec::<i32>([].as_ref()), vec![]);
-    assert_eq!(aligned_vec::<u64>([].as_ref()), vec![]);
+    unsafe {
+        let vec = aligned_vec::<u16>(&[]);
+        assert_eq!(vec, vec![]);
+        dealloc_aligned_vec::<u16>(vec);
+    }
+    unsafe {
+        let vec = aligned_vec::<i32>(&[]);
+        assert_eq!(vec, vec![]);
+        dealloc_aligned_vec::<i32>(vec);
+    }
 
-    assert_eq!(aligned_vec::<u64>([0].as_ref()), vec![0]);
-    assert_eq!(aligned_vec::<u32>([1, 2].as_ref()), vec![1, 2]);
-    assert_eq!(aligned_vec::<u64>([1, 2, 3].as_ref()), vec![1, 2, 3]);
-    assert_eq!(aligned_vec::<u64>([0xAA; 20].as_ref()), vec![0xAA; 20]);
+    unsafe {
+        let vec = aligned_vec::<u64>(&[]);
+        assert_eq!(vec, vec![]);
+        dealloc_aligned_vec::<u64>(vec);
+    }
+
+    unsafe {
+        let vec = aligned_vec::<u64>(&[0]);
+        assert_eq!(vec, vec![0]);
+        dealloc_aligned_vec::<u64>(vec);
+    }
+
+    unsafe {
+        let vec = aligned_vec::<u32>(&[1, 2]);
+        assert_eq!(vec, vec![1, 2]);
+        dealloc_aligned_vec::<u32>(vec);
+    }
+
+    unsafe {
+        let vec = aligned_vec::<u64>(&[1, 2, 3]);
+        assert_eq!(vec, vec![1, 2, 3]);
+        dealloc_aligned_vec::<u64>(vec);
+    }
+
+    unsafe {
+        let vec = aligned_vec::<u64>(&[0xAA; 20]);
+        assert_eq!(vec, vec![0xAA; 20]);
+        dealloc_aligned_vec::<u64>(vec);
+    }
 }

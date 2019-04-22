@@ -1,6 +1,5 @@
-use safe_transmute::{ErrorReason, GuardError, Error};
+use safe_transmute::{ErrorReason, GuardError, Error, transmute_to_bytes};
 use safe_transmute::base::from_bytes_pedantic;
-use self::super::LeToNative;
 
 
 #[test]
@@ -23,8 +22,10 @@ fn too_short() {
 
 #[test]
 fn just_enough() {
+    let word = [0x0100_0020];
+    let bytes = transmute_to_bytes(&word);
     unsafe {
-        assert_eq!(from_bytes_pedantic::<u32>(&[0x00, 0x00, 0x00, 0x01].le_to_native::<u32>()), Ok(0x0100_0000));
+        assert_eq!(from_bytes_pedantic::<u32>(bytes), Ok(0x0100_0020));
     }
 }
 
