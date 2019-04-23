@@ -12,7 +12,7 @@
 /// 
 /// # Safety
 /// 
-/// The resulting vector must then be dealloc'd with the function
+/// The resulting vector must then be deallocated with the function
 /// `dealloc_aligned_vec`, with exactly the same type parameter `T`.
 /// 
 /// **It is UB if the vector is modified, or not moved into
@@ -32,7 +32,7 @@ unsafe fn aligned_vec<T>(bytes: &[u8]) -> Vec<u8> {
 
     // the following code allocates a `Vec<T>` and turns it into
     // a `Vec<u8>`. Assuming that this vector will not be dropped
-    // in this state, reading bytes from vit is safe.
+    // in this state, reading bytes from it is safe.
     #[allow(unused_unsafe)]
     unsafe {
         let mut v: Vec<T> = Vec::with_capacity(capacity);
