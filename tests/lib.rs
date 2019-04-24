@@ -4,6 +4,12 @@
 #[cfg(feature = "std")]
 extern crate core;
 
+// only import macros with std
+#[cfg(feature = "std")]
+#[macro_use]
+extern crate safe_transmute;
+
+#[cfg(not(feature = "std"))]
 extern crate safe_transmute;
 
 

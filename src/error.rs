@@ -1,10 +1,13 @@
 //! Detectable and recoverable-from transmutation precondition errors.
 
 
-use core::{fmt, ptr};
+use core::fmt;
+#[cfg(feature = "std")]
+use core::ptr;
 use core::marker::PhantomData;
 #[cfg(feature = "std")]
 use std::error::Error as StdError;
+#[cfg(feature = "std")]
 use core::mem::{align_of, size_of};
 #[cfg(feature = "std")]
 use self::super::trivial::TriviallyTransmutable;
@@ -34,6 +37,63 @@ pub enum Error<'a, S, T> {
     IncompatibleVecTarget(IncompatibleVecTargetError<S, T>),
     /// The data contains an invalid value for the target type.
     InvalidValue,
+}
+
+impl<'a, S, T> Error<'a, S, T> {
+    /// Reattempt the failed transmutation if the failure was caused by either
+    /// an unaligned memory access or an incompatible vector element target.
+    /// Otherwise, this method returns the same error.
+    #[cfg(feature = "std")]
+    pub fn copy(self) -> Result<Vec<T>, Error<'a, S, T>>
+    where
+        T: TriviallyTransmutable,
+    {
+        match self {
+            Error::Unaligned(e) => Ok(e.copy()),
+            Error::IncompatibleVecTarget(e) => Ok(e.copy()),
+            e => Err(e),
+        }
+    }
+
+    /// Reattempt the failed transmutation if the failure was caused by either
+    /// an unaligned memory access or an incompatible vector element target.
+    /// Otherwise, this method returns the same error.
+    /// 
+    /// # Safety
+    /// 
+    /// The source data needs to correspond to a valid contiguous sequence of
+    /// `T` values.
+    #[cfg(feature = "std")]
+    pub unsafe fn copy_unchecked(self) -> Result<Vec<T>, Error<'a, S, T>>
+    {
+        match self {
+            Error::Unaligned(e) => Ok(e.copy_unchecked()),
+            Error::IncompatibleVecTarget(e) => Ok(e.copy_unchecked()),
+            e => Err(e),
+        }
+    }
+
+    /// Create a new error which discards runtime information about the
+    /// source data, by making it point to an empty slice. This makes
+    /// the error value live longer than the context of transmutation.
+    pub fn without_src<'z>(self) -> Error<'z, S, T> {
+        match self {
+            Error::Unaligned(
+                UnalignedError {
+                    source: _,
+                    offset,
+                    phantom
+                }) => Error::Unaligned(UnalignedError {
+                    source: &[],
+                    offset,
+                    phantom
+                }),
+            Error::Guard(e) => Error::Guard(e), 
+            Error::InvalidValue => Error::InvalidValue,
+            #[cfg(feature = "std")]
+            Error::IncompatibleVecTarget(e) => Error::IncompatibleVecTarget(e),
+        }
+    }
 }
 
 impl<'a, S, T> fmt::Debug for Error<'a, S, T> {
@@ -207,7 +267,7 @@ impl<'a, S, T> UnalignedError<'a, S, T> {
         copy_to_vec_unchecked::<S, T>(self.source)
     }
 
-    /// Create a copy of the source data, transmuted into a vector. As `S` is
+    /// Create a copy of the source data, transmuted into a vector. As `T` is
     /// trivially transmutable, and the vector will be properly allocated
     /// for accessing values of type `T`, this operation is safe and will never
     /// fail.
@@ -298,7 +358,7 @@ impl<S, T> IncompatibleVecTargetError<S, T> {
         copy_to_vec_unchecked::<S, T>(&self.vec)
     }
 
-    /// Create a copy of the data, transmuted into a new vector. As `S` is
+    /// Create a copy of the data, transmuted into a new vector. As `T` is
     /// trivially transmutable, and the new vector will be properly allocated
     /// for accessing values of type `T`, this operation is safe and will never fail.
     pub fn copy(&self) -> Vec<T>

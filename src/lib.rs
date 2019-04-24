@@ -22,11 +22,13 @@
 //! - [`to_bytes`](to_bytes/index.html) enables the opposite operation of
 //!   reintepreting values as bytes.
 //! - The [`bool`](bool/index.html) module ensures safe transmutation of bytes
-//!   to boolean values and vice versa.
+//!   to boolean values.
 //! - At the root of this crate, there are transmutation functions with enough
 //!   checks to be considered safe to use in any circumstance. The operation may
-//!   still arbitrarily return (recoverable) errors due to unaligned data, but it
-//!   will not eat your laundry.
+//!   still arbitrarily return (recoverable) errors due to unaligned data or
+//!   incompatible vector transmutation targets, but it will not eat your
+//!   laundry, and helper functions are available to assist the programmer in
+//!   making some use cases work.
 //!
 //! This crate can be used in a no-`std` environment by disabling the `std`
 //! feature through specifying `default-features = false` on import.
@@ -36,35 +38,89 @@
 //! View bytes as a series of `u16`s, with a single-many boundary
 //! guard (at least one value, extraneous bytes are allowed):
 //!
-//! ```no_run
-//! # use safe_transmute::{transmute_many, SingleManyGuard};
+//! ```
+//! # use safe_transmute::{transmute_many, SingleManyGuard, Error};
 //! # include!("../tests/test_util/le_to_native.rs");
-//! # fn main() {
-//! assert_eq!(transmute_many::<u16, SingleManyGuard>(
-//!     &[0x00, 0x01, 0x12, 0x34,
-//!       // Spare byte, unused
-//! # /*
-//!       0x00])?,
-//! # */
-//! #     0x00].le_to_native::<u16>()).unwrap(),
-//!     &[0x0100, 0x3412]);
+//! # #[cfg(feature = "std")]
+//! # fn main() -> Result<(), Box<::std::error::Error>> {
+//! let bytes = &[0x00, 0x01, 0x12, 0x24,
+//!     0x00]; // spare byte, unused
+//! match transmute_many::<u16, SingleManyGuard>(bytes) {
+//!     Ok(hwords) => {
+//!         assert_eq!(
+//!             hwords,
+//!             &[
+//!                 u16::from_be(0x0001),
+//!                 u16::from_be(0x1224),
+//!             ][..]);
+//!     },
+//!     Err(Error::Unaligned(e)) => {
+//!         // whelp, we need a copy here
+//!         let hwords = e.copy();
+//!         assert_eq!(
+//!             &*hwords,
+//!             &[
+//!                 u16::from_be(0x0001),
+//!                 u16::from_be(0x1224),
+//!             ][..]);
+//!     },
+//!     Err(e) => panic!("We are not expecting this: {}", e),
+//! }
+//! # Ok(())
 //! # }
+//! # #[cfg(not(feature = "std"))]
+//! # fn main() {}
 //! ```
 //!
+//! Since one may not always be able to ensure that a slice of bytes is well
+//! aligned for reading data of different constraints, such as from `u8` to
+//! `u16`, the operation may fail without a trivial means of prevention.
+//! As a remedy, the data can be copied into a new vector with the help of the
+//! [`try_copy!`](macro.try_copy.html) macro.
+//! 
+//! ```
+//! # #[macro_use]
+//! # extern crate safe_transmute;
+//! # use safe_transmute::{transmute_many, SingleManyGuard, Error};
+//! # #[cfg(feature = "std")]
+//! # fn main() -> Result<(), Box<::std::error::Error>> {
+//! # let bytes = &[0x00, 0x01, 0x12, 0x24, 0x00];
+//! let hwords = try_copy!(transmute_many::<u16, SingleManyGuard>(bytes));
+//! assert_eq!(
+//!     &*hwords,
+//!     &[
+//!         u16::from_be(0x0001),
+//!         u16::from_be(0x1224),
+//!     ][..]);
+//! # Ok(())
+//! # }
+//! # #[cfg(not(feature = "std"))]
+//! # fn main() {}
+//! ```
+//! 
 //! View all bytes as a series of `u16`s:
 //!
-//! ```no_run
-//! # use safe_transmute::transmute_many_pedantic;
+//! ```
+//! # #[macro_use]
+//! # extern crate safe_transmute;
+//! # use safe_transmute::{transmute_many_pedantic, Error};
 //! # include!("../tests/test_util/le_to_native.rs");
-//! # fn main() {
-//! assert_eq!(transmute_many_pedantic::<u16>(
-//!     &[0x00, 0x01,
+//! # #[cfg(feature = "std")]
+//! # fn main() -> Result<(), Box<::std::error::Error>> {
+//! // assuming Little Endian machine
+//! # let bytes = [0x00, 0x01, 0x12, 0x34].le_to_native::<u16>();
+//! # let bytes = &bytes;
+//! # let transmuted = try_copy!(transmute_many_pedantic::<u16>(bytes).map_err(|e| e.without_src()));
 //! # /*
-//!       0x12, 0x34])?,
+//! let bytes = &[0x00, 0x01, 0x12, 0x34];
+//! let transmuted = try_copy!(transmute_many_pedantic::<u16>(bytes));
 //! # */
-//! #     0x12, 0x34].le_to_native::<u16>()).unwrap(),
-//!     &[0x0100, 0x3412]);
+//! 
+//! assert_eq!(&*transmuted, &[0x0100, 0x3412][..]);
+//! # Ok(())
 //! # }
+//! # #[cfg(not(feature = "std"))]
+//! # fn main() {}
 //! ```
 //!
 //! View a byte slice as a single `f64`:
@@ -73,7 +129,6 @@
 //! # use safe_transmute::transmute_one;
 //! # include!("../tests/test_util/le_to_native.rs");
 //! # fn main() {
-//! # unsafe {
 //! assert_eq!(transmute_one::<f64>(
 //!     &[0x00, 0x00, 0x00, 0x00,
 //! # /*
@@ -81,7 +136,6 @@
 //! # */
 //! #     0x00, 0x00, 0x00, 0x40].le_to_native::<f64>()).unwrap(),
 //!     2.0);
-//! # }
 //! # }
 //! ```
 //!
@@ -91,14 +145,12 @@
 //! # use safe_transmute::transmute_to_bytes;
 //! # include!("../tests/test_util/le_to_native.rs");
 //! # fn main() {
-//! # unsafe {
 //! assert_eq!(transmute_to_bytes(&[0x0001u16,
 //!                                      0x1234u16]),
 //! # /*
 //!            &[0x01, 0x00, 0x34, 0x12].le_to_native::<u16>());
 //! # */
 //! #          &[0x01, 0x00, 0x34, 0x12].le_to_native::<u16>());
-//! # }
 //! # }
 //! ```
 
@@ -138,3 +190,92 @@ pub use self::to_bytes::transmute_to_bytes_vec;
 #[cfg(feature = "std")]
 pub use self::bool::{transmute_bool_vec_permissive, transmute_bool_vec_pedantic};
 pub use self::bool::{transmute_bool_permissive, transmute_bool_pedantic};
+
+/// Retrieve the result of a transmutation, copying the data if this cannot be
+/// done safely due to memory alignment constraints.
+/// 
+/// The macro, not unlike `try!`, will short-circuit certain errors with
+/// `return`, namely guard condition and invalid value errors. When the operation
+/// fails due to either an unaligned transmutation or an incompatible vector
+/// element transmutation target, the transmutation is once again attempted by
+/// copying the output into a vector.
+/// 
+/// This expands into a single expression of type `Cow<[T]>`. where `T` is the
+/// target type.
+/// 
+/// 
+/// # Example
+/// 
+/// ```
+/// # #![cfg(feature = "std")]
+/// # #[macro_use]
+/// # extern crate safe_transmute;
+/// # use safe_transmute::{transmute_many, SingleManyGuard};
+/// # fn run() -> Result<(), Box<::std::error::Error>> {
+/// let bytes = &[0x00, 0x01, 0x12, 0x34, 0x00]; // 1 byte unused
+/// let hwords = try_copy!(transmute_many::<u16, SingleManyGuard>(bytes));
+/// assert_eq!(
+///     &*hwords,
+///     &[
+///         u16::from_be(0x0001),
+///         u16::from_be(0x1234),
+///     ][..]);
+/// # Ok(())
+/// # }
+/// # fn main() {
+/// # run().unwrap()
+/// # }
+/// ```
+#[cfg(feature = "std")]
+#[macro_export]
+macro_rules! try_copy {
+    ($res: expr) => {
+            $res.map_err(::safe_transmute::Error::from)
+                .map(::std::borrow::Cow::from)
+                .or_else(|e| e.copy().map(::std::borrow::Cow::Owned))?
+    };
+}
+
+/// Retrieve the result of a transmutation, copying the data if this cannot be
+/// done safely due to memory alignment constraints. It is equivalent to the
+/// macro [`try_copy!`](macro.try_copy.html), except that it does not check
+/// whether the target type is trivially transmutable.
+/// 
+/// # Safety
+/// 
+/// The source data needs to correspond to a valid contiguous sequence of
+/// `T` values.
+/// 
+/// # Example
+/// 
+/// ```
+/// # #![cfg(feature = "std")]
+/// # #[macro_use]
+/// # extern crate safe_transmute;
+/// # use safe_transmute::{transmute_many, SingleManyGuard};
+/// # fn run() -> Result<(), Box<::std::error::Error>> {
+/// let bytes = &[0x00, 0x01, 0x12, 0x34, 0x00]; // 1 byte unused
+/// unsafe {
+///     let hwords = try_copy_unchecked!(transmute_many::<u16, SingleManyGuard>(bytes));
+///     assert_eq!(
+///         &*hwords,
+///         &[
+///             u16::from_be(0x0001),
+///             u16::from_be(0x1234),
+///         ][..]);
+/// }
+/// # Ok(())
+/// # }
+/// # fn main() {
+/// # run().unwrap()
+/// # }
+/// ```
+#[cfg(feature = "std")]
+#[macro_export]
+macro_rules! try_copy_unchecked {
+    ($res: expr) => {
+        $res.map_err(::safe_transmute::Error::from)
+            .map(::std::borrow::Cow::from)
+            .or_else(|e| e.copy_unchecked().map(::std::borrow::Cow::Owned))?
+    };
+}
