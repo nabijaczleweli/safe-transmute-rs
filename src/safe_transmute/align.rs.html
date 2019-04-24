@@ -39,14 +39,14 @@
 <span class="doccomment">///</span>
 <span class="doccomment">/// An `Error::Unaligned` error is returned with the number of bytes to discard</span>
 <span class="doccomment">/// from the front in order to make the conversion safe from alignment concerns.</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">check_alignment</span><span class="op">&lt;</span><span class="ident">S</span>, <span class="ident">T</span><span class="op">&gt;</span>(<span class="ident">data</span>: <span class="kw-2">&amp;</span>[<span class="ident">S</span>]) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">UnalignedError</span><span class="op">&gt;</span> {
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">check_alignment</span><span class="op">&lt;</span><span class="ident">S</span>, <span class="ident">T</span><span class="op">&gt;</span>(<span class="ident">data</span>: <span class="kw-2">&amp;</span>[<span class="ident">S</span>]) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">UnalignedError</span><span class="op">&lt;</span><span class="ident">S</span>, <span class="ident">T</span><span class="op">&gt;&gt;</span> {
     <span class="comment">// TODO this could probably become more efficient once `ptr::align_offset`</span>
     <span class="comment">// is stabilized (#44488)</span>
     <span class="kw">let</span> <span class="ident">ptr</span> <span class="op">=</span> <span class="ident">data</span>.<span class="ident">as_ptr</span>();
     <span class="kw">let</span> <span class="ident">offset</span> <span class="op">=</span> <span class="ident">ptr</span> <span class="kw">as</span> <span class="ident">usize</span> <span class="op">%</span> <span class="ident">align_of</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>();
     <span class="kw">if</span> <span class="ident">offset</span> <span class="op">&gt;</span> <span class="number">0</span> {
         <span class="comment">// reverse the offset (from &quot;bytes to insert&quot; to &quot;bytes to remove&quot;)</span>
-        <span class="prelude-val">Err</span>(<span class="ident">UnalignedError</span> { <span class="ident">offset</span>: <span class="ident">size_of</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>() <span class="op">-</span> <span class="ident">offset</span> })
+        <span class="prelude-val">Err</span>(<span class="ident">UnalignedError</span>::<span class="ident">new</span>(<span class="ident">size_of</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>() <span class="op">-</span> <span class="ident">offset</span>, <span class="ident">data</span>))
     } <span class="kw">else</span> {
         <span class="prelude-val">Ok</span>(())
     }
