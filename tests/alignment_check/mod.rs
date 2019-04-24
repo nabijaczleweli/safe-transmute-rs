@@ -30,11 +30,16 @@ fn unaligned_slicing_integers() {
 
     let words = [0x02EE_01FF_04CC_03DD, 0x06EE_05FF_08CC_07DD];
     let bytes = transmute_to_bytes(&words);
+
+    // transmute aligned content
     assert_eq!(transmute_many_permissive::<u64>(bytes), Ok(&words[..]));
     assert_eq!(transmute_many_permissive::<u64>(&bytes[8..]), Ok(&words[1..]));
+
     for i in 1..8 {
+        // transmute unaligned content by copying
         let outcome = transmute_many_permissive::<u64>(&bytes[i..]);
         assert_eq!(outcome, Err(Error::Unaligned(UnalignedError::new(8 - i, &bytes[i..]))));
+
         #[cfg(feature = "std")]
         {
             let copied_data: Vec<_> = match outcome {
@@ -43,15 +48,11 @@ fn unaligned_slicing_integers() {
                 Err(e) => panic!("Expected `UnalignedError`, got {}", e),
             };
             assert_eq!(copied_data.len(), 1);
-            let number = u64::from(bytes[i])
-                + (u64::from(bytes[i + 1]) << 8)
-                + (u64::from(bytes[i + 2]) << 16)
-                + (u64::from(bytes[i + 3]) << 24)
-                + (u64::from(bytes[i + 4]) << 32)
-                + (u64::from(bytes[i + 5]) << 40)
-                + (u64::from(bytes[i + 6]) << 48)
-                + (u64::from(bytes[i + 7]) << 56);
-            assert_eq!(u64::to_le(copied_data[0]), number);
+
+            let expected_word: u64 = (0..8)
+                .map(|k| u64::from(bytes[i + k]) << (8 * k))
+                .sum();
+            assert_eq!(u64::to_le(copied_data[0]), expected_word);
         }
     }
 }

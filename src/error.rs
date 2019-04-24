@@ -153,6 +153,23 @@ impl ErrorReason {
     }
 }
 
+/// Create a copy of the given data, transmuted into a vector.
+///
+/// # Safety
+///
+/// The byte data in the vector needs to correspond to a valid contiguous
+/// sequence of `T` values.
+#[cfg(feature = "std")]
+unsafe fn copy_to_vec_unchecked<S, T>(data: &[S]) -> Vec<T> {
+    let len = data.len() * core::mem::size_of::<S>() / core::mem::size_of::<T>();
+    let mut out = Vec::with_capacity(len);
+    core::ptr::copy_nonoverlapping(
+        data.as_ptr() as *const u8,
+        out.as_mut_ptr() as *mut u8,
+        len * core::mem::size_of::<T>());
+    out.set_len(len);
+    out
+}
 
 /// Unaligned memory access error.
 ///
@@ -164,7 +181,7 @@ pub struct UnalignedError<'a, S, T> {
     /// The required amount of bytes to discard at the front for the attempted
     /// transmutation to be successful.
     pub offset: usize,
-    /// A slice to the original source data.
+    /// A slice of the original source data.
     pub source: &'a [S],
     phantom: PhantomData<T>,
 }
@@ -178,29 +195,22 @@ impl<'a, S, T> UnalignedError<'a, S, T> {
         }
     }
 
-    /// Create a copy of the source data, transmuted into a vector. As the new
-    /// vector will be properly aligned for accessing values of type `U`, this
+    /// Create a copy of the source data, transmuted into a vector. As the
+    /// vector will be properly aligned for accessing values of type `T`, this
     /// operation will not fail due to memory alignment constraints.
     ///
     /// # Safety
     ///
     /// The byte data in the slice needs to correspond to a valid contiguous
-    /// sequence of `U` values.
+    /// sequence of `T` values.
     #[cfg(feature = "std")]
     pub unsafe fn copy_unchecked(&self) -> Vec<T> {
-        let len = self.source.len() * core::mem::size_of::<S>() / core::mem::size_of::<T>();
-        let mut out = Vec::with_capacity(len);
-        core::ptr::copy_nonoverlapping(
-            self.source.as_ptr() as *const u8,
-            out.as_mut_ptr() as *mut u8,
-            len * core::mem::size_of::<T>());
-        out.set_len(len);
-        out
+        copy_to_vec_unchecked::<S, T>(self.source)
     }
 
     /// Create a copy of the source data, transmuted into a vector. As `S` is
-    /// trivially transmutable, and the new slice will be properly allocated
-    /// for accessing values of type `U`, this operation is safe and will never
+    /// trivially transmutable, and the vector will be properly allocated
+    /// for accessing values of type `T`, this operation is safe and will never
     /// fail.
     #[cfg(feature = "std")]
     pub fn copy(&self) -> Vec<T>
@@ -215,12 +225,12 @@ impl<'a, S, T> UnalignedError<'a, S, T> {
 
 impl<'a, S, T> fmt::Debug for UnalignedError<'a, S, T> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-
         // Summarize the output of the source slice to just its
         // length, so that it does not require `S: Debug`.
         struct Source {
             len: usize,
         }
+
         impl fmt::Debug for Source {
             fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
                 f.debug_struct("&[S]")
@@ -252,12 +262,12 @@ impl<'a, S, T> fmt::Display for UnalignedError<'a, S, T> {
 
 /// Incompatible vector transmutation error.
 ///
-/// Returned when the element type `T` does not allow a safe vector
-/// transmutation to the target element type `U`. This happens when either
+/// Returned when the element type `S` does not allow a safe vector
+/// transmutation to the target element type `T`. This happens when either
 /// the size or minimum memory alignment requirements are not met:
 ///
-/// - `std::mem::align_of::<T>() != std::mem::align_of::<U>()`
-/// - `std::mem::size_of::<T>() != std::mem::size_of::<U>()`
+/// - `std::mem::align_of::<S>() != std::mem::align_of::<T>()`
+/// - `std::mem::size_of::<S>() != std::mem::size_of::<T>()`
 #[cfg(feature = "std")]
 #[derive(Clone, Eq, Hash, PartialEq)]
 pub struct IncompatibleVecTargetError<S, T> {
@@ -277,28 +287,21 @@ impl<S, T> IncompatibleVecTargetError<S, T> {
         }
     }
 
-    /// Create a copy of the data and transmute it. As the new vector will be
-    /// properly aligned for accessing values of type `U`, this operation will
-    /// never fail.
+    /// Create a copy of the data, transmuted into a new vector. As the vector
+    /// will be properly aligned for accessing values of type `T`, this
+    /// operation will not fail due to memory alignment constraints.
     ///
     /// # Safety
     ///
     /// The byte data in the vector needs to correspond to a valid contiguous
-    /// sequence of `U` values.
+    /// sequence of `T` values.
     pub unsafe fn copy_unchecked(&self) -> Vec<T> {
-        let len = self.vec.len() * core::mem::size_of::<S>() / core::mem::size_of::<T>();
-        let mut out = Vec::with_capacity(len);
-        core::ptr::copy_nonoverlapping(
-            self.vec.as_ptr() as *const u8,
-            out.as_mut_ptr() as *mut u8,
-            len * core::mem::size_of::<T>());
-        out.set_len(len);
-        out
+        copy_to_vec_unchecked::<S, T>(&self.vec)
     }
 
-    /// Create a copy of the data and transmute it. As `S` is trivially
-    /// transmutable, and the new vector will be properly allocated for accessing
-    /// values of type `U`, this operation is safe and will never fail.
+    /// Create a copy of the data, transmuted into a new vector. As `S` is
+    /// trivially transmutable, and the new vector will be properly allocated
+    /// for accessing values of type `T`, this operation is safe and will never fail.
     pub fn copy(&self) -> Vec<T>
         where T: TriviallyTransmutable
     {
