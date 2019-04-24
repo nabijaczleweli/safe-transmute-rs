@@ -2,7 +2,6 @@
 
 
 use core::fmt;
-#[cfg(feature = "std")]
 use core::marker::PhantomData;
 #[cfg(feature = "std")]
 use std::error::Error as StdError;
@@ -23,11 +22,11 @@ use self::super::trivial::TriviallyTransmutable;
 /// assert_eq!(transmute_bool_pedantic(&[0x05]), Err(Error::InvalidValue));
 /// ```
 #[derive(Clone, PartialEq, Eq, Hash)]
-pub enum Error<S, T> {
+pub enum Error<'a, S, T> {
     /// The data does not respect the target type's boundaries.
     Guard(GuardError),
     /// The given data slice is not properly aligned for the target type.
-    Unaligned(UnalignedError),
+    Unaligned(UnalignedError<'a, S, T>),
     /// The data vector's element type does not have the same size and minimum
     /// alignment as the target type.
     ///
@@ -36,14 +35,9 @@ pub enum Error<S, T> {
     IncompatibleVecTarget(IncompatibleVecTargetError<S, T>),
     /// The data contains an invalid value for the target type.
     InvalidValue,
-
-    /// Do not use this!
-    #[cfg(not(feature = "std"))]
-    #[doc(hidden)]
-    None(::core::marker::PhantomData<(S, T)>),
 }
 
-impl<S, T> fmt::Debug for Error<S, T> {
+impl<'a, S, T> fmt::Debug for Error<'a, S, T> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match self {
             Error::Guard(e) => write!(f, "Guard({:?})", e),
@@ -51,27 +45,23 @@ impl<S, T> fmt::Debug for Error<S, T> {
             Error::InvalidValue => f.write_str("InvalidValue"),
             #[cfg(feature = "std")]
             Error::IncompatibleVecTarget(_) => f.write_str("IncompatibleVecTarget"),
-            #[cfg(not(feature = "std"))]
-            Error::None(_) => f.write_str("None"),
         }
     }
 }
 
 #[cfg(feature = "std")]
-impl<S, T> StdError for Error<S, T> {
+impl<'a, S, T> StdError for Error<'a, S, T> {
     fn description(&self) -> &str {
         match self {
             Error::Guard(e) => e.description(),
             Error::Unaligned(e) => e.description(),
             Error::InvalidValue => "invalid target value",
             Error::IncompatibleVecTarget(e) => e.description(),
-            #[cfg(not(feature = "std"))]
-            Error::None(_) => "None (dummy error, do not use!)",
         }
     }
 }
 
-impl<S, T> fmt::Display for Error<S, T> {
+impl<'a, S, T> fmt::Display for Error<'a, S, T> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match self {
             Error::Guard(e) => e.fmt(f),
@@ -79,20 +69,18 @@ impl<S, T> fmt::Display for Error<S, T> {
             Error::InvalidValue => f.write_str("Invalid target value"),
             #[cfg(feature = "std")]
             Error::IncompatibleVecTarget(e) => e.fmt(f),
-            #[cfg(not(feature = "std"))]
-            Error::None(_) => f.write_str("None"),
         }
     }
 }
 
-impl<S, T> From<GuardError> for Error<S, T> {
+impl<'a, S, T> From<GuardError> for Error<'a, S, T> {
     fn from(o: GuardError) -> Self {
         Error::Guard(o)
     }
 }
 
-impl<S, T> From<UnalignedError> for Error<S, T> {
-    fn from(o: UnalignedError) -> Self {
+impl<'a, S, T> From<UnalignedError<'a, S, T>> for Error<'a, S, T> {
+    fn from(o: UnalignedError<'a, S, T>) -> Self {
         Error::Unaligned(o)
     }
 }
@@ -171,21 +159,91 @@ impl ErrorReason {
 /// Returned when the given data slice is not properly aligned for the target
 /// type. It would have been properly aligned if `offset` bytes were shifted
 /// (discarded) from the front of the slice.
-#[derive(Debug, Clone, Eq, Hash, PartialEq)]
-pub struct UnalignedError {
+#[derive(Clone, Eq, Hash, PartialEq)]
+pub struct UnalignedError<'a, S, T> {
     /// The required amount of bytes to discard at the front for the attempted
     /// transmutation to be successful.
     pub offset: usize,
+    /// A slice to the original source data.
+    pub source: &'a [S],
+    phantom: PhantomData<T>,
+}
+
+impl<'a, S, T> UnalignedError<'a, S, T> {
+    pub fn new(offset: usize, source: &'a [S]) -> Self {
+        UnalignedError {
+            offset,
+            source,
+            phantom: PhantomData,
+        }
+    }
+
+    /// Create a copy of the source data, transmuted into a vector. As the new
+    /// vector will be properly aligned for accessing values of type `U`, this
+    /// operation will not fail due to memory alignment constraints.
+    ///
+    /// # Safety
+    ///
+    /// The byte data in the slice needs to correspond to a valid contiguous
+    /// sequence of `U` values.
+    #[cfg(feature = "std")]
+    pub unsafe fn copy_unchecked(&self) -> Vec<T> {
+        let len = self.source.len() * core::mem::size_of::<S>() / core::mem::size_of::<T>();
+        let mut out = Vec::with_capacity(len);
+        core::ptr::copy_nonoverlapping(
+            self.source.as_ptr() as *const u8,
+            out.as_mut_ptr() as *mut u8,
+            len * core::mem::size_of::<T>());
+        out.set_len(len);
+        out
+    }
+
+    /// Create a copy of the source data, transmuted into a vector. As `S` is
+    /// trivially transmutable, and the new slice will be properly allocated
+    /// for accessing values of type `U`, this operation is safe and will never
+    /// fail.
+    #[cfg(feature = "std")]
+    pub fn copy(&self) -> Vec<T>
+        where T: TriviallyTransmutable
+    {
+        unsafe {
+            // no value checks needed thanks to `TriviallyTransmutable`
+            self.copy_unchecked()
+        }
+    }
+}
+
+impl<'a, S, T> fmt::Debug for UnalignedError<'a, S, T> {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+
+        // Summarize the output of the source slice to just its
+        // length, so that it does not require `S: Debug`.
+        struct Source {
+            len: usize,
+        }
+        impl fmt::Debug for Source {
+            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+                f.debug_struct("&[S]")
+                    .field("len", &self.len)
+                    .finish()
+            }
+        }
+
+        f.debug_struct("UnalignedError")
+            .field("offset", &self.offset)
+            .field("source", &Source { len: self.source.len() })
+            .finish()
+    }
 }
 
 #[cfg(feature = "std")]
-impl StdError for UnalignedError {
+impl<'a, S, T> StdError for UnalignedError<'a, S, T> {
     fn description(&self) -> &str {
         "data is unaligned"
     }
 }
 
-impl fmt::Display for UnalignedError {
+impl<'a, S, T> fmt::Display for UnalignedError<'a, S, T> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "data is unaligned (off by {} bytes)", self.offset)
     }
@@ -230,7 +288,10 @@ impl<S, T> IncompatibleVecTargetError<S, T> {
     pub unsafe fn copy_unchecked(&self) -> Vec<T> {
         let len = self.vec.len() * core::mem::size_of::<S>() / core::mem::size_of::<T>();
         let mut out = Vec::with_capacity(len);
-        core::ptr::copy_nonoverlapping(self.vec.as_ptr() as *const u8, out.as_mut_ptr() as *mut u8, len * core::mem::size_of::<T>());
+        core::ptr::copy_nonoverlapping(
+            self.vec.as_ptr() as *const u8,
+            out.as_mut_ptr() as *mut u8,
+            len * core::mem::size_of::<T>());
         out.set_len(len);
         out
     }
@@ -249,7 +310,7 @@ impl<S, T> IncompatibleVecTargetError<S, T> {
 }
 
 #[cfg(feature = "std")]
-impl<S, T> From<IncompatibleVecTargetError<S, T>> for Error<S, T> {
+impl<'a, S, T> From<IncompatibleVecTargetError<S, T>> for Error<'a, S, T> {
     fn from(e: IncompatibleVecTargetError<S, T>) -> Self {
         Error::IncompatibleVecTarget(e)
     }

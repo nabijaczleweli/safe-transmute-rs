@@ -191,7 +191,7 @@ pub fn transmute_many_pedantic<T: TriviallyTransmutable>(bytes: &[u8]) -> Result
 /// # run().unwrap();
 /// ```
 #[cfg(feature = "std")]
-pub fn transmute_vec<S: TriviallyTransmutable, T: TriviallyTransmutable>(mut vec: Vec<S>) -> Result<Vec<T>, Error<S, T>> {
+pub fn transmute_vec<S: TriviallyTransmutable, T: TriviallyTransmutable>(mut vec: Vec<S>) -> Result<Vec<T>, Error<'static, S, T>> {
     if align_of::<S>() != align_of::<T>() || size_of::<S>() != size_of::<T>() {
         return Err(IncompatibleVecTargetError::new(vec).into());
     }
