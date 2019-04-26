@@ -216,7 +216,7 @@ impl<'a, S, T> UnalignedError<'a, S, T> {
     /// fail.
     #[cfg(feature = "std")]
     pub fn copy(&self) -> Vec<T>
-        where T: TriviallyTransmutable
+        where S: TriviallyTransmutable
     {
         unsafe {
             // no value checks needed thanks to `TriviallyTransmutable`
@@ -305,7 +305,7 @@ impl<S, T> IncompatibleVecTargetError<S, T> {
     /// trivially transmutable, and the new vector will be properly allocated
     /// for accessing values of type `T`, this operation is safe and will never fail.
     pub fn copy(&self) -> Vec<T>
-        where T: TriviallyTransmutable
+        where S: TriviallyTransmutable
     {
         unsafe {
             // no value checks needed thanks to `TriviallyTransmutable`
