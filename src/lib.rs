@@ -75,8 +75,8 @@
 //! Since one may not always be able to ensure that a slice of bytes is well
 //! aligned for reading data of different constraints, such as from `u8` to
 //! `u16`, the operation may fail without a trivial means of prevention.
-//! As a remedy, the data can be copied into a new vector with the help of the
-//! [`try_copy!`](macro.try_copy.html) macro.
+//! As a remedy, the data can be copied byte-by-byte into a new vector with
+//! the help of the [`try_copy!`](macro.try_copy.html) macro.
 //! 
 //! ```
 //! # #[macro_use]
@@ -190,92 +190,3 @@ pub use self::to_bytes::transmute_to_bytes_vec;
 #[cfg(feature = "std")]
 pub use self::bool::{transmute_bool_vec_permissive, transmute_bool_vec_pedantic};
 pub use self::bool::{transmute_bool_permissive, transmute_bool_pedantic};
-
-/// Retrieve the result of a transmutation, copying the data if this cannot be
-/// done safely due to memory alignment constraints.
-/// 
-/// The macro, not unlike `try!`, will short-circuit certain errors with
-/// `return`, namely guard condition and invalid value errors. When the operation
-/// fails due to either an unaligned transmutation or an incompatible vector
-/// element transmutation target, the transmutation is once again attempted by
-/// copying the output into a vector.
-/// 
-/// This expands into a single expression of type `Cow<[T]>`. where `T` is the
-/// target type.
-/// 
-/// 
-/// # Example
-/// 
-/// ```
-/// # #![cfg(feature = "std")]
-/// # #[macro_use]
-/// # extern crate safe_transmute;
-/// # use safe_transmute::{transmute_many, SingleManyGuard};
-/// # fn run() -> Result<(), Box<::std::error::Error>> {
-/// let bytes = &[0x00, 0x01, 0x12, 0x34, 0x00]; // 1 byte unused
-/// let hwords = try_copy!(transmute_many::<u16, SingleManyGuard>(bytes));
-/// assert_eq!(
-///     &*hwords,
-///     &[
-///         u16::from_be(0x0001),
-///         u16::from_be(0x1234),
-///     ][..]);
-/// # Ok(())
-/// # }
-/// # fn main() {
-/// # run().unwrap()
-/// # }
-/// ```
-#[cfg(feature = "std")]
-#[macro_export]
-macro_rules! try_copy {
-    ($res: expr) => {
-            $res.map_err(::safe_transmute::Error::from)
-                .map(::std::borrow::Cow::from)
-                .or_else(|e| e.copy().map(::std::borrow::Cow::Owned))?
-    };
-}
-
-/// Retrieve the result of a transmutation, copying the data if this cannot be
-/// done safely due to memory alignment constraints. It is equivalent to the
-/// macro [`try_copy!`](macro.try_copy.html), except that it does not check
-/// whether the target type is trivially transmutable.
-/// 
-/// # Safety
-/// 
-/// The source data needs to correspond to a valid contiguous sequence of
-/// `T` values.
-/// 
-/// # Example
-/// 
-/// ```
-/// # #![cfg(feature = "std")]
-/// # #[macro_use]
-/// # extern crate safe_transmute;
-/// # use safe_transmute::{transmute_many, SingleManyGuard};
-/// # fn run() -> Result<(), Box<::std::error::Error>> {
-/// let bytes = &[0x00, 0x01, 0x12, 0x34, 0x00]; // 1 byte unused
-/// unsafe {
-///     let hwords = try_copy_unchecked!(transmute_many::<u16, SingleManyGuard>(bytes));
-///     assert_eq!(
-///         &*hwords,
-///         &[
-///             u16::from_be(0x0001),
-///             u16::from_be(0x1234),
-///         ][..]);
-/// }
-/// # Ok(())
-/// # }
-/// # fn main() {
-/// # run().unwrap()
-/// # }
-/// ```
-#[cfg(feature = "std")]
-#[macro_export]
-macro_rules! try_copy_unchecked {
-    ($res: expr) => {
-        $res.map_err(::safe_transmute::Error::from)
-            .map(::std::borrow::Cow::from)
-            .or_else(|e| e.copy_unchecked().map(::std::borrow::Cow::Owned))?
-    };
-}
