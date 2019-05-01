@@ -39,11 +39,13 @@
 #[cfg(feature = "std")]
 #[macro_export]
 macro_rules! try_copy {
-    ($res: expr) => {
-            $res.map_err($crate::Error::from)
-                .map(::std::borrow::Cow::from)
-                .or_else(|e| e.copy().map(::std::borrow::Cow::Owned))?
-    };
+    ($res: expr) => {{
+        use std::borrow::Cow;
+
+        $res.map_err($crate::Error::from)
+            .map(Cow::from)
+            .or_else(|e| e.copy().map(Cow::Owned))?
+    }};
 }
 
 /// Retrieve the result of a transmutation, copying the data if this cannot be
@@ -83,11 +85,13 @@ macro_rules! try_copy {
 #[cfg(feature = "std")]
 #[macro_export]
 macro_rules! try_copy_unchecked {
-    ($res: expr) => {
+    ($res: expr) => {{
+        use std::borrow::Cow;
+        
         $res.map_err($crate::Error::from)
-            .map(::std::borrow::Cow::from)
-            .or_else(|e| e.copy_unchecked().map(::std::borrow::Cow::Owned))?
-    };
+            .map(Cow::from)
+            .or_else(|e| e.copy_unchecked().map(Cow::Owned))?
+    }};
 }
 
 /// If the specified 32-bit float is a signaling NaN, make it a quiet NaN.
