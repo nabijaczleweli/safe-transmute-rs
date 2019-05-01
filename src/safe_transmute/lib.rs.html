@@ -138,6 +138,46 @@
 <span id="138">138</span>
 <span id="139">139</span>
 <span id="140">140</span>
+<span id="141">141</span>
+<span id="142">142</span>
+<span id="143">143</span>
+<span id="144">144</span>
+<span id="145">145</span>
+<span id="146">146</span>
+<span id="147">147</span>
+<span id="148">148</span>
+<span id="149">149</span>
+<span id="150">150</span>
+<span id="151">151</span>
+<span id="152">152</span>
+<span id="153">153</span>
+<span id="154">154</span>
+<span id="155">155</span>
+<span id="156">156</span>
+<span id="157">157</span>
+<span id="158">158</span>
+<span id="159">159</span>
+<span id="160">160</span>
+<span id="161">161</span>
+<span id="162">162</span>
+<span id="163">163</span>
+<span id="164">164</span>
+<span id="165">165</span>
+<span id="166">166</span>
+<span id="167">167</span>
+<span id="168">168</span>
+<span id="169">169</span>
+<span id="170">170</span>
+<span id="171">171</span>
+<span id="172">172</span>
+<span id="173">173</span>
+<span id="174">174</span>
+<span id="175">175</span>
+<span id="176">176</span>
+<span id="177">177</span>
+<span id="178">178</span>
+<span id="179">179</span>
+<span id="180">180</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! This crate contains checked implementations of transmutation procedures, some of which</span>
 <span class="doccomment">//! ensure memory safety.</span>
@@ -163,11 +203,13 @@
 <span class="doccomment">//! - [`to_bytes`](to_bytes/index.html) enables the opposite operation of</span>
 <span class="doccomment">//!   reintepreting values as bytes.</span>
 <span class="doccomment">//! - The [`bool`](bool/index.html) module ensures safe transmutation of bytes</span>
-<span class="doccomment">//!   to boolean values and vice versa.</span>
+<span class="doccomment">//!   to boolean values.</span>
 <span class="doccomment">//! - At the root of this crate, there are transmutation functions with enough</span>
 <span class="doccomment">//!   checks to be considered safe to use in any circumstance. The operation may</span>
-<span class="doccomment">//!   still arbitrarily return (recoverable) errors due to unaligned data, but it</span>
-<span class="doccomment">//!   will not eat your laundry.</span>
+<span class="doccomment">//!   still arbitrarily return (recoverable) errors due to unaligned data or</span>
+<span class="doccomment">//!   incompatible vector transmutation targets, but it will not eat your</span>
+<span class="doccomment">//!   laundry, and helper functions are available to assist the programmer in</span>
+<span class="doccomment">//!   making some use cases work.</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! This crate can be used in a no-`std` environment by disabling the `std`</span>
 <span class="doccomment">//! feature through specifying `default-features = false` on import.</span>
@@ -177,35 +219,77 @@
 <span class="doccomment">//! View bytes as a series of `u16`s, with a single-many boundary</span>
 <span class="doccomment">//! guard (at least one value, extraneous bytes are allowed):</span>
 <span class="doccomment">//!</span>
-<span class="doccomment">//! ```no_run</span>
-<span class="doccomment">//! # use safe_transmute::{transmute_many, SingleManyGuard};</span>
-<span class="doccomment">//! # include!(&quot;../tests/test_util/le_to_native.rs&quot;);</span>
-<span class="doccomment">//! # fn main() {</span>
-<span class="doccomment">//! assert_eq!(transmute_many::&lt;u16, SingleManyGuard&gt;(</span>
-<span class="doccomment">//!     &amp;[0x00, 0x01, 0x12, 0x34,</span>
-<span class="doccomment">//!       // Spare byte, unused</span>
-<span class="doccomment">//! # /*</span>
-<span class="doccomment">//!       0x00])?,</span>
-<span class="doccomment">//! # */</span>
-<span class="doccomment">//! #     0x00].le_to_native::&lt;u16&gt;()).unwrap(),</span>
-<span class="doccomment">//!     &amp;[0x0100, 0x3412]);</span>
+<span class="doccomment">//! ```</span>
+<span class="doccomment">//! # use safe_transmute::{SingleManyGuard, Error, transmute_many};</span>
+<span class="doccomment">//! # #[cfg(feature = &quot;std&quot;)]</span>
+<span class="doccomment">//! # fn main() -&gt; Result&lt;(), Box&lt;::std::error::Error&gt;&gt; {</span>
+<span class="doccomment">//! let bytes = &amp;[0x00, 0x01, 0x12, 0x24,</span>
+<span class="doccomment">//!               0x00]; // 1 spare byte</span>
+<span class="doccomment">//! match transmute_many::&lt;u16, SingleManyGuard&gt;(bytes) {</span>
+<span class="doccomment">//!     Ok(words) =&gt; {</span>
+<span class="doccomment">//!         assert_eq!(words,</span>
+<span class="doccomment">//!                    [u16::from_be(0x0001), u16::from_be(0x1224)]);</span>
+<span class="doccomment">//!     },</span>
+<span class="doccomment">//!     Err(Error::Unaligned(e)) =&gt; {</span>
+<span class="doccomment">//!         // Copy needed, would otherwise trap on some archs</span>
+<span class="doccomment">//!         let words = e.copy();</span>
+<span class="doccomment">//!         assert_eq!(*words,</span>
+<span class="doccomment">//!                    [u16::from_be(0x0001), u16::from_be(0x1224)]);</span>
+<span class="doccomment">//!     },</span>
+<span class="doccomment">//!     Err(e) =&gt; panic!(&quot;Unexpected error: {}&quot;, e),</span>
+<span class="doccomment">//! }</span>
+<span class="doccomment">//! # Ok(())</span>
 <span class="doccomment">//! # }</span>
+<span class="doccomment">//! # #[cfg(not(feature = &quot;std&quot;))]</span>
+<span class="doccomment">//! # fn main() {}</span>
+<span class="doccomment">//! ```</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! Since one may not always be able to ensure that a slice of bytes is well</span>
+<span class="doccomment">//! aligned for reading data of different constraints, such as from `u8` to</span>
+<span class="doccomment">//! `u16`, the operation may fail without a trivial way of preventing it.</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! As a remedy, the data can instead be copied byte-for-byte to a new vector,</span>
+<span class="doccomment">//! with the help of the [`try_copy!()`](macro.try_copy.html) macro.</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! ```</span>
+<span class="doccomment">//! # #[macro_use]</span>
+<span class="doccomment">//! # extern crate safe_transmute;</span>
+<span class="doccomment">//! # use safe_transmute::{SingleManyGuard, Error, transmute_many};</span>
+<span class="doccomment">//! # #[cfg(feature = &quot;std&quot;)]</span>
+<span class="doccomment">//! # fn main() -&gt; Result&lt;(), Box&lt;::std::error::Error&gt;&gt; {</span>
+<span class="doccomment">//! let bytes = &amp;[0x00, 0x01, 0x12, 0x24, 0x00];</span>
+<span class="doccomment">//! let words = try_copy!(transmute_many::&lt;u16, SingleManyGuard&gt;(bytes));</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! assert_eq!(*words,</span>
+<span class="doccomment">//!            [u16::from_be(0x0001), u16::from_be(0x1224)]);</span>
+<span class="doccomment">//! # Ok(())</span>
+<span class="doccomment">//! # }</span>
+<span class="doccomment">//! # #[cfg(not(feature = &quot;std&quot;))]</span>
+<span class="doccomment">//! # fn main() {}</span>
 <span class="doccomment">//! ```</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! View all bytes as a series of `u16`s:</span>
 <span class="doccomment">//!</span>
-<span class="doccomment">//! ```no_run</span>
-<span class="doccomment">//! # use safe_transmute::transmute_many_pedantic;</span>
+<span class="doccomment">//! ```</span>
+<span class="doccomment">//! # #[macro_use]</span>
+<span class="doccomment">//! # extern crate safe_transmute;</span>
+<span class="doccomment">//! # use safe_transmute::{Error, transmute_many_pedantic};</span>
 <span class="doccomment">//! # include!(&quot;../tests/test_util/le_to_native.rs&quot;);</span>
-<span class="doccomment">//! # fn main() {</span>
-<span class="doccomment">//! assert_eq!(transmute_many_pedantic::&lt;u16&gt;(</span>
-<span class="doccomment">//!     &amp;[0x00, 0x01,</span>
+<span class="doccomment">//! # #[cfg(feature = &quot;std&quot;)]</span>
+<span class="doccomment">//! # fn main() -&gt; Result&lt;(), Box&lt;::std::error::Error&gt;&gt; {</span>
+<span class="doccomment">//! # let bytes = &amp;[0x00, 0x01, 0x12, 0x34].le_to_native::&lt;u16&gt;();</span>
+<span class="doccomment">//! # let words = try_copy!(transmute_many_pedantic::&lt;u16&gt;(bytes).map_err(Error::without_src));</span>
 <span class="doccomment">//! # /*</span>
-<span class="doccomment">//!       0x12, 0x34])?,</span>
+<span class="doccomment">//! // Assuming little-endian</span>
+<span class="doccomment">//! let bytes = &amp;[0x00, 0x01, 0x12, 0x34];</span>
+<span class="doccomment">//! let words = try_copy!(transmute_many_pedantic::&lt;u16&gt;(bytes));</span>
 <span class="doccomment">//! # */</span>
-<span class="doccomment">//! #     0x12, 0x34].le_to_native::&lt;u16&gt;()).unwrap(),</span>
-<span class="doccomment">//!     &amp;[0x0100, 0x3412]);</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! assert_eq!(*words, [0x0100, 0x3412]);</span>
+<span class="doccomment">//! # Ok(())</span>
 <span class="doccomment">//! # }</span>
+<span class="doccomment">//! # #[cfg(not(feature = &quot;std&quot;))]</span>
+<span class="doccomment">//! # fn main() {}</span>
 <span class="doccomment">//! ```</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! View a byte slice as a single `f64`:</span>
@@ -214,7 +298,6 @@
 <span class="doccomment">//! # use safe_transmute::transmute_one;</span>
 <span class="doccomment">//! # include!(&quot;../tests/test_util/le_to_native.rs&quot;);</span>
 <span class="doccomment">//! # fn main() {</span>
-<span class="doccomment">//! # unsafe {</span>
 <span class="doccomment">//! assert_eq!(transmute_one::&lt;f64&gt;(</span>
 <span class="doccomment">//!     &amp;[0x00, 0x00, 0x00, 0x00,</span>
 <span class="doccomment">//! # /*</span>
@@ -222,7 +305,6 @@
 <span class="doccomment">//! # */</span>
 <span class="doccomment">//! #     0x00, 0x00, 0x00, 0x40].le_to_native::&lt;f64&gt;()).unwrap(),</span>
 <span class="doccomment">//!     2.0);</span>
-<span class="doccomment">//! # }</span>
 <span class="doccomment">//! # }</span>
 <span class="doccomment">//! ```</span>
 <span class="doccomment">//!</span>
@@ -232,14 +314,12 @@
 <span class="doccomment">//! # use safe_transmute::transmute_to_bytes;</span>
 <span class="doccomment">//! # include!(&quot;../tests/test_util/le_to_native.rs&quot;);</span>
 <span class="doccomment">//! # fn main() {</span>
-<span class="doccomment">//! # unsafe {</span>
 <span class="doccomment">//! assert_eq!(transmute_to_bytes(&amp;[0x0001u16,</span>
-<span class="doccomment">//!                                      0x1234u16]),</span>
+<span class="doccomment">//!                                 0x1234u16]),</span>
 <span class="doccomment">//! # /*</span>
 <span class="doccomment">//!            &amp;[0x01, 0x00, 0x34, 0x12].le_to_native::&lt;u16&gt;());</span>
 <span class="doccomment">//! # */</span>
 <span class="doccomment">//! #          &amp;[0x01, 0x00, 0x34, 0x12].le_to_native::&lt;u16&gt;());</span>
-<span class="doccomment">//! # }</span>
 <span class="doccomment">//! # }</span>
 <span class="doccomment">//! ```</span>
 
