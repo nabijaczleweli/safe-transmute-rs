@@ -101,6 +101,61 @@ unsafe impl<T: TriviallyTransmutable> TriviallyTransmutable for [T; 30] {}
 unsafe impl<T: TriviallyTransmutable> TriviallyTransmutable for [T; 31] {}
 unsafe impl<T: TriviallyTransmutable> TriviallyTransmutable for [T; 32] {}
 
+/// Transmute the slice to a slice of another type, ensuring alignment of the types is maintained.
+///
+/// This function is equivalent to
+/// [`std::slice::align_to`](https://doc.rust-lang.org/std/primitive.slice.html#method.align_to).
+/// Since both source and target types are [trivially transmutable](./trait.TriviallyTransmutable.html),
+/// the operation is always safe.
+///
+/// # Example
+///  
+/// ```
+/// # use safe_transmute::trivial::align_to;
+/// let bytes: [u8; 7] = [1, 2, 3, 4, 5, 6, 7];
+/// let (prefix, shorts, suffix) = align_to::<_, u16>(&bytes);
+/// // less_efficient_algorithm_for_bytes(prefix);
+/// // more_efficient_algorithm_for_aligned_shorts(shorts);
+/// // less_efficient_algorithm_for_bytes(suffix);
+/// assert_eq!(prefix.len() + shorts.len() * 2 + suffix.len(), 7);
+/// ```
+pub fn align_to<S, T>(slice: &[S]) -> (&[S], &[T], &[S])
+where
+    S: TriviallyTransmutable,
+    T: TriviallyTransmutable,
+{
+    unsafe {
+        slice.align_to::<T>()
+    }
+}
+
+/// Transmute the slice to a slice of another type, ensuring alignment of the types is maintained.
+///
+/// This function is equivalent to
+/// [`std::slice::align_to_mut`](https://doc.rust-lang.org/std/primitive.slice.html#method.align_to_mut).
+/// Since both source and target types are [trivially transmutable](./trait.TriviallyTransmutable.html),
+/// the operation is always safe.
+///
+/// # Example
+/// 
+/// ```
+/// # use safe_transmute::trivial::align_to_mut;
+/// let mut bytes: [u8; 7] = [1, 2, 3, 4, 5, 6, 7];
+/// let (prefix, shorts, suffix) = align_to_mut ::<_, u16>(&mut bytes);
+/// // less_efficient_algorithm_for_bytes(prefix);
+/// // more_efficient_algorithm_for_aligned_shorts(shorts);
+/// // less_efficient_algorithm_for_bytes(suffix);
+/// assert_eq!(prefix.len() + shorts.len() * 2 + suffix.len(), 7);
+/// ```
+pub fn align_to_mut<S, T>(slice: &mut [S]) -> (&mut [S], &mut [T], &mut [S])
+where
+    S: TriviallyTransmutable,
+    T: TriviallyTransmutable,
+{
+    unsafe {
+        slice.align_to_mut::<T>()
+    }
+}
 
 /// Transmute a byte slice into a single instance of a trivially transmutable type.
 ///
