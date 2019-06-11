@@ -54,7 +54,7 @@ pub unsafe fn transmute_to_bytes_unchecked<S>(from: &S) -> &[u8] {
 /// slice of its bytes.
 ///
 /// # Safety
-/// 
+///
 /// This function is very ill advised, since it can be exploited to break
 /// invariants of the source type. Any modification that leaves the data
 /// in an inconsistent state with respect to `S` results in undefined behavior.
@@ -82,18 +82,27 @@ pub unsafe fn transmute_to_bytes_unchecked<S>(from: &S) -> &[u8] {
 /// ```
 /// # use safe_transmute::to_bytes::transmute_to_bytes_unchecked_mut;
 /// #[repr(C)]
+/// #[derive(Debug, Eq, PartialEq)]
 /// struct Gene {
 ///     x1: u8,
 ///     x2: u8,
 /// }
 ///
+/// let mut gene = Gene {
+///     x1: 0x42,
+///     x2: 0x69,
+/// };
+///
 /// unsafe {
-///     assert_eq!(transmute_to_bytes_unchecked_mut(&mut Gene {
-///                    x1: 0x42,
-///                    x2: 0x69,
-///                }),
-///                &mut [0x42, 0x69]);
+///     let gene_data = transmute_to_bytes_unchecked_mut(&mut gene);
+///     assert_eq!(gene_data, &mut [0x42, 0x69]);
+///     gene_data[0] = 0xB0;
 /// }
+///
+/// assert_eq!(gene, Gene {
+///     x1: 0xB0,
+///     x2: 0x69,
+/// });
 /// ```
 pub unsafe fn transmute_to_bytes_unchecked_mut<S>(from: &mut S) -> &mut [u8] {
     slice::from_raw_parts_mut(from as *mut S as *mut u8, size_of::<S>())
@@ -147,9 +156,9 @@ pub unsafe fn transmute_to_bytes_many_unchecked<S>(from: &[S]) -> &[u8] {
 
 /// Transmute a mutable slice of arbitrary types into a mutable slice of their
 /// bytes.
-/// 
+///
 /// # Safety
-/// 
+///
 /// This function is very ill advised, since it can be exploited to break
 /// invariants of the source type. Any modification that leaves the data
 /// in an inconsistent state with respect to `S` is undefined behavior.
@@ -175,24 +184,39 @@ pub unsafe fn transmute_to_bytes_many_unchecked<S>(from: &[S]) -> &[u8] {
 /// An arbitrary type:
 ///
 /// ```
-/// # use safe_transmute::to_bytes::transmute_to_bytes_many_unchecked;
+/// # use safe_transmute::to_bytes::transmute_to_bytes_many_unchecked_mut;
 /// #[repr(C)]
+/// #[derive(Debug, Eq, PartialEq)]
 /// struct Gene {
 ///     x1: u8,
 ///     x2: u8,
 /// }
 ///
+/// let mut genes = [Gene {
+///                      x1: 0x42,
+///                      x2: 0x69,
+///                  },
+///                  Gene {
+///                      x1: 0x12,
+///                      x2: 0x48,
+///                  }];
+///
 /// unsafe {
-///     assert_eq!(transmute_to_bytes_many_unchecked(&mut [Gene {
-///                                                        x1: 0x42,
-///                                                        x2: 0x69,
-///                                                    },
-///                                                    Gene {
-///                                                        x1: 0x12,
-///                                                        x2: 0x48,
-///                                                    }]),
-///                &[0x42, 0x69, 0x12, 0x48]);
+///     let gene_data = transmute_to_bytes_many_unchecked_mut(&mut genes);
+///     assert_eq!(gene_data, &mut [0x42, 0x69, 0x12, 0x48]);
+///
+///     gene_data[0] = 0xB0;
+///     gene_data[3] = 0x0B;
 /// }
+///
+/// assert_eq!(genes, [Gene {
+///                        x1: 0xB0,
+///                        x2: 0x69,
+///                    },
+///                    Gene {
+///                        x1: 0x12,
+///                        x2: 0x0B,
+///                    }]);
 /// ```
 pub unsafe fn transmute_to_bytes_many_unchecked_mut<S>(from: &mut [S]) -> &mut [u8] {
     slice::from_raw_parts_mut(from.as_mut_ptr() as *mut u8, from.len() * size_of::<S>())
@@ -263,18 +287,28 @@ pub fn transmute_one_to_bytes<S: TriviallyTransmutable>(from: &S) -> &[u8] {
 /// ```
 /// # use safe_transmute::{TriviallyTransmutable, transmute_one_to_bytes_mut};
 /// #[repr(C)]
-/// #[derive(Clone, Copy)]
+/// #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 /// struct Gene {
 ///     x1: u8,
 ///     x2: u8,
 /// }
 /// unsafe impl TriviallyTransmutable for Gene {}
 ///
-/// assert_eq!(transmute_one_to_bytes_mut(&mut Gene {
-///                x1: 0x42,
-///                x2: 0x69,
-///            }),
-///            &mut [0x42, 0x69]);
+/// let mut gene = Gene {
+///     x1: 0x42,
+///     x2: 0x69,
+/// };
+///
+/// {
+///     let gene_data = transmute_one_to_bytes_mut(&mut gene);
+///     assert_eq!(gene_data, &mut [0x42, 0x69]);
+///     gene_data[0] = 0xB0;
+/// }
+///
+/// assert_eq!(gene, Gene {
+///     x1: 0xB0,
+///     x2: 0x69,
+/// });
 /// ```
 pub fn transmute_one_to_bytes_mut<S: TriviallyTransmutable>(from: &mut S) -> &mut [u8] {
     unsafe { transmute_to_bytes_unchecked_mut(from) }
@@ -332,38 +366,40 @@ pub fn transmute_to_bytes<S: TriviallyTransmutable>(from: &[S]) -> &[u8] {
 /// Some `u16`s:
 ///
 /// ```
-/// # use safe_transmute::transmute_to_bytes_mut;
-/// # include!("../tests/test_util/le_to_native.rs");
-/// # fn main() {
-/// assert_eq!(transmute_to_bytes_mut(&mut [0x0123u16, 0x4567u16]),
-/// # /*
-///            &mut [0x23, 0x01, 0x67, 0x45]);
-/// # */
-/// #          &mut [0x23, 0x01, 0x67, 0x45].le_to_native::<u16>());
-/// # }
-/// ```
-///
-/// An arbitrary type:
-///
-/// ```
 /// # use safe_transmute::{TriviallyTransmutable, transmute_to_bytes_mut};
 /// #[repr(C)]
-/// #[derive(Clone, Copy)]
+/// #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 /// struct Gene {
 ///     x1: u8,
 ///     x2: u8,
 /// }
 /// unsafe impl TriviallyTransmutable for Gene {}
 ///
-/// assert_eq!(transmute_to_bytes_mut(&mut [Gene {
-///                                             x1: 0x42,
-///                                             x2: 0x69,
-///                                         },
-///                                         Gene {
-///                                             x1: 0x12,
-///                                             x2: 0x48,
-///                                         }]),
-///            &mut [0x42, 0x69, 0x12, 0x48]);
+/// let mut genes = [Gene {
+///                      x1: 0x42,
+///                      x2: 0x69,
+///                  },
+///                  Gene {
+///                      x1: 0x12,
+///                      x2: 0x48,
+///                  }];
+///
+/// {
+///     let gene_data = transmute_to_bytes_mut(&mut genes);
+///     assert_eq!(gene_data, &mut [0x42, 0x69, 0x12, 0x48]);
+///
+///     gene_data[0] = 0xB0;
+///     gene_data[3] = 0x0B;
+/// }
+///
+/// assert_eq!(genes, [Gene {
+///                        x1: 0xB0,
+///                        x2: 0x69,
+///                    },
+///                    Gene {
+///                        x1: 0x12,
+///                        x2: 0x0B,
+///                    }]);
 /// ```
 pub fn transmute_to_bytes_mut<S: TriviallyTransmutable>(from: &mut [S]) -> &mut [u8] {
     unsafe { transmute_to_bytes_many_unchecked_mut(from) }
