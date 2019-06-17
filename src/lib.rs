@@ -160,7 +160,7 @@ pub mod trivial;
 pub mod util;
 pub mod to_bytes;
 
-pub use self::full::{transmute_many_permissive, transmute_many_pedantic, transmute_one_pedantic, transmute_many, transmute_one};
+pub use self::full::{transmute_many_permissive, transmute_many_permissive_mut, transmute_many_pedantic, transmute_many_pedantic_mut, transmute_one_pedantic, transmute_many, transmute_many_mut, transmute_one};
 #[cfg(feature = "std")]
 pub use self::full::transmute_vec;
 
@@ -171,7 +171,7 @@ pub use self::error::{UnalignedError, ErrorReason, GuardError, Error};
 pub use self::error::IncompatibleVecTargetError;
 pub use self::trivial::TriviallyTransmutable;
 
-pub use self::to_bytes::{transmute_one_to_bytes, transmute_to_bytes};
+pub use self::to_bytes::{transmute_one_to_bytes, transmute_one_to_bytes_mut, transmute_to_bytes, transmute_to_bytes_mut};
 #[cfg(feature = "std")]
 pub use self::to_bytes::transmute_to_bytes_vec;
 

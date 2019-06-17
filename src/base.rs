@@ -138,6 +138,51 @@ pub unsafe fn transmute_many<T, G: Guard>(bytes: &[u8]) -> Result<&[T], Error<u8
     Ok(slice::from_raw_parts(bytes.as_ptr() as *const T, bytes.len() / size_of::<T>()))
 }
 
+/// View a mutable byte slice as a slice of an arbitrary type.
+///
+/// The required byte length of the slice depends on the chosen boundary guard.
+/// Please see the [Guard API](../guard/index.html).
+///
+/// # Safety
+///
+/// - This function does not perform memory alignment checks. The beginning of
+///   the slice data must be properly aligned for accessing vlues of type `T`.
+/// - The byte data needs to correspond to a valid contiguous sequence of `T`
+///   values. Types `T` with a `Drop` implementation are unlikely to be safe
+///   in this regard.
+///
+/// Failure to fulfill any of the requirements above may result in undefined
+/// behavior.
+///
+/// # Errors
+///
+/// An error is returned if the data does not comply with the policies of the
+/// given guard `G`.
+///
+/// # Examples
+///
+/// ```no_run
+/// # use safe_transmute::base::transmute_many_mut;
+/// # use safe_transmute::SingleManyGuard;
+/// # include!("../tests/test_util/le_to_native.rs");
+/// # fn main() {
+/// // Little-endian
+/// unsafe {
+/// # /*
+///     assert_eq!(
+///         transmute_many_mut::<u16, SingleManyGuard>(&mut [0xFF, 0x01, 0x00, 0x02])?,
+/// # */
+/// #   assert_eq!(transmute_many_mut::<u16, SingleManyGuard>(&mut [0xFF, 0x01, 0x00, 0x02].le_to_native::<u16>()).unwrap(),
+///         &mut [0x0100, 0x0200]
+///     );
+/// }
+/// # }
+/// ```
+pub unsafe fn transmute_many_mut<T, G: Guard>(bytes: &mut [u8]) -> Result<&mut [T], Error<u8, T>> {
+    G::check::<T>(bytes)?;
+    Ok(slice::from_raw_parts_mut(bytes.as_mut_ptr() as *mut T, bytes.len() / size_of::<T>()))
+}
+
 /// View a byte slice as a slice of an arbitrary type.
 ///
 /// The resulting slice will have as many instances of a type as will fit,

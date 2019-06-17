@@ -24,3 +24,24 @@ pub fn check_alignment<S, T>(data: &[S]) -> Result<(), UnalignedError<S, T>> {
         Ok(())
     }
 }
+
+/// Check whether the given mutable data slice of `S`s is properly aligned for
+/// reading and writing as a slice of `T`s, returning the same slice back if
+/// it is.
+///
+/// # Errors
+///
+/// An `Error::Unaligned` error is returned with the number of bytes to discard
+/// from the front in order to make the conversion safe from alignment concerns.
+pub fn check_alignment_mut<S, T>(data: &mut [S]) -> Result<&mut [S], UnalignedError<S, T>> {
+    // TODO this could probably become more efficient once `ptr::align_offset`
+    // is stabilized (#44488)
+    let ptr = data.as_ptr();
+    let offset = ptr as usize % align_of::<T>();
+    if offset > 0 {
+        // reverse the offset (from "bytes to insert" to "bytes to remove")
+        Err(UnalignedError::new(size_of::<T>() - offset, data))
+    } else {
+        Ok(data)
+    }
+}

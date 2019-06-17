@@ -16,7 +16,7 @@
 
 
 use self::super::guard::{PermissiveGuard, PedanticGuard, Guard};
-use self::super::base::{transmute_many, from_bytes};
+use self::super::base::{transmute_many, transmute_many_mut, from_bytes};
 #[cfg(feature = "std")]
 use self::super::base::transmute_vec;
 use self::super::Error;
@@ -211,6 +211,43 @@ pub unsafe fn transmute_trivial_pedantic<T: TriviallyTransmutable>(bytes: &[u8])
 /// ```
 pub unsafe fn transmute_trivial_many<T: TriviallyTransmutable, G: Guard>(bytes: &[u8]) -> Result<&[T], Error<u8, T>> {
     transmute_many::<T, G>(bytes)
+}
+
+/// Transmute a byte slice into a single instance of a trivially transmutable type.
+///
+/// The byte slice must have exactly enough bytes to fill a single instance of a type.
+///
+/// # Errors
+///
+/// An error is returned in one of the following situations:
+///
+/// - The data does not have enough bytes for a single value `T`.
+///
+/// # Safety
+///
+/// This function invokes undefined behavior if the data does not have a memory
+/// alignment compatible with `T`. If this cannot be ensured, you will have to
+/// make a copy of the data, or change how it was originally made.
+///
+/// # Examples
+///
+/// ```no_run
+/// # use safe_transmute::trivial::transmute_trivial_many;
+/// # use safe_transmute::SingleManyGuard;
+/// # include!("../tests/test_util/le_to_native.rs");
+/// # fn main() {
+/// // Little-endian
+/// unsafe {
+/// # /*
+///     assert_eq!(transmute_trivial_many::<u16, SingleManyGuard>(&[0x00, 0x01, 0x00, 0x02])?,
+/// # */
+/// #   assert_eq!(transmute_trivial_many::<u16, SingleManyGuard>(&[0x00, 0x01, 0x00, 0x02].le_to_native::<u16>()).unwrap(),
+///                &[0x0100, 0x0200]);
+/// }
+/// # }
+/// ```
+pub unsafe fn transmute_trivial_many_mut<T: TriviallyTransmutable, G: Guard>(bytes: &mut [u8]) -> Result<&mut [T], Error<u8, T>> {
+    transmute_many_mut::<T, G>(bytes)
 }
 
 /// View a byte slice as a slice of a trivially transmutable type.

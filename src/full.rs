@@ -11,13 +11,13 @@
 //! target type.
 
 
-use self::super::trivial::{TriviallyTransmutable, transmute_trivial_many, transmute_trivial};
+use self::super::trivial::{TriviallyTransmutable, transmute_trivial, transmute_trivial_many, transmute_trivial_many_mut};
 use self::super::guard::{SingleValueGuard, PermissiveGuard, PedanticGuard, Guard};
 #[cfg(feature = "std")]
 use self::super::error::IncompatibleVecTargetError;
 #[cfg(feature = "std")]
 use core::mem::{align_of, size_of, forget};
-use self::super::align::check_alignment;
+use self::super::align::{check_alignment, check_alignment_mut};
 use self::super::Error;
 
 
@@ -158,6 +158,83 @@ pub fn transmute_many_permissive<T: TriviallyTransmutable>(bytes: &[u8]) -> Resu
 /// ```
 pub fn transmute_many_pedantic<T: TriviallyTransmutable>(bytes: &[u8]) -> Result<&[T], Error<u8, T>> {
     transmute_many::<T, PedanticGuard>(bytes)
+}
+
+/// Transmute a mutable byte slice into a mutable sequence of values of the given type.
+///
+/// # Errors
+///
+/// An error is returned in one of the following situations:
+///
+/// - The data does not have a memory alignment compatible with `T`. You will
+///   have to make a copy anyway, or modify how the data was originally made.
+/// - The data does not comply with the policies of the given guard `G`.
+///
+/// # Examples
+///
+/// ```no_run
+/// # use safe_transmute::{SingleManyGuard, transmute_many_mut};
+/// # include!("../tests/test_util/le_to_native.rs");
+/// # fn main() {
+/// // Little-endian
+/// # /*
+/// assert_eq!(transmute_many_mut::<u16, SingleManyGuard>(&mut [0x00, 0x01, 0x00, 0x02])?,
+/// # */
+/// # assert_eq!(transmute_many_mut::<u16, SingleManyGuard>(&mut [0x00, 0x01, 0x00, 0x02].le_to_native::<u16>()).unwrap(),
+///            &mut [0x0100, 0x0200]);
+/// # }
+/// ```
+pub fn transmute_many_mut<T: TriviallyTransmutable, G: Guard>(bytes: &mut [u8]) -> Result<&mut [T], Error<u8, T>> {
+    check_alignment_mut::<_, T>(bytes)
+        .map_err(Error::from)
+        .and_then(|bytes| unsafe { transmute_trivial_many_mut::<_, G>(bytes) })
+}
+
+/// Transmute a byte slice into a sequence of values of the given type.
+///
+/// # Errors
+///
+/// An error is returned in one of the following situations:
+///
+/// - The data does not have a memory alignment compatible with `T`. You will
+///   have to make a copy anyway, or modify how the data was originally made.
+///
+/// # Examples
+///
+/// ```no_run
+/// # use safe_transmute::transmute_many_permissive_mut;
+/// assert_eq!(transmute_many_permissive_mut::<u16>(&mut [0x00]), Ok([].as_mut()));
+/// ```
+pub fn transmute_many_permissive_mut<T: TriviallyTransmutable>(bytes: &mut [u8]) -> Result<&mut [T], Error<u8, T>> {
+    transmute_many_mut::<T, PermissiveGuard>(bytes)
+}
+
+/// Transmute a byte slice into a sequence of values of the given type.
+///
+/// # Errors
+///
+/// An error is returned in one of the following situations:
+///
+/// - The data does not have a memory alignment compatible with `T`. You will
+///   have to make a copy anyway, or modify how the data was originally made.
+/// - The data does not have enough bytes for a single value `T`.
+///
+/// # Examples
+///
+/// ```no_run
+/// # use safe_transmute::transmute_many_pedantic_mut;
+/// # include!("../tests/test_util/le_to_native.rs");
+/// # fn main() {
+/// // Little-endian
+/// # /*
+/// assert_eq!(transmute_many_pedantic_mut::<u16>(&mut [0x0F, 0x0E, 0x0A, 0x0B])?,
+/// # */
+/// # assert_eq!(transmute_many_pedantic_mut::<u16>(&mut [0x0F, 0x0E, 0x0A, 0x0B].le_to_native::<u16>()).unwrap(),
+///            &mut [0x0E0F, 0x0B0A]);
+/// # }
+/// ```
+pub fn transmute_many_pedantic_mut<T: TriviallyTransmutable>(bytes: &mut [u8]) -> Result<&mut [T], Error<u8, T>> {
+    transmute_many_mut::<T, PedanticGuard>(bytes)
 }
 
 /// Transform a vector into a vector of values with the given target type.
