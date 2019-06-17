@@ -5,7 +5,7 @@ use core::mem::{align_of, size_of};
 use self::super::error::UnalignedError;
 
 
-fn validate_alignment<S, T>(data: &[S]) -> Result<(), UnalignedError<S, T>> {
+fn validate_alignment<S, T>(data: &[S]) -> Result<(), usize> {
     // TODO this could probably become more efficient once `ptr::align_offset`
     // is stabilized (#44488)
     let ptr = data.as_ptr();
