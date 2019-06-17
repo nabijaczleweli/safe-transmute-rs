@@ -183,9 +183,8 @@ pub unsafe fn transmute_trivial_pedantic<T: TriviallyTransmutable>(bytes: &[u8])
 ///
 /// # Errors
 ///
-/// An error is returned in one of the following situations:
-///
-/// - The data does not have enough bytes for a single value `T`.
+/// An error is returned if the data does not comply with the policies of the
+/// given guard `G`.
 ///
 /// # Safety
 ///

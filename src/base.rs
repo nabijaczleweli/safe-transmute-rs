@@ -111,8 +111,8 @@ pub unsafe fn from_bytes_pedantic<T: Copy>(bytes: &[u8]) -> Result<T, Error<u8, 
 ///
 /// # Errors
 ///
-/// An error is returned if the slice does not have enough bytes for a single
-/// value `T`.
+/// An error is returned if the data does not comply with the policies of the
+/// given guard `G`.
 ///
 /// # Examples
 ///

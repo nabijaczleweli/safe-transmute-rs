@@ -92,7 +92,7 @@ pub fn transmute_one_pedantic<T: TriviallyTransmutable>(bytes: &[u8]) -> Result<
 ///
 /// - The data does not have a memory alignment compatible with `T`. You will
 ///   have to make a copy anyway, or modify how the data was originally made.
-/// - The data does not have enough bytes for a single value `T`.
+/// - The data does not comply with the policies of the given guard `G`.
 ///
 /// # Examples
 ///
