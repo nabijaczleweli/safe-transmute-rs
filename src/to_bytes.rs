@@ -57,7 +57,7 @@ pub unsafe fn transmute_to_bytes_unchecked<S>(from: &S) -> &[u8] {
 /// 
 /// This function is very ill advised, since it can be exploited to break
 /// invariants of the source type. Any modification that leaves the data
-/// in an inconsistent state with respect to `S` is undefined behavior.
+/// in an inconsistent state with respect to `S` results in undefined behavior.
 ///
 /// # Examples
 ///
