@@ -33,6 +33,11 @@
 //! This crate can be used in a no-`std` environment by disabling the `std`
 //! feature through specifying `default-features = false` on import.
 //!
+//! # Migrating
+//!
+//! If you've used `safe-transmute` before v0.11,
+//! we recommend [the v0.11 migration guide](migration/v0_11) to help get you going fast.
+//!
 //! # Examples
 //!
 //! View bytes as a series of `u16`s, with a single-many boundary
@@ -151,14 +156,15 @@ extern crate core;
 
 mod full;
 
-pub mod align;
 pub mod base;
 pub mod bool;
+pub mod util;
+pub mod align;
 pub mod error;
 pub mod guard;
 pub mod trivial;
-pub mod util;
 pub mod to_bytes;
+pub mod migration;
 
 pub use self::full::{transmute_many_permissive_mut, transmute_many_pedantic_mut, transmute_many_permissive, transmute_many_pedantic, transmute_one_pedantic,
                      transmute_many, transmute_many_mut, transmute_one};
