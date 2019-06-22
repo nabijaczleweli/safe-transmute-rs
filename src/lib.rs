@@ -36,7 +36,7 @@
 //! # Migrating
 //!
 //! If you've used `safe-transmute` before v0.11,
-//! we recommend [the v0.11 migration guide](migration/v0_11) to help get you going fast.
+//! we recommend [the v0.11 migration guide](migration/v0_11/index.html) to help get you going quickly.
 //!
 //! # Examples
 //!

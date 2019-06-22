@@ -43,6 +43,8 @@
 //! `transmute_many_permissive()`.
 //!
 //! ```rust
+//! # #[cfg(feature = "std")]
+//! # {
 //! use safe_transmute::{Error, transmute_many_permissive};
 //!
 //! let bytes = &[0x00, 0x01, 0x12, 0x24,
@@ -61,6 +63,7 @@
 //!     },
 //!     Err(e) => panic!("Unexpected error: {}", e),
 //! }
+//! # }
 //! ```
 //!
 //! `transmute_many_permissive()` is an alias for `transmute_many()` with `PermissiveGuard`
@@ -78,12 +81,15 @@
 //!
 //! ```rust
 //! # use safe_transmute::Error;
+//! # #[cfg(feature = "std")]
+//! # {
 //! use safe_transmute::{transmute_many_permissive, try_copy};
 //!
 //! let bytes = &[0x00, 0x01, 0x12, 0x24, 0x00];
 //! let words = try_copy!(transmute_many_permissive::<u16>(bytes));
 //!
 //! assert_eq!(&*words, &[u16::from_be(0x0001), u16::from_be(0x1224)]);
+//! # }
 //! # Ok::<(), Error<u8, u16>>(())
 //! ```
 //!
@@ -100,12 +106,15 @@
 //!
 //! ```rust
 //! # use safe_transmute::Error;
+//! # #[cfg(feature = "std")]
+//! # {
 //! use safe_transmute::{transmute_vec, try_copy};
 //!
 //! let bytes = vec![0x00, 0x01, 0x12, 0x24, 0x00];
 //! let words = try_copy!(transmute_vec::<_, u16>(bytes)); // !!! works, but will always copy
 //!
 //! assert_eq!(&*words, &[u16::from_be(0x0001), u16::from_be(0x1224)]);
+//! # }
 //! # Ok::<(), Error<u8, u16>>(())
 //! ```
 //!
