@@ -170,7 +170,7 @@ pub use self::guard::{SingleValueGuard, PermissiveGuard, SingleManyGuard, Pedant
 pub use self::error::{UnalignedError, ErrorReason, GuardError, Error};
 #[cfg(feature = "std")]
 pub use self::error::IncompatibleVecTargetError;
-pub use self::trivial::{TriviallyTransmutable, align_to, align_to_mut};
+pub use self::trivial::{TriviallyTransmutable, align_to_mut, align_to};
 
 pub use self::to_bytes::{transmute_one_to_bytes_mut, transmute_one_to_bytes, transmute_to_bytes_mut, transmute_to_bytes};
 #[cfg(feature = "std")]
