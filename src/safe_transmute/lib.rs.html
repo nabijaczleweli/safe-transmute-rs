@@ -179,6 +179,12 @@
 <span id="179">179</span>
 <span id="180">180</span>
 <span id="181">181</span>
+<span id="182">182</span>
+<span id="183">183</span>
+<span id="184">184</span>
+<span id="185">185</span>
+<span id="186">186</span>
+<span id="187">187</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! This crate contains checked implementations of transmutation procedures, some of which</span>
 <span class="doccomment">//! ensure memory safety.</span>
@@ -214,6 +220,11 @@
 <span class="doccomment">//!</span>
 <span class="doccomment">//! This crate can be used in a no-`std` environment by disabling the `std`</span>
 <span class="doccomment">//! feature through specifying `default-features = false` on import.</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! # Migrating</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! If you&#39;ve used `safe-transmute` before v0.11,</span>
+<span class="doccomment">//! we recommend [the v0.11 migration guide](migration/v0_11) to help get you going fast.</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! # Examples</span>
 <span class="doccomment">//!</span>
@@ -333,14 +344,15 @@
 
 <span class="kw">mod</span> <span class="ident">full</span>;
 
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">align</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">base</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">bool</span>;
+<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">util</span>;
+<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">align</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">error</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">guard</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">trivial</span>;
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">util</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">to_bytes</span>;
+<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">migration</span>;
 
 <span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span>::<span class="ident">full</span>::{<span class="ident">transmute_many_permissive_mut</span>, <span class="ident">transmute_many_pedantic_mut</span>, <span class="ident">transmute_many_permissive</span>, <span class="ident">transmute_many_pedantic</span>, <span class="ident">transmute_one_pedantic</span>,
                      <span class="ident">transmute_many</span>, <span class="ident">transmute_many_mut</span>, <span class="ident">transmute_one</span>};
