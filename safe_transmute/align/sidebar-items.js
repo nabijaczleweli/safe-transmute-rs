@@ -1,1 +1,1 @@
-initSidebarItems({"fn":[["check_alignment","Check whether the given data slice of `S`s is properly aligned for reading and writing as a slice of `T`s."]]});
+initSidebarItems({"fn":[["check_alignment","Check whether the given data slice of `S`s is properly aligned for reading and writing as a slice of `T`s."],["check_alignment_mut","Check whether the given mutable data slice of `S`s is properly aligned for reading and writing as a slice of `T`s, returning the same slice back if it is."]]});

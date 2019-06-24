@@ -262,6 +262,43 @@
 <span id="262">262</span>
 <span id="263">263</span>
 <span id="264">264</span>
+<span id="265">265</span>
+<span id="266">266</span>
+<span id="267">267</span>
+<span id="268">268</span>
+<span id="269">269</span>
+<span id="270">270</span>
+<span id="271">271</span>
+<span id="272">272</span>
+<span id="273">273</span>
+<span id="274">274</span>
+<span id="275">275</span>
+<span id="276">276</span>
+<span id="277">277</span>
+<span id="278">278</span>
+<span id="279">279</span>
+<span id="280">280</span>
+<span id="281">281</span>
+<span id="282">282</span>
+<span id="283">283</span>
+<span id="284">284</span>
+<span id="285">285</span>
+<span id="286">286</span>
+<span id="287">287</span>
+<span id="288">288</span>
+<span id="289">289</span>
+<span id="290">290</span>
+<span id="291">291</span>
+<span id="292">292</span>
+<span id="293">293</span>
+<span id="294">294</span>
+<span id="295">295</span>
+<span id="296">296</span>
+<span id="297">297</span>
+<span id="298">298</span>
+<span id="299">299</span>
+<span id="300">300</span>
+<span id="301">301</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! Transmutation of trivial objects</span>
 <span class="doccomment">//!</span>
@@ -281,7 +318,7 @@
 
 
 <span class="kw">use</span> <span class="self">self</span>::<span class="kw">super</span>::<span class="ident">guard</span>::{<span class="ident">PermissiveGuard</span>, <span class="ident">PedanticGuard</span>, <span class="ident">Guard</span>};
-<span class="kw">use</span> <span class="self">self</span>::<span class="kw">super</span>::<span class="ident">base</span>::{<span class="ident">transmute_many</span>, <span class="ident">from_bytes</span>};
+<span class="kw">use</span> <span class="self">self</span>::<span class="kw">super</span>::<span class="ident">base</span>::{<span class="ident">transmute_many</span>, <span class="ident">transmute_many_mut</span>, <span class="ident">from_bytes</span>};
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;std&quot;</span>)]</span>
 <span class="kw">use</span> <span class="self">self</span>::<span class="kw">super</span>::<span class="ident">base</span>::<span class="ident">transmute_vec</span>;
 <span class="kw">use</span> <span class="self">self</span>::<span class="kw">super</span>::<span class="ident">Error</span>;
@@ -476,6 +513,43 @@
 <span class="doccomment">/// ```</span>
 <span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">transmute_trivial_many</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">TriviallyTransmutable</span>, <span class="ident">G</span>: <span class="ident">Guard</span><span class="op">&gt;</span>(<span class="ident">bytes</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>]) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="kw-2">&amp;</span>[<span class="ident">T</span>], <span class="ident">Error</span><span class="op">&lt;</span><span class="ident">u8</span>, <span class="ident">T</span><span class="op">&gt;&gt;</span> {
     <span class="ident">transmute_many</span>::<span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">G</span><span class="op">&gt;</span>(<span class="ident">bytes</span>)
+}
+
+<span class="doccomment">/// Transmute a byte slice into a single instance of a trivially transmutable type.</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// The byte slice must have exactly enough bytes to fill a single instance of a type.</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// # Errors</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// An error is returned in one of the following situations:</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// - The data does not have enough bytes for a single value `T`.</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// # Safety</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// This function invokes undefined behavior if the data does not have a memory</span>
+<span class="doccomment">/// alignment compatible with `T`. If this cannot be ensured, you will have to</span>
+<span class="doccomment">/// make a copy of the data, or change how it was originally made.</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// # Examples</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// ```no_run</span>
+<span class="doccomment">/// # use safe_transmute::trivial::transmute_trivial_many;</span>
+<span class="doccomment">/// # use safe_transmute::SingleManyGuard;</span>
+<span class="doccomment">/// # include!(&quot;../tests/test_util/le_to_native.rs&quot;);</span>
+<span class="doccomment">/// # fn main() {</span>
+<span class="doccomment">/// // Little-endian</span>
+<span class="doccomment">/// unsafe {</span>
+<span class="doccomment">/// # /*</span>
+<span class="doccomment">///     assert_eq!(transmute_trivial_many::&lt;u16, SingleManyGuard&gt;(&amp;[0x00, 0x01, 0x00, 0x02])?,</span>
+<span class="doccomment">/// # */</span>
+<span class="doccomment">/// #   assert_eq!(transmute_trivial_many::&lt;u16, SingleManyGuard&gt;(&amp;[0x00, 0x01, 0x00, 0x02].le_to_native::&lt;u16&gt;()).unwrap(),</span>
+<span class="doccomment">///                &amp;[0x0100, 0x0200]);</span>
+<span class="doccomment">/// }</span>
+<span class="doccomment">/// # }</span>
+<span class="doccomment">/// ```</span>
+<span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">transmute_trivial_many_mut</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">TriviallyTransmutable</span>, <span class="ident">G</span>: <span class="ident">Guard</span><span class="op">&gt;</span>(<span class="ident">bytes</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> [<span class="ident">u8</span>]) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="kw-2">mut</span> [<span class="ident">T</span>], <span class="ident">Error</span><span class="op">&lt;</span><span class="ident">u8</span>, <span class="ident">T</span><span class="op">&gt;&gt;</span> {
+    <span class="ident">transmute_many_mut</span>::<span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">G</span><span class="op">&gt;</span>(<span class="ident">bytes</span>)
 }
 
 <span class="doccomment">/// View a byte slice as a slice of a trivially transmutable type.</span>

@@ -178,6 +178,7 @@
 <span id="178">178</span>
 <span id="179">179</span>
 <span id="180">180</span>
+<span id="181">181</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! This crate contains checked implementations of transmutation procedures, some of which</span>
 <span class="doccomment">//! ensure memory safety.</span>
@@ -341,7 +342,8 @@
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">util</span>;
 <span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">to_bytes</span>;
 
-<span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span>::<span class="ident">full</span>::{<span class="ident">transmute_many_permissive</span>, <span class="ident">transmute_many_pedantic</span>, <span class="ident">transmute_one_pedantic</span>, <span class="ident">transmute_many</span>, <span class="ident">transmute_one</span>};
+<span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span>::<span class="ident">full</span>::{<span class="ident">transmute_many_permissive_mut</span>, <span class="ident">transmute_many_pedantic_mut</span>, <span class="ident">transmute_many_permissive</span>, <span class="ident">transmute_many_pedantic</span>, <span class="ident">transmute_one_pedantic</span>,
+                     <span class="ident">transmute_many</span>, <span class="ident">transmute_many_mut</span>, <span class="ident">transmute_one</span>};
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;std&quot;</span>)]</span>
 <span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span>::<span class="ident">full</span>::<span class="ident">transmute_vec</span>;
 
@@ -352,7 +354,7 @@
 <span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span>::<span class="ident">error</span>::<span class="ident">IncompatibleVecTargetError</span>;
 <span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span>::<span class="ident">trivial</span>::<span class="ident">TriviallyTransmutable</span>;
 
-<span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span>::<span class="ident">to_bytes</span>::{<span class="ident">transmute_one_to_bytes</span>, <span class="ident">transmute_to_bytes</span>};
+<span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span>::<span class="ident">to_bytes</span>::{<span class="ident">transmute_one_to_bytes_mut</span>, <span class="ident">transmute_one_to_bytes</span>, <span class="ident">transmute_to_bytes_mut</span>, <span class="ident">transmute_to_bytes</span>};
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;std&quot;</span>)]</span>
 <span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span>::<span class="ident">to_bytes</span>::<span class="ident">transmute_to_bytes_vec</span>;
 

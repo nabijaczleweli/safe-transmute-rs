@@ -24,12 +24,46 @@
 <span id="24">24</span>
 <span id="25">25</span>
 <span id="26">26</span>
+<span id="27">27</span>
+<span id="28">28</span>
+<span id="29">29</span>
+<span id="30">30</span>
+<span id="31">31</span>
+<span id="32">32</span>
+<span id="33">33</span>
+<span id="34">34</span>
+<span id="35">35</span>
+<span id="36">36</span>
+<span id="37">37</span>
+<span id="38">38</span>
+<span id="39">39</span>
+<span id="40">40</span>
+<span id="41">41</span>
+<span id="42">42</span>
+<span id="43">43</span>
+<span id="44">44</span>
+<span id="45">45</span>
+<span id="46">46</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! Alignment checking primitives.</span>
 
 
 <span class="kw">use</span> <span class="ident">core</span>::<span class="ident">mem</span>::{<span class="ident">align_of</span>, <span class="ident">size_of</span>};
 <span class="kw">use</span> <span class="self">self</span>::<span class="kw">super</span>::<span class="ident">error</span>::<span class="ident">UnalignedError</span>;
+
+
+<span class="kw">fn</span> <span class="ident">validate_alignment</span><span class="op">&lt;</span><span class="ident">S</span>, <span class="ident">T</span><span class="op">&gt;</span>(<span class="ident">data</span>: <span class="kw-2">&amp;</span>[<span class="ident">S</span>]) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">usize</span><span class="op">&gt;</span> {
+    <span class="comment">// TODO this could probably become more efficient once `ptr::align_offset`</span>
+    <span class="comment">// is stabilized (#44488)</span>
+    <span class="kw">let</span> <span class="ident">ptr</span> <span class="op">=</span> <span class="ident">data</span>.<span class="ident">as_ptr</span>();
+    <span class="kw">let</span> <span class="ident">offset</span> <span class="op">=</span> <span class="ident">ptr</span> <span class="kw">as</span> <span class="ident">usize</span> <span class="op">%</span> <span class="ident">align_of</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>();
+    <span class="kw">if</span> <span class="ident">offset</span> <span class="op">&gt;</span> <span class="number">0</span> {
+        <span class="comment">// reverse the offset (from &quot;bytes to insert&quot; to &quot;bytes to remove&quot;)</span>
+        <span class="prelude-val">Err</span>(<span class="ident">size_of</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>() <span class="op">-</span> <span class="ident">offset</span>)
+    } <span class="kw">else</span> {
+        <span class="prelude-val">Ok</span>(())
+    }
+}
 
 
 <span class="doccomment">/// Check whether the given data slice of `S`s is properly aligned for reading</span>
@@ -40,15 +74,21 @@
 <span class="doccomment">/// An `Error::Unaligned` error is returned with the number of bytes to discard</span>
 <span class="doccomment">/// from the front in order to make the conversion safe from alignment concerns.</span>
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">check_alignment</span><span class="op">&lt;</span><span class="ident">S</span>, <span class="ident">T</span><span class="op">&gt;</span>(<span class="ident">data</span>: <span class="kw-2">&amp;</span>[<span class="ident">S</span>]) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">UnalignedError</span><span class="op">&lt;</span><span class="ident">S</span>, <span class="ident">T</span><span class="op">&gt;&gt;</span> {
-    <span class="comment">// TODO this could probably become more efficient once `ptr::align_offset`</span>
-    <span class="comment">// is stabilized (#44488)</span>
-    <span class="kw">let</span> <span class="ident">ptr</span> <span class="op">=</span> <span class="ident">data</span>.<span class="ident">as_ptr</span>();
-    <span class="kw">let</span> <span class="ident">offset</span> <span class="op">=</span> <span class="ident">ptr</span> <span class="kw">as</span> <span class="ident">usize</span> <span class="op">%</span> <span class="ident">align_of</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>();
-    <span class="kw">if</span> <span class="ident">offset</span> <span class="op">&gt;</span> <span class="number">0</span> {
-        <span class="comment">// reverse the offset (from &quot;bytes to insert&quot; to &quot;bytes to remove&quot;)</span>
-        <span class="prelude-val">Err</span>(<span class="ident">UnalignedError</span>::<span class="ident">new</span>(<span class="ident">size_of</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>() <span class="op">-</span> <span class="ident">offset</span>, <span class="ident">data</span>))
-    } <span class="kw">else</span> {
-        <span class="prelude-val">Ok</span>(())
+    <span class="ident">validate_alignment</span>::<span class="op">&lt;</span><span class="kw">_</span>, <span class="ident">T</span><span class="op">&gt;</span>(<span class="ident">data</span>).<span class="ident">map_err</span>(<span class="kw">move</span> <span class="op">|</span><span class="ident">off</span><span class="op">|</span> <span class="ident">UnalignedError</span>::<span class="ident">new</span>(<span class="ident">off</span>, <span class="ident">data</span>))
+}
+
+<span class="doccomment">/// Check whether the given mutable data slice of `S`s is properly aligned for</span>
+<span class="doccomment">/// reading and writing as a slice of `T`s, returning the same slice back if</span>
+<span class="doccomment">/// it is.</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// # Errors</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// An `Error::Unaligned` error is returned with the number of bytes to discard</span>
+<span class="doccomment">/// from the front in order to make the conversion safe from alignment concerns.</span>
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">check_alignment_mut</span><span class="op">&lt;</span><span class="ident">S</span>, <span class="ident">T</span><span class="op">&gt;</span>(<span class="ident">data</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> [<span class="ident">S</span>]) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="kw-2">mut</span> [<span class="ident">S</span>], <span class="ident">UnalignedError</span><span class="op">&lt;</span><span class="ident">S</span>, <span class="ident">T</span><span class="op">&gt;&gt;</span> {
+    <span class="kw">match</span> <span class="ident">validate_alignment</span>::<span class="op">&lt;</span><span class="kw">_</span>, <span class="ident">T</span><span class="op">&gt;</span>(<span class="ident">data</span>) {
+        <span class="prelude-val">Ok</span>(()) <span class="op">=&gt;</span> <span class="prelude-val">Ok</span>(<span class="ident">data</span>),
+        <span class="prelude-val">Err</span>(<span class="ident">off</span>) <span class="op">=&gt;</span> <span class="prelude-val">Err</span>(<span class="ident">UnalignedError</span>::<span class="ident">new</span>(<span class="ident">off</span>, <span class="ident">data</span>)),
     }
 }
 </pre></div>
