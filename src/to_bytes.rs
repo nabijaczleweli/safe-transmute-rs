@@ -2,7 +2,7 @@
 
 
 use self::super::TriviallyTransmutable;
-#[cfg(feature = "std")]
+#[cfg(feature = "alloc")]
 use self::super::Error;
 use core::mem::size_of;
 use core::slice;
@@ -431,7 +431,7 @@ pub fn guarded_transmute_to_bytes_pod_many<S: TriviallyTransmutable>(from: &[S])
 /// The only truly safe way of doing this is to create a transmuted slice
 /// view of the vector or make a copy anyway.
 ///
-#[cfg(feature = "std")]
+#[cfg(feature = "alloc")]
 pub fn transmute_to_bytes_vec<S: TriviallyTransmutable>(from: Vec<S>) -> Result<Vec<u8>, Error<'static, S, u8>> {
     super::full::transmute_vec::<S, u8>(from)
 }

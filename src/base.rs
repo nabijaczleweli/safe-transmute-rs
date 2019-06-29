@@ -7,7 +7,7 @@
 use self::super::guard::{SingleValueGuard, PermissiveGuard, SingleManyGuard, Guard};
 use self::super::error::Error;
 use core::mem::size_of;
-#[cfg(feature = "std")]
+#[cfg(feature = "alloc")]
 use core::mem::forget;
 use core::slice;
 
@@ -253,7 +253,7 @@ pub unsafe fn transmute_many_permissive<T>(bytes: &[u8]) -> &[T] {
 ///     );
 /// }
 /// ```
-#[cfg(feature = "std")]
+#[cfg(feature = "alloc")]
 pub unsafe fn transmute_vec<S, T>(mut vec: Vec<S>) -> Vec<T> {
     let ptr = vec.as_mut_ptr();
     let capacity = vec.capacity() * size_of::<S>() / size_of::<T>();

@@ -15,7 +15,7 @@
 
 use self::super::guard::{PermissiveGuard, PedanticGuard, Guard};
 use self::super::base::transmute_many;
-#[cfg(feature = "std")]
+#[cfg(feature = "alloc")]
 use self::super::base::transmute_vec;
 use core::mem::transmute;
 use self::super::Error;
@@ -117,7 +117,7 @@ pub fn transmute_bool_pedantic(bytes: &[u8]) -> Result<&[bool], Error<u8, bool>>
 /// # }
 /// # run().unwrap()
 /// ```
-#[cfg(feature = "std")]
+#[cfg(feature = "alloc")]
 pub fn transmute_bool_vec_permissive(bytes: Vec<u8>) -> Result<Vec<bool>, Error<'static, u8, bool>> {
     check_bool(&bytes)?;
     PermissiveGuard::check::<u8>(&bytes)?;
@@ -146,7 +146,7 @@ pub fn transmute_bool_vec_permissive(bytes: Vec<u8>) -> Result<Vec<bool>, Error<
 /// # }
 /// # run().unwrap()
 /// ```
-#[cfg(feature = "std")]
+#[cfg(feature = "alloc")]
 pub fn transmute_bool_vec_pedantic(bytes: Vec<u8>) -> Result<Vec<bool>, Error<'static, u8, bool>> {
     check_bool(&bytes)?;
     PedanticGuard::check::<u8>(&bytes)?;

@@ -46,7 +46,7 @@
 //! ```
 //! # use safe_transmute::{SingleManyGuard, Error, transmute_many};
 //! # #[cfg(feature = "std")]
-//! # fn main() -> Result<(), Box<::std::error::Error>> {
+//! # fn main() -> Result<(), Box<std::error::Error>> {
 //! let bytes = &[0x00, 0x01, 0x12, 0x24,
 //!               0x00]; // 1 spare byte
 //! match transmute_many::<u16, SingleManyGuard>(bytes) {
@@ -80,7 +80,7 @@
 //! # extern crate safe_transmute;
 //! # use safe_transmute::{SingleManyGuard, Error, transmute_many};
 //! # #[cfg(feature = "std")]
-//! # fn main() -> Result<(), Box<::std::error::Error>> {
+//! # fn main() -> Result<(), Box<std::error::Error>> {
 //! let bytes = &[0x00, 0x01, 0x12, 0x24, 0x00];
 //! let words = try_copy!(transmute_many::<u16, SingleManyGuard>(bytes));
 //!
@@ -100,7 +100,7 @@
 //! # use safe_transmute::{Error, transmute_many_pedantic};
 //! # include!("../tests/test_util/le_to_native.rs");
 //! # #[cfg(feature = "std")]
-//! # fn main() -> Result<(), Box<::std::error::Error>> {
+//! # fn main() -> Result<(), Box<std::error::Error>> {
 //! # let bytes = &[0x00, 0x01, 0x12, 0x34].le_to_native::<u16>();
 //! # let words = try_copy!(transmute_many_pedantic::<u16>(bytes).map_err(Error::without_src));
 //! # /*
@@ -151,8 +151,11 @@
 #![cfg_attr(not(feature = "std"), no_std)]
 
 
-#[cfg(feature = "std")]
+#[cfg(feature = "alloc")]
 extern crate core;
+#[cfg(feature = "alloc")]
+#[doc(hidden)]
+pub extern crate alloc;
 
 mod full;
 
@@ -168,20 +171,20 @@ pub mod migration;
 
 pub use self::full::{transmute_many_permissive_mut, transmute_many_pedantic_mut, transmute_many_permissive, transmute_many_pedantic, transmute_one_pedantic,
                      transmute_many, transmute_many_mut, transmute_one};
-#[cfg(feature = "std")]
+#[cfg(feature = "alloc")]
 pub use self::full::transmute_vec;
 
 
 pub use self::guard::{SingleValueGuard, PermissiveGuard, SingleManyGuard, PedanticGuard, Guard};
 pub use self::error::{UnalignedError, ErrorReason, GuardError, Error};
-#[cfg(feature = "std")]
+#[cfg(feature = "alloc")]
 pub use self::error::IncompatibleVecTargetError;
 pub use self::trivial::{TriviallyTransmutable, align_to_mut, align_to};
 
 pub use self::to_bytes::{transmute_one_to_bytes_mut, transmute_one_to_bytes, transmute_to_bytes_mut, transmute_to_bytes};
-#[cfg(feature = "std")]
+#[cfg(feature = "alloc")]
 pub use self::to_bytes::transmute_to_bytes_vec;
 
-#[cfg(feature = "std")]
+#[cfg(feature = "alloc")]
 pub use self::bool::{transmute_bool_vec_permissive, transmute_bool_vec_pedantic};
 pub use self::bool::{transmute_bool_permissive, transmute_bool_pedantic};

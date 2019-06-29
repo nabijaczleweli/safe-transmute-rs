@@ -17,7 +17,7 @@
 
 use self::super::guard::{PermissiveGuard, PedanticGuard, Guard};
 use self::super::base::{transmute_many, transmute_many_mut, from_bytes};
-#[cfg(feature = "std")]
+#[cfg(feature = "alloc")]
 use self::super::base::transmute_vec;
 use self::super::Error;
 
@@ -345,7 +345,7 @@ pub unsafe fn guarded_transmute_pod_many_pedantic<T: TriviallyTransmutable>(byte
 ///     );
 /// }
 /// ```
-#[cfg(feature = "std")]
+#[cfg(feature = "alloc")]
 pub unsafe fn transmute_trivial_vec<S: TriviallyTransmutable, T: TriviallyTransmutable>(vec: Vec<S>) -> Vec<T> {
     transmute_vec::<S, T>(vec)
 }

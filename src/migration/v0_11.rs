@@ -43,7 +43,7 @@
 //! `transmute_many_permissive()`.
 //!
 //! ```rust
-//! # #[cfg(feature = "std")]
+//! # #[cfg(feature = "alloc")]
 //! # {
 //! use safe_transmute::{Error, transmute_many_permissive};
 //!
@@ -81,7 +81,7 @@
 //!
 //! ```rust
 //! # use safe_transmute::Error;
-//! # #[cfg(feature = "std")]
+//! # #[cfg(feature = "alloc")]
 //! # {
 //! use safe_transmute::{transmute_many_permissive, try_copy};
 //!
@@ -106,7 +106,7 @@
 //!
 //! ```rust
 //! # use safe_transmute::Error;
-//! # #[cfg(feature = "std")]
+//! # #[cfg(feature = "alloc")]
 //! # {
 //! use safe_transmute::{transmute_vec, try_copy};
 //!

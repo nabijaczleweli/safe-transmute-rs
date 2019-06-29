@@ -31,11 +31,11 @@
 /// # Ok(())
 /// # }
 /// ```
-#[cfg(feature = "std")]
+#[cfg(feature = "alloc")]
 #[macro_export]
 macro_rules! try_copy {
     ($res:expr) => {{
-        use std::borrow::Cow;
+        use $crate::alloc::borrow::Cow;  // TODO: There *has* to be a better way of doing this, right? (also below)
 
         $res.map_err($crate::Error::from)
             .map(Cow::from)
@@ -60,7 +60,8 @@ macro_rules! try_copy {
 /// # #[macro_use]
 /// # extern crate safe_transmute;
 /// # use safe_transmute::{SingleManyGuard, transmute_many};
-/// # fn main() -> Result<(), Box<::std::error::Error>> {
+/// # #[cfg(feature = "std")]
+/// # fn main() -> Result<(), Box<std::error::Error>> {
 /// let bytes = &[0x00, 0x01, 0x12, 0x34,
 ///               0x00]; // 1 spare byte
 /// unsafe {
@@ -72,11 +73,11 @@ macro_rules! try_copy {
 /// # Ok(())
 /// # }
 /// ```
-#[cfg(feature = "std")]
+#[cfg(feature = "alloc")]
 #[macro_export]
 macro_rules! try_copy_unchecked {
     ($res:expr) => {{
-        use std::borrow::Cow;
+        use $crate::alloc::borrow::Cow;  // TODO: see above
 
         $res.map_err($crate::Error::from)
             .map(Cow::from)

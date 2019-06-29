@@ -2,14 +2,14 @@
 
 
 use core::fmt;
-#[cfg(feature = "std")]
+#[cfg(feature = "alloc")]
 use core::ptr;
 use core::marker::PhantomData;
 #[cfg(feature = "std")]
 use std::error::Error as StdError;
-#[cfg(feature = "std")]
+#[cfg(feature = "alloc")]
 use core::mem::{align_of, size_of};
-#[cfg(feature = "std")]
+#[cfg(feature = "alloc")]
 use self::super::trivial::TriviallyTransmutable;
 
 
@@ -32,8 +32,8 @@ pub enum Error<'a, S, T> {
     /// The data vector's element type does not have the same size and minimum
     /// alignment as the target type.
     ///
-    /// Does not exist in `no_std`.
-    #[cfg(feature = "std")]
+    /// Does not exist without the `alloc` feature.
+    #[cfg(feature = "alloc")]
     IncompatibleVecTarget(IncompatibleVecTargetError<S, T>),
     /// The data contains an invalid value for the target type.
     InvalidValue,
@@ -44,7 +44,7 @@ impl<'a, S, T> Error<'a, S, T> {
     /// an unaligned memory access, or an incompatible vector element target.
     ///
     /// Otherwise return `self`.
-    #[cfg(feature = "std")]
+    #[cfg(feature = "alloc")]
     pub fn copy(self) -> Result<Vec<T>, Error<'a, S, T>>
         where T: TriviallyTransmutable
     {
@@ -64,7 +64,7 @@ impl<'a, S, T> Error<'a, S, T> {
     ///
     /// The source data needs to correspond to a valid contiguous sequence of
     /// `T` values.
-    #[cfg(feature = "std")]
+    #[cfg(feature = "alloc")]
     pub unsafe fn copy_unchecked(self) -> Result<Vec<T>, Error<'a, S, T>> {
         match self {
             Error::Unaligned(e) => Ok(e.copy_unchecked()),
@@ -87,7 +87,7 @@ impl<'a, S, T> Error<'a, S, T> {
             }
             Error::Guard(e) => Error::Guard(e),
             Error::InvalidValue => Error::InvalidValue,
-            #[cfg(feature = "std")]
+            #[cfg(feature = "alloc")]
             Error::IncompatibleVecTarget(e) => Error::IncompatibleVecTarget(e),
         }
     }
@@ -99,7 +99,7 @@ impl<'a, S, T> fmt::Debug for Error<'a, S, T> {
             Error::Guard(e) => write!(f, "Guard({:?})", e),
             Error::Unaligned(e) => write!(f, "Unaligned({:?})", e),
             Error::InvalidValue => f.write_str("InvalidValue"),
-            #[cfg(feature = "std")]
+            #[cfg(feature = "alloc")]
             Error::IncompatibleVecTarget(_) => f.write_str("IncompatibleVecTarget"),
         }
     }
@@ -123,7 +123,7 @@ impl<'a, S, T> fmt::Display for Error<'a, S, T> {
             Error::Guard(e) => e.fmt(f),
             Error::Unaligned(e) => e.fmt(f),
             Error::InvalidValue => f.write_str("Invalid target value"),
-            #[cfg(feature = "std")]
+            #[cfg(feature = "alloc")]
             Error::IncompatibleVecTarget(e) => e.fmt(f),
         }
     }
@@ -215,7 +215,7 @@ impl ErrorReason {
 ///
 /// The byte data in the vector needs to correspond to a valid contiguous
 /// sequence of `T` values.
-#[cfg(feature = "std")]
+#[cfg(feature = "alloc")]
 unsafe fn copy_to_vec_unchecked<S, T>(data: &[S]) -> Vec<T> {
     let len = data.len() * size_of::<S>() / size_of::<T>();
 
@@ -259,7 +259,7 @@ impl<'a, S, T> UnalignedError<'a, S, T> {
     ///
     /// The byte data in the slice needs to correspond to a valid contiguous
     /// sequence of `T` values.
-    #[cfg(feature = "std")]
+    #[cfg(feature = "alloc")]
     pub unsafe fn copy_unchecked(&self) -> Vec<T> {
         copy_to_vec_unchecked::<S, T>(self.source)
     }
@@ -268,7 +268,7 @@ impl<'a, S, T> UnalignedError<'a, S, T> {
     /// trivially transmutable, and the vector will be properly allocated
     /// for accessing values of type `T`, this operation is safe and will never
     /// fail.
-    #[cfg(feature = "std")]
+    #[cfg(feature = "alloc")]
     pub fn copy(&self) -> Vec<T>
         where T: TriviallyTransmutable
     {
@@ -324,7 +324,7 @@ impl<'a, S, T> fmt::Display for UnalignedError<'a, S, T> {
 ///
 /// - `std::mem::align_of::<S>() != std::mem::align_of::<T>()`
 /// - `std::mem::size_of::<S>() != std::mem::size_of::<T>()`
-#[cfg(feature = "std")]
+#[cfg(feature = "alloc")]
 #[derive(Clone, Eq, Hash, PartialEq)]
 pub struct IncompatibleVecTargetError<S, T> {
     /// The original vector.
@@ -333,7 +333,7 @@ pub struct IncompatibleVecTargetError<S, T> {
     target: PhantomData<T>,
 }
 
-#[cfg(feature = "std")]
+#[cfg(feature = "alloc")]
 impl<S, T> IncompatibleVecTargetError<S, T> {
     /// Create an error with the given vector.
     pub fn new(vec: Vec<S>) -> Self {
@@ -368,14 +368,14 @@ impl<S, T> IncompatibleVecTargetError<S, T> {
     }
 }
 
-#[cfg(feature = "std")]
+#[cfg(feature = "alloc")]
 impl<'a, S, T> From<IncompatibleVecTargetError<S, T>> for Error<'a, S, T> {
     fn from(e: IncompatibleVecTargetError<S, T>) -> Self {
         Error::IncompatibleVecTarget(e)
     }
 }
 
-#[cfg(feature = "std")]
+#[cfg(feature = "alloc")]
 impl<S, T> fmt::Debug for IncompatibleVecTargetError<S, T> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         f.debug_struct("IncompatibleVecTargetError")
@@ -394,7 +394,7 @@ impl<S, T> StdError for IncompatibleVecTargetError<S, T> {
     }
 }
 
-#[cfg(feature = "std")]
+#[cfg(feature = "alloc")]
 impl<S, T> fmt::Display for IncompatibleVecTargetError<S, T> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f,

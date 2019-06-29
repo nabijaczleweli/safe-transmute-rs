@@ -13,9 +13,9 @@
 
 use self::super::trivial::{TriviallyTransmutable, transmute_trivial, transmute_trivial_many, transmute_trivial_many_mut};
 use self::super::guard::{SingleValueGuard, PermissiveGuard, PedanticGuard, Guard};
-#[cfg(feature = "std")]
+#[cfg(feature = "alloc")]
 use self::super::error::IncompatibleVecTargetError;
-#[cfg(feature = "std")]
+#[cfg(feature = "alloc")]
 use core::mem::{align_of, size_of, forget};
 use self::super::align::{check_alignment, check_alignment_mut};
 use self::super::Error;
@@ -258,7 +258,7 @@ pub fn transmute_many_pedantic_mut<T: TriviallyTransmutable>(bytes: &mut [u8]) -
 ///
 /// ```
 /// # use safe_transmute::transmute_vec;
-/// # fn run() -> Result<(), Box<::std::error::Error>> {
+/// # fn run() -> Result<(), Box<std::error::Error>> {
 /// assert_eq!(transmute_vec::<u8, i8>(vec![0x00, 0x01, 0x00, 0x02])?,
 ///            vec![0x00i8, 0x01i8, 0x00i8, 0x02i8]);
 /// assert_eq!(transmute_vec::<u8, i8>(vec![0x04, 0x00, 0x00, 0x00, 0xED])?,
@@ -267,7 +267,7 @@ pub fn transmute_many_pedantic_mut<T: TriviallyTransmutable>(bytes: &mut [u8]) -
 /// # }
 /// # run().unwrap();
 /// ```
-#[cfg(feature = "std")]
+#[cfg(feature = "alloc")]
 pub fn transmute_vec<S: TriviallyTransmutable, T: TriviallyTransmutable>(mut vec: Vec<S>) -> Result<Vec<T>, Error<'static, S, T>> {
     if align_of::<S>() != align_of::<T>() || size_of::<S>() != size_of::<T>() {
         return Err(IncompatibleVecTargetError::new(vec).into());
