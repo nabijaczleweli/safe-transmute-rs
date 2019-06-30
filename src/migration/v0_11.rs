@@ -101,8 +101,8 @@
 //!
 //! You might have used safe-transmute's vector transmutation functions. Well, it turns out that they are
 //! **incredibly unsafe**, and hard to get it right. This will be more complicated to migrate efficiently.
-//! The new `transmute_vec()` only works under very restricted conditions: the `mem::align_of()` and `mem::size_of()` between the
-//! source and target element types must match. Otherwise, a full copy of the vector must be made.
+//! The new `transmute_vec()` only works under very restricted conditions: the `mem::align_of()` and `mem::size_of()` between
+//! the source and target element types must match. Otherwise, a full copy of the vector must be made.
 //!
 //! ```rust
 //! # use safe_transmute::Error;

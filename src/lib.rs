@@ -32,6 +32,10 @@
 //!
 //! This crate can be used in a no-`std` environment by disabling the `std`
 //! feature through specifying `default-features = false` on import.
+//! However, `std` is only used for integration with `std::error::Error`.
+//!
+//! Note, though, that funxions operating on items from `alloc` will also be disabled by this.
+//! If your no-`std` environment has an `alloc` implementation, you will have to reenable them by using `features = ["alloc"]`.
 //!
 //! # Migrating
 //!
