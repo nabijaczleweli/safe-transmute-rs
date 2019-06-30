@@ -21,7 +21,10 @@ matrix:
     - env: LANGUAGE=Rust MIRI=true
       language: rust
       rust: nightly
-    - env: LANGUAGE=Rust CARGO_DEFAULT_FEATURES=--no-default-features
+    - env: LANGUAGE=Rust CARGO_DEFAULT_FEATURES="--no-default-features"
+      language: rust
+      rust: stable
+    - env: LANGUAGE=Rust CARGO_DEFAULT_FEATURES="--no-default-features --features alloc"
       language: rust
       rust: stable
   allow_failures:
