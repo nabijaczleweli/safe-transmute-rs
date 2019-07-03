@@ -4,6 +4,8 @@
 use core::fmt;
 #[cfg(feature = "alloc")]
 use core::ptr;
+#[cfg(feature = "alloc")]
+use alloc::vec::Vec;
 use core::marker::PhantomData;
 #[cfg(feature = "std")]
 use std::error::Error as StdError;

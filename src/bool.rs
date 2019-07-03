@@ -19,6 +19,8 @@ use self::super::base::transmute_many;
 use self::super::base::transmute_vec;
 use core::mem::transmute;
 use self::super::Error;
+#[cfg(feature = "alloc")]
+use alloc::vec::Vec;
 
 
 /// Makes sure that the bytes represent a sequence of valid boolean values.

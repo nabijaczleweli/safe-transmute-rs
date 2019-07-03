@@ -9,6 +9,8 @@ use self::super::error::Error;
 use core::mem::size_of;
 #[cfg(feature = "alloc")]
 use core::mem::forget;
+#[cfg(feature = "alloc")]
+use alloc::vec::Vec;
 use core::slice;
 
 

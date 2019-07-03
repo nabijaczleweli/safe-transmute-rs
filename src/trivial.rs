@@ -20,6 +20,8 @@ use self::super::base::{transmute_many, transmute_many_mut, from_bytes};
 #[cfg(feature = "alloc")]
 use self::super::base::transmute_vec;
 use self::super::Error;
+#[cfg(feature = "alloc")]
+use alloc::vec::Vec;
 
 
 /// Type that can be constructed from any combination of bytes.

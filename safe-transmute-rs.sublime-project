@@ -11,6 +11,22 @@
 		},
 		{
 			"working_dir": "$project_path",
+			"shell_cmd": "cargo build --color always --no-default-features && cargo test --color always --no-default-features",
+			"name": "Build safe-transmute-rs (no_std)",
+
+			"target": "ansi_color_build",
+			"syntax": "Packages/ANSIescape/ANSI.tmLanguage"
+		},
+		{
+			"working_dir": "$project_path",
+			"shell_cmd": "cargo build --color always --no-default-features --features alloc && cargo test --color always --no-default-features --features alloc",
+			"name": "Build safe-transmute-rs (no_std + alloc)",
+
+			"target": "ansi_color_build",
+			"syntax": "Packages/ANSIescape/ANSI.tmLanguage"
+		},
+		{
+			"working_dir": "$project_path",
 			"shell_cmd": "cargo doc --color always",
 			"name": "Document safe-transmute-rs",
 

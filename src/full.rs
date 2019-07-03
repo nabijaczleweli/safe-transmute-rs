@@ -13,12 +13,14 @@
 
 use self::super::trivial::{TriviallyTransmutable, transmute_trivial, transmute_trivial_many, transmute_trivial_many_mut};
 use self::super::guard::{SingleValueGuard, PermissiveGuard, PedanticGuard, Guard};
+use self::super::align::{check_alignment, check_alignment_mut};
 #[cfg(feature = "alloc")]
 use self::super::error::IncompatibleVecTargetError;
 #[cfg(feature = "alloc")]
 use core::mem::{align_of, size_of, forget};
-use self::super::align::{check_alignment, check_alignment_mut};
 use self::super::Error;
+#[cfg(feature = "alloc")]
+use alloc::vec::Vec;
 
 
 /// Transmute a byte slice into a single instance of a trivially transmutable type.

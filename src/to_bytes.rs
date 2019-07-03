@@ -6,6 +6,8 @@ use self::super::TriviallyTransmutable;
 use self::super::Error;
 use core::mem::size_of;
 use core::slice;
+#[cfg(feature = "alloc")]
+use alloc::vec::Vec;
 
 
 /// Transmute a single instance of an arbitrary type into a slice of its bytes.
