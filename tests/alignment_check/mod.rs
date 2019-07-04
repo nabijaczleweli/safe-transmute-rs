@@ -1,5 +1,7 @@
 use safe_transmute::{transmute_many_permissive, transmute_to_bytes};
 use safe_transmute::error::{UnalignedError, Error};
+#[cfg(feature = "alloc")]
+use alloc::vec::Vec;
 
 
 #[test]
@@ -41,7 +43,7 @@ fn unaligned_slicing_integers() {
         let outcome = transmute_many_permissive::<u64>(&bytes[i..]);
         assert_eq!(outcome, Err(Error::Unaligned(UnalignedError::new(8 - i, &bytes[i..]))));
 
-        #[cfg(feature = "std")]
+        #[cfg(feature = "alloc")]
         {
             let copied_data: Vec<_> = match outcome {
                 Ok(_) => unreachable!(),
@@ -58,27 +60,25 @@ fn unaligned_slicing_integers() {
     }
 
     // with try_copy!
-    #[cfg(feature = "std")]
+    #[cfg(feature = "alloc")]
     unaligned_slicing_integers_with_try_copy(bytes).unwrap();
 }
 
-#[cfg(feature = "std")]
-fn unaligned_slicing_integers_with_try_copy<'a>(bytes: &'a [u8]) -> Result<(), Box<::std::error::Error + 'a>> {
+#[cfg(feature = "alloc")]
+fn unaligned_slicing_integers_with_try_copy<'a>(bytes: &'a [u8]) -> Result<(), Error<'a, u8, u64>> {
     for i in 4..8 {
         // transmute unaligned content by copying
         let outcome = transmute_many_permissive::<u64>(&bytes[i..]);
         assert_eq!(outcome, Err(Error::Unaligned(UnalignedError::new(8 - i, &bytes[i..]))));
 
-        #[cfg(feature = "std")]
-        {
-            let copied_data = try_copy!(outcome);
-            assert_eq!(copied_data.len(), 1);
+        let copied_data = try_copy!(outcome);
+        assert_eq!(copied_data.len(), 1);
 
-            let expected_word: u64 = (0..8)
-                .map(|k| u64::from(bytes[i + k]) << (8 * k))
-                .sum();
-            assert_eq!(u64::to_le(copied_data[0]), expected_word);
-        }
+        let expected_word: u64 = (0..8)
+            .map(|k| u64::from(bytes[i + k]) << (8 * k))
+            .sum();
+        assert_eq!(u64::to_le(copied_data[0]), expected_word);
     }
+
     Ok(())
 }

@@ -1,3 +1,9 @@
+#[cfg(feature = "alloc")]
+use core::mem::{align_of, size_of, forget};
+#[cfg(feature = "alloc")]
+use alloc::vec::Vec;
+
+
 /// Create a new vector that contains the given bytes and is sure to have a
 /// memory alignment compatible with `T` at creation time.
 ///
@@ -16,10 +22,8 @@
 /// `dealloc_aligned_vec()`, and the exact same `T` parameter.
 ///
 /// Modifying or not moving into `dealloc_aligned_vec()` *will* yield UB.
-#[cfg(feature = "std")]
+#[cfg(feature = "alloc")]
 unsafe fn aligned_vec<T>(bytes: &[u8]) -> Vec<u8> {
-    use core::mem::{align_of, forget, size_of};
-
     let vec_len_offset = bytes.len() % size_of::<T>();
     let vec_len = bytes.len() / size_of::<T>();
     let capacity = if vec_len_offset > 0 {
@@ -55,7 +59,7 @@ unsafe fn aligned_vec<T>(bytes: &[u8]) -> Vec<u8> {
 /// Shall not be called on a vector not created by `aligned_vec()`.
 /// The `T` parameter must also match the one used to
 /// create the vector.
-#[cfg(feature = "std")]
+#[cfg(feature = "alloc")]
 unsafe fn dealloc_aligned_vec<T>(vec: Vec<u8>) {
     safe_transmute::base::transmute_vec::<_, T>(vec);
 }

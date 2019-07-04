@@ -21,7 +21,8 @@
 /// # #[macro_use]
 /// # extern crate safe_transmute;
 /// # use safe_transmute::{SingleManyGuard, transmute_many};
-/// # fn main() -> Result<(), Box<::std::error::Error>> {
+/// # use safe_transmute::error::Error;
+/// # fn main() -> Result<(), Error<'static, u8, u16>> {
 /// let bytes = &[0x00, 0x01, 0x12, 0x34,
 ///               0x00]; // 1 spare byte
 /// let words = try_copy!(transmute_many::<u16, SingleManyGuard>(bytes));
@@ -60,8 +61,8 @@ macro_rules! try_copy {
 /// # #[macro_use]
 /// # extern crate safe_transmute;
 /// # use safe_transmute::{SingleManyGuard, transmute_many};
-/// # #[cfg(feature = "std")]
-/// # fn main() -> Result<(), Box<std::error::Error>> {
+/// # use safe_transmute::error::Error;
+/// # fn main() -> Result<(), Error<'static, u8, u16>> {
 /// let bytes = &[0x00, 0x01, 0x12, 0x34,
 ///               0x00]; // 1 spare byte
 /// unsafe {

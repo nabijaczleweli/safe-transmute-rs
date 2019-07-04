@@ -1,4 +1,4 @@
-#![cfg(feature = "std")]
+#![cfg(feature = "alloc")]
 
 
 use safe_transmute::{Error, transmute_bool_vec_permissive};

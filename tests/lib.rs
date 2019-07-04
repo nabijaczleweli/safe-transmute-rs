@@ -4,7 +4,11 @@
 #[cfg(feature = "std")]
 extern crate core;
 
-#[cfg_attr(feature = "std", macro_use)]
+#[macro_use]
+#[cfg(feature = "alloc")]
+extern crate alloc;
+
+#[cfg_attr(feature = "alloc", macro_use)]
 extern crate safe_transmute;
 
 

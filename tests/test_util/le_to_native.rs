@@ -20,7 +20,7 @@ impl<'a> LeToNative for &'a mut [u8] {
     }
 }
 
-#[cfg(feature = "std")]
+#[cfg(feature = "alloc")]
 impl LeToNative for Vec<u8> {
     #[cfg(target_endian = "little")]
     fn le_to_native<T: Sized>(self) -> Self {
