@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `src/lib.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>lib.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../dark.css"><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script src="../../storage.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="shortcut icon" href="../../favicon.ico"><style type="text/css">#crate-search{background-image:url("../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../../safe_transmute/index.html'><img src='../../rust-logo.png' alt='logo' width='100'></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../theme.js"></script><nav class="sub"><form class="search-form js-only"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><a id="settings-menu" href="../../settings.html"><img src="../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">  1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source to the Rust file `src/lib.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>lib.rs.html -- source</title><link rel="stylesheet" type="text/css" href="../../normalize.css"><link rel="stylesheet" type="text/css" href="../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../dark.css"><link rel="stylesheet" type="text/css" href="../../light.css" id="themeStyle"><script src="../../storage.js"></script><noscript><link rel="stylesheet" href="../../noscript.css"></noscript><link rel="shortcut icon" href="../../favicon.ico"><style type="text/css">#crate-search{background-image:url("../../down-arrow.svg");}</style></head><body class="rustdoc source"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><a href='../../safe_transmute/index.html'><div class='logo-container'><img src='../../rust-logo.png' alt='logo'></div></a></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../../theme.js"></script><nav class="sub"><form class="search-form js-only"><div class="search-container"><div><select id="crate-search"><option value="All crates">All crates</option></select><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"></div><a id="settings-menu" href="../../settings.html"><img src="../../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><pre class="line-numbers"><span id="1">  1</span>
 <span id="2">  2</span>
 <span id="3">  3</span>
 <span id="4">  4</span>
@@ -185,6 +185,13 @@
 <span id="185">185</span>
 <span id="186">186</span>
 <span id="187">187</span>
+<span id="188">188</span>
+<span id="189">189</span>
+<span id="190">190</span>
+<span id="191">191</span>
+<span id="192">192</span>
+<span id="193">193</span>
+<span id="194">194</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! This crate contains checked implementations of transmutation procedures, some of which</span>
 <span class="doccomment">//! ensure memory safety.</span>
@@ -220,6 +227,10 @@
 <span class="doccomment">//!</span>
 <span class="doccomment">//! This crate can be used in a no-`std` environment by disabling the `std`</span>
 <span class="doccomment">//! feature through specifying `default-features = false` on import.</span>
+<span class="doccomment">//! However, `std` is only used for integration with `std::error::Error`.</span>
+<span class="doccomment">//!</span>
+<span class="doccomment">//! Note, however, that funxions operating on items from `alloc` will also be disabled by this.</span>
+<span class="doccomment">//! If your no-`std` environment has an `alloc` implementation, you will have to reenable them by using `features = [&quot;alloc&quot;]`.</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! # Migrating</span>
 <span class="doccomment">//!</span>
@@ -234,7 +245,7 @@
 <span class="doccomment">//! ```</span>
 <span class="doccomment">//! # use safe_transmute::{SingleManyGuard, Error, transmute_many};</span>
 <span class="doccomment">//! # #[cfg(feature = &quot;std&quot;)]</span>
-<span class="doccomment">//! # fn main() -&gt; Result&lt;(), Box&lt;::std::error::Error&gt;&gt; {</span>
+<span class="doccomment">//! # fn main() -&gt; Result&lt;(), Box&lt;std::error::Error&gt;&gt; {</span>
 <span class="doccomment">//! let bytes = &amp;[0x00, 0x01, 0x12, 0x24,</span>
 <span class="doccomment">//!               0x00]; // 1 spare byte</span>
 <span class="doccomment">//! match transmute_many::&lt;u16, SingleManyGuard&gt;(bytes) {</span>
@@ -268,7 +279,7 @@
 <span class="doccomment">//! # extern crate safe_transmute;</span>
 <span class="doccomment">//! # use safe_transmute::{SingleManyGuard, Error, transmute_many};</span>
 <span class="doccomment">//! # #[cfg(feature = &quot;std&quot;)]</span>
-<span class="doccomment">//! # fn main() -&gt; Result&lt;(), Box&lt;::std::error::Error&gt;&gt; {</span>
+<span class="doccomment">//! # fn main() -&gt; Result&lt;(), Box&lt;std::error::Error&gt;&gt; {</span>
 <span class="doccomment">//! let bytes = &amp;[0x00, 0x01, 0x12, 0x24, 0x00];</span>
 <span class="doccomment">//! let words = try_copy!(transmute_many::&lt;u16, SingleManyGuard&gt;(bytes));</span>
 <span class="doccomment">//!</span>
@@ -288,7 +299,7 @@
 <span class="doccomment">//! # use safe_transmute::{Error, transmute_many_pedantic};</span>
 <span class="doccomment">//! # include!(&quot;../tests/test_util/le_to_native.rs&quot;);</span>
 <span class="doccomment">//! # #[cfg(feature = &quot;std&quot;)]</span>
-<span class="doccomment">//! # fn main() -&gt; Result&lt;(), Box&lt;::std::error::Error&gt;&gt; {</span>
+<span class="doccomment">//! # fn main() -&gt; Result&lt;(), Box&lt;std::error::Error&gt;&gt; {</span>
 <span class="doccomment">//! # let bytes = &amp;[0x00, 0x01, 0x12, 0x34].le_to_native::&lt;u16&gt;();</span>
 <span class="doccomment">//! # let words = try_copy!(transmute_many_pedantic::&lt;u16&gt;(bytes).map_err(Error::without_src));</span>
 <span class="doccomment">//! # /*</span>
@@ -339,8 +350,11 @@
 <span class="attribute">#![<span class="ident">cfg_attr</span>(<span class="ident">not</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;std&quot;</span>), <span class="ident">no_std</span>)]</span>
 
 
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;std&quot;</span>)]</span>
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;alloc&quot;</span>)]</span>
 <span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">core</span>;
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;alloc&quot;</span>)]</span>
+<span class="attribute">#[<span class="ident">doc</span>(<span class="ident">hidden</span>)]</span>
+<span class="kw">pub</span> <span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">alloc</span>;
 
 <span class="kw">mod</span> <span class="ident">full</span>;
 
@@ -356,21 +370,21 @@
 
 <span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span>::<span class="ident">full</span>::{<span class="ident">transmute_many_permissive_mut</span>, <span class="ident">transmute_many_pedantic_mut</span>, <span class="ident">transmute_many_permissive</span>, <span class="ident">transmute_many_pedantic</span>, <span class="ident">transmute_one_pedantic</span>,
                      <span class="ident">transmute_many</span>, <span class="ident">transmute_many_mut</span>, <span class="ident">transmute_one</span>};
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;std&quot;</span>)]</span>
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;alloc&quot;</span>)]</span>
 <span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span>::<span class="ident">full</span>::<span class="ident">transmute_vec</span>;
 
 
 <span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span>::<span class="ident">guard</span>::{<span class="ident">SingleValueGuard</span>, <span class="ident">PermissiveGuard</span>, <span class="ident">SingleManyGuard</span>, <span class="ident">PedanticGuard</span>, <span class="ident">Guard</span>};
 <span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span>::<span class="ident">error</span>::{<span class="ident">UnalignedError</span>, <span class="ident">ErrorReason</span>, <span class="ident">GuardError</span>, <span class="ident">Error</span>};
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;std&quot;</span>)]</span>
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;alloc&quot;</span>)]</span>
 <span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span>::<span class="ident">error</span>::<span class="ident">IncompatibleVecTargetError</span>;
 <span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span>::<span class="ident">trivial</span>::{<span class="ident">TriviallyTransmutable</span>, <span class="ident">align_to_mut</span>, <span class="ident">align_to</span>};
 
 <span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span>::<span class="ident">to_bytes</span>::{<span class="ident">transmute_one_to_bytes_mut</span>, <span class="ident">transmute_one_to_bytes</span>, <span class="ident">transmute_to_bytes_mut</span>, <span class="ident">transmute_to_bytes</span>};
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;std&quot;</span>)]</span>
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;alloc&quot;</span>)]</span>
 <span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span>::<span class="ident">to_bytes</span>::<span class="ident">transmute_to_bytes_vec</span>;
 
-<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;std&quot;</span>)]</span>
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;alloc&quot;</span>)]</span>
 <span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span>::<span class="ident">bool</span>::{<span class="ident">transmute_bool_vec_permissive</span>, <span class="ident">transmute_bool_vec_pedantic</span>};
 <span class="kw">pub</span> <span class="kw">use</span> <span class="self">self</span>::<span class="ident">bool</span>::{<span class="ident">transmute_bool_permissive</span>, <span class="ident">transmute_bool_pedantic</span>};
 </pre></div>
