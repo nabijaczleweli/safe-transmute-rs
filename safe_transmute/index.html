@@ -31,7 +31,7 @@ making some use cases work.</li>
 <p>This crate can be used in a no-<code>std</code> environment by disabling the <code>std</code>
 feature through specifying <code>default-features = false</code> on import.
 However, <code>std</code> is only used for integration with <code>std::error::Error</code>.</p>
-<p>Note, however, that funxions operating on items from <code>alloc</code> will also be disabled by this.
+<p>Note, though, that funxions operating on items from <code>alloc</code> will also be disabled by this.
 If your no-<code>std</code> environment has an <code>alloc</code> implementation, you will have to reenable them by using <code>features = [&quot;alloc&quot;]</code>.</p>
 <h1 id="migrating" class="section-header"><a href="#migrating">Migrating</a></h1>
 <p>If you've used <code>safe-transmute</code> before v0.11,

@@ -123,7 +123,6 @@
 <span id="123">123</span>
 <span id="124">124</span>
 <span id="125">125</span>
-<span id="126">126</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! Migrating to `safe-transmute` v0.11</span>
 <span class="doccomment">//!</span>
@@ -229,8 +228,7 @@
 <span class="doccomment">//! You might have used safe-transmute&#39;s vector transmutation functions. Well, it turns out that they are</span>
 <span class="doccomment">//! **incredibly unsafe**, and hard to get it right. This will be more complicated to migrate efficiently.</span>
 <span class="doccomment">//! The new `transmute_vec()` only works under very restricted conditions: the `mem::align_of()` and `mem::size_of()` between</span>
-<span class="doccomment">//! the</span>
-<span class="doccomment">//! source and target element types must match. Otherwise, a full copy of the vector must be made.</span>
+<span class="doccomment">//! the source and target element types must match. Otherwise, a full copy of the vector must be made.</span>
 <span class="doccomment">//!</span>
 <span class="doccomment">//! ```rust</span>
 <span class="doccomment">//! # use safe_transmute::Error;</span>
