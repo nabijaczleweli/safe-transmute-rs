@@ -5,7 +5,7 @@ skip_tags: false
 platform: x64
 configuration: Release
 
-clone_folder: C:\cargo-update
+clone_folder: C:\safe-transmute-rs
 
 install:
   - set PATH=C:\msys64\mingw64\bin;C:\msys64\usr\bin;%PATH%;C:\Users\appveyor\.cargo\bin
@@ -19,13 +19,14 @@ install:
 build: off
 build_script:
   - cargo build --verbose --release
+  - cargo build --verbose --release --no-default-features
+  - cargo build --verbose --release --no-default-features --features alloc
 
 test: off
 test_script:
   - cargo test --verbose --release
-
-artifacts:
-  - path: cargo-install-update-v0.10.1.exe
+  - cargo test --verbose --release --no-default-features
+  - cargo test --verbose --release --no-default-features --features alloc
 
 notifications:
   - provider: Email
