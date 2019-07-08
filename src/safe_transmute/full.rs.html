@@ -283,6 +283,7 @@
 <span id="283">283</span>
 <span id="284">284</span>
 <span id="285">285</span>
+<span id="286">286</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! Module for functions which ensure full memory safety.</span>
 <span class="doccomment">//!</span>
@@ -546,7 +547,8 @@
 <span class="doccomment">///</span>
 <span class="doccomment">/// ```</span>
 <span class="doccomment">/// # use safe_transmute::transmute_vec;</span>
-<span class="doccomment">/// # fn run() -&gt; Result&lt;(), Box&lt;std::error::Error&gt;&gt; {</span>
+<span class="doccomment">/// # use safe_transmute::error::Error;</span>
+<span class="doccomment">/// # fn run() -&gt; Result&lt;(), Error&lt;&#39;static, u8, i8&gt;&gt; {</span>
 <span class="doccomment">/// assert_eq!(transmute_vec::&lt;u8, i8&gt;(vec![0x00, 0x01, 0x00, 0x02])?,</span>
 <span class="doccomment">///            vec![0x00i8, 0x01i8, 0x00i8, 0x02i8]);</span>
 <span class="doccomment">/// assert_eq!(transmute_vec::&lt;u8, i8&gt;(vec![0x04, 0x00, 0x00, 0x00, 0xED])?,</span>

@@ -135,6 +135,7 @@
 <span id="135">135</span>
 <span id="136">136</span>
 <span id="137">137</span>
+<span id="138">138</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! Module containing various utility functions.</span>
 
@@ -159,7 +160,8 @@
 <span class="doccomment">/// # #[macro_use]</span>
 <span class="doccomment">/// # extern crate safe_transmute;</span>
 <span class="doccomment">/// # use safe_transmute::{SingleManyGuard, transmute_many};</span>
-<span class="doccomment">/// # fn main() -&gt; Result&lt;(), Box&lt;::std::error::Error&gt;&gt; {</span>
+<span class="doccomment">/// # use safe_transmute::error::Error;</span>
+<span class="doccomment">/// # fn main() -&gt; Result&lt;(), Error&lt;&#39;static, u8, u16&gt;&gt; {</span>
 <span class="doccomment">/// let bytes = &amp;[0x00, 0x01, 0x12, 0x34,</span>
 <span class="doccomment">///               0x00]; // 1 spare byte</span>
 <span class="doccomment">/// let words = try_copy!(transmute_many::&lt;u16, SingleManyGuard&gt;(bytes));</span>
@@ -198,8 +200,8 @@
 <span class="doccomment">/// # #[macro_use]</span>
 <span class="doccomment">/// # extern crate safe_transmute;</span>
 <span class="doccomment">/// # use safe_transmute::{SingleManyGuard, transmute_many};</span>
-<span class="doccomment">/// # #[cfg(feature = &quot;std&quot;)]</span>
-<span class="doccomment">/// # fn main() -&gt; Result&lt;(), Box&lt;std::error::Error&gt;&gt; {</span>
+<span class="doccomment">/// # use safe_transmute::error::Error;</span>
+<span class="doccomment">/// # fn main() -&gt; Result&lt;(), Error&lt;&#39;static, u8, u16&gt;&gt; {</span>
 <span class="doccomment">/// let bytes = &amp;[0x00, 0x01, 0x12, 0x34,</span>
 <span class="doccomment">///               0x00]; // 1 spare byte</span>
 <span class="doccomment">/// unsafe {</span>
