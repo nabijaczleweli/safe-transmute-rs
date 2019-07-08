@@ -349,6 +349,8 @@
 <span id="349">349</span>
 <span id="350">350</span>
 <span id="351">351</span>
+<span id="352">352</span>
+<span id="353">353</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! Transmutation of trivial objects</span>
 <span class="doccomment">//!</span>
@@ -372,6 +374,8 @@
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;alloc&quot;</span>)]</span>
 <span class="kw">use</span> <span class="self">self</span>::<span class="kw">super</span>::<span class="ident">base</span>::<span class="ident">transmute_vec</span>;
 <span class="kw">use</span> <span class="self">self</span>::<span class="kw">super</span>::<span class="ident">Error</span>;
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;alloc&quot;</span>)]</span>
+<span class="kw">use</span> <span class="ident">alloc</span>::<span class="ident">vec</span>::<span class="ident">Vec</span>;
 
 
 <span class="doccomment">/// Type that can be constructed from any combination of bytes.</span>

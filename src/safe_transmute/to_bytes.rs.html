@@ -435,6 +435,8 @@
 <span id="435">435</span>
 <span id="436">436</span>
 <span id="437">437</span>
+<span id="438">438</span>
+<span id="439">439</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! Functions for transmutation *from* a concrete type *to* bytes.</span>
 
@@ -444,6 +446,8 @@
 <span class="kw">use</span> <span class="self">self</span>::<span class="kw">super</span>::<span class="ident">Error</span>;
 <span class="kw">use</span> <span class="ident">core</span>::<span class="ident">mem</span>::<span class="ident">size_of</span>;
 <span class="kw">use</span> <span class="ident">core</span>::<span class="ident">slice</span>;
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;alloc&quot;</span>)]</span>
+<span class="kw">use</span> <span class="ident">alloc</span>::<span class="ident">vec</span>::<span class="ident">Vec</span>;
 
 
 <span class="doccomment">/// Transmute a single instance of an arbitrary type into a slice of its bytes.</span>

@@ -281,6 +281,8 @@
 <span id="281">281</span>
 <span id="282">282</span>
 <span id="283">283</span>
+<span id="284">284</span>
+<span id="285">285</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! Module for functions which ensure full memory safety.</span>
 <span class="doccomment">//!</span>
@@ -297,12 +299,14 @@
 
 <span class="kw">use</span> <span class="self">self</span>::<span class="kw">super</span>::<span class="ident">trivial</span>::{<span class="ident">TriviallyTransmutable</span>, <span class="ident">transmute_trivial</span>, <span class="ident">transmute_trivial_many</span>, <span class="ident">transmute_trivial_many_mut</span>};
 <span class="kw">use</span> <span class="self">self</span>::<span class="kw">super</span>::<span class="ident">guard</span>::{<span class="ident">SingleValueGuard</span>, <span class="ident">PermissiveGuard</span>, <span class="ident">PedanticGuard</span>, <span class="ident">Guard</span>};
+<span class="kw">use</span> <span class="self">self</span>::<span class="kw">super</span>::<span class="ident">align</span>::{<span class="ident">check_alignment</span>, <span class="ident">check_alignment_mut</span>};
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;alloc&quot;</span>)]</span>
 <span class="kw">use</span> <span class="self">self</span>::<span class="kw">super</span>::<span class="ident">error</span>::<span class="ident">IncompatibleVecTargetError</span>;
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;alloc&quot;</span>)]</span>
 <span class="kw">use</span> <span class="ident">core</span>::<span class="ident">mem</span>::{<span class="ident">align_of</span>, <span class="ident">size_of</span>, <span class="ident">forget</span>};
-<span class="kw">use</span> <span class="self">self</span>::<span class="kw">super</span>::<span class="ident">align</span>::{<span class="ident">check_alignment</span>, <span class="ident">check_alignment_mut</span>};
 <span class="kw">use</span> <span class="self">self</span>::<span class="kw">super</span>::<span class="ident">Error</span>;
+<span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;alloc&quot;</span>)]</span>
+<span class="kw">use</span> <span class="ident">alloc</span>::<span class="ident">vec</span>::<span class="ident">Vec</span>;
 
 
 <span class="doccomment">/// Transmute a byte slice into a single instance of a trivially transmutable type.</span>
