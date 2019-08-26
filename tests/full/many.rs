@@ -1,5 +1,6 @@
 use safe_transmute::{SingleManyGuard, ErrorReason, GuardError, Error, transmute_to_bytes, transmute_many};
 
+
 #[test]
 fn too_short() {
     assert_eq!(transmute_many::<u16, SingleManyGuard>(transmute_to_bytes::<u16>(&[])),

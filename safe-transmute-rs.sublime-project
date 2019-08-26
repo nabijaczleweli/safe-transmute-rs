@@ -7,7 +7,7 @@
 			"name": "Build safe-transmute-rs",
 
 			"target": "ansi_color_build",
-			"syntax": "Packages/ANSIescape/ANSI.tmLanguage"
+			"syntax": "Packages/ANSIescape/ANSI.sublime-syntax"
 		},
 		{
 			"working_dir": "$project_path",
@@ -15,7 +15,7 @@
 			"name": "Build safe-transmute-rs (no_std)",
 
 			"target": "ansi_color_build",
-			"syntax": "Packages/ANSIescape/ANSI.tmLanguage"
+			"syntax": "Packages/ANSIescape/ANSI.sublime-syntax"
 		},
 		{
 			"working_dir": "$project_path",
@@ -23,7 +23,7 @@
 			"name": "Build safe-transmute-rs (no_std + alloc)",
 
 			"target": "ansi_color_build",
-			"syntax": "Packages/ANSIescape/ANSI.tmLanguage"
+			"syntax": "Packages/ANSIescape/ANSI.sublime-syntax"
 		},
 		{
 			"working_dir": "$project_path",
@@ -31,7 +31,7 @@
 			"name": "Document safe-transmute-rs",
 
 			"target": "ansi_color_build",
-			"syntax": "Packages/ANSIescape/ANSI.tmLanguage"
+			"syntax": "Packages/ANSIescape/ANSI.sublime-syntax"
 		}
 	],
 	"folders":

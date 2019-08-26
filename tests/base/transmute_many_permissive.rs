@@ -1,5 +1,5 @@
-use safe_transmute::base::transmute_many_permissive;
-use self::super::LeToNative;
+use safe_transmute::{PermissiveGuard, transmute_to_bytes};
+use safe_transmute::base::transmute_many;
 
 
 #[test]
@@ -8,9 +8,8 @@ fn too_short() {
     let bytes = transmute_to_bytes(words);
 
     unsafe {
-        assert_eq!(transmute_many::<u16, PermissiveGuard>(&[]), Ok(&[]));
-        assert_eq!(transmute_many::<u16, PermissiveGuard>(&bytes[..1]),
-                   Ok(words));
+        assert_eq!(transmute_many::<u16, PermissiveGuard>(&[]), Ok(&[][..]));
+        assert_eq!(transmute_many::<u16, PermissiveGuard>(&bytes[..1]), Ok(&[][..]));
     }
 }
 
