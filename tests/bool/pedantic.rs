@@ -13,9 +13,9 @@ fn too_short() {
 
 #[test]
 fn just_enough() {
-    assert_eq!(transmute_bool_pedantic([0x00, 0x01].as_ref()), Ok([false, true].into_iter().as_slice()));
+    assert_eq!(transmute_bool_pedantic([0x00, 0x01].as_ref()), Ok(&[false, true][..]));
     assert_eq!(transmute_bool_pedantic([0x01, 0x01, 0x00, 0x01].as_ref()),
-               Ok([true, true, false, true].into_iter().as_slice()));
+               Ok(&[true, true, false, true][..]));
 }
 
 #[test]
