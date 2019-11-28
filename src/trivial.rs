@@ -107,7 +107,7 @@ unsafe impl<T: TriviallyTransmutable> TriviallyTransmutable for [T; 32] {}
 /// Transmute the slice to a slice of another type, ensuring alignment of the types is maintained.
 ///
 /// This function is equivalent to
-/// [`std::slice::align_to`](https://doc.rust-lang.org/std/primitive.slice.html#method.align_to).
+/// [`std::slice::align_to()`](https://doc.rust-lang.org/std/primitive.slice.html#method.align_to).
 ///
 /// However, since both source and target types are [trivially transmutable](./trait.TriviallyTransmutable.html),
 /// the operation is always safe.
@@ -132,7 +132,7 @@ pub fn align_to<S: TriviallyTransmutable, T: TriviallyTransmutable>(slice: &[S])
 /// Transmute the slice to a slice of another type, ensuring alignment of the types is maintained.
 ///
 /// This function is equivalent to
-/// [`std::slice::align_to_mut`](https://doc.rust-lang.org/std/primitive.slice.html#method.align_to_mut).
+/// [`std::slice::align_to_mut()`](https://doc.rust-lang.org/std/primitive.slice.html#method.align_to_mut).
 ///
 /// However, since both source and target types are [trivially transmutable](./trait.TriviallyTransmutable.html),
 /// the operation is always safe.
@@ -142,7 +142,7 @@ pub fn align_to<S: TriviallyTransmutable, T: TriviallyTransmutable>(slice: &[S])
 /// ```
 /// # use safe_transmute::trivial::align_to_mut;
 /// let mut bytes: [u8; 7] = [1, 2, 3, 4, 5, 6, 7];
-/// let (prefix, shorts, suffix) = align_to_mut ::<_, u16>(&mut bytes);
+/// let (prefix, shorts, suffix) = align_to_mut::<_, u16>(&mut bytes);
 ///
 /// // less_efficient_algorithm_for_bytes(prefix);
 /// // more_efficient_algorithm_for_aligned_shorts(shorts);
@@ -328,7 +328,7 @@ pub unsafe fn guarded_transmute_pod_many_pedantic<T: TriviallyTransmutable>(byte
 ///
 /// Vector transmutations are **exceptionally** dangerous because of
 /// the constraints imposed by
-/// [`Vec::from_raw_parts`](https://doc.rust-lang.org/std/vec/struct.Vec.html#method.from_raw_parts).
+/// [`Vec::from_raw_parts()`](https://doc.rust-lang.org/std/vec/struct.Vec.html#method.from_raw_parts).
 ///
 /// Unless *all* of the following requirements are fulfilled, this operation
 /// may result in undefined behavior.

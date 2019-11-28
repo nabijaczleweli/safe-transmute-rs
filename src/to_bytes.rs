@@ -21,6 +21,7 @@ use alloc::vec::Vec;
 /// # include!("../tests/test_util/le_to_native.rs");
 /// # fn main() {
 /// unsafe {
+///     // Little-endian
 ///     assert_eq!(transmute_to_bytes_unchecked(&0x0123_4567),
 /// # /*
 ///                &[0x67, 0x45, 0x23, 0x01]);
@@ -70,6 +71,7 @@ pub unsafe fn transmute_to_bytes_unchecked<S>(from: &S) -> &[u8] {
 /// # include!("../tests/test_util/le_to_native.rs");
 /// # fn main() {
 /// unsafe {
+///     // Little-endian
 ///     assert_eq!(transmute_to_bytes_unchecked_mut(&mut 0x0123_4567),
 /// # /*
 ///                &mut [0x67, 0x45, 0x23, 0x01]);
@@ -117,11 +119,12 @@ pub unsafe fn transmute_to_bytes_unchecked_mut<S>(from: &mut S) -> &mut [u8] {
 /// Some `u16`s:
 ///
 /// ```
-/// # use safe_transmute::to_bytes::transmute_to_bytes;
+/// # use safe_transmute::to_bytes::transmute_to_bytes_many_unchecked;
 /// # include!("../tests/test_util/le_to_native.rs");
 /// # fn main() {
 /// unsafe {
-///     assert_eq!(transmute_to_bytes(&[0x0123u16, 0x4567u16]),
+///     // Little-endian
+///     assert_eq!(transmute_to_bytes_many_unchecked(&[0x0123u16, 0x4567u16]),
 /// # /*
 ///                &[0x23, 0x01, 0x67, 0x45]);
 /// # */
@@ -174,6 +177,7 @@ pub unsafe fn transmute_to_bytes_many_unchecked<S>(from: &[S]) -> &[u8] {
 /// # include!("../tests/test_util/le_to_native.rs");
 /// # fn main() {
 /// unsafe {
+///     // Little-endian
 ///     assert_eq!(transmute_to_bytes_mut(&mut [0x0123u16, 0x4567u16]),
 /// # /*
 ///                &[0x23, 0x01, 0x67, 0x45]);
@@ -235,6 +239,7 @@ pub unsafe fn transmute_to_bytes_many_unchecked_mut<S>(from: &mut [S]) -> &mut [
 /// # use safe_transmute::transmute_one_to_bytes;
 /// # include!("../tests/test_util/le_to_native.rs");
 /// # fn main() {
+/// // Little-endian
 /// assert_eq!(transmute_one_to_bytes(&0x0123_4567),
 /// # /*
 ///            &[0x67, 0x45, 0x23, 0x01]);
@@ -276,6 +281,7 @@ pub fn transmute_one_to_bytes<S: TriviallyTransmutable>(from: &S) -> &[u8] {
 /// # use safe_transmute::transmute_one_to_bytes_mut;
 /// # include!("../tests/test_util/le_to_native.rs");
 /// # fn main() {
+/// // Little-endian
 /// assert_eq!(transmute_one_to_bytes_mut(&mut 0x0123_4567),
 /// # /*
 ///            &mut [0x67, 0x45, 0x23, 0x01]);
@@ -326,6 +332,7 @@ pub fn transmute_one_to_bytes_mut<S: TriviallyTransmutable>(from: &mut S) -> &mu
 /// # use safe_transmute::transmute_to_bytes;
 /// # include!("../tests/test_util/le_to_native.rs");
 /// # fn main() {
+/// // Little-endian
 /// assert_eq!(transmute_to_bytes(&[0x0123u16, 0x4567u16]),
 /// # /*
 ///            &[0x23, 0x01, 0x67, 0x45]);
@@ -364,8 +371,6 @@ pub fn transmute_to_bytes<S: TriviallyTransmutable>(from: &[S]) -> &[u8] {
 /// slice of its bytes.
 ///
 /// # Examples
-///
-/// Some `u16`s:
 ///
 /// ```
 /// # use safe_transmute::{TriviallyTransmutable, transmute_to_bytes_mut};
@@ -416,7 +421,7 @@ pub fn guarded_transmute_to_bytes_pod_many<S: TriviallyTransmutable>(from: &[S])
 /// Transmute a vector of elements of an arbitrary type into a vector of their
 /// bytes, using the same memory buffer as the former.
 ///
-/// This is equivalent to calling [`full::transmute_vec`](../full/fn.transmute_vec.html) where
+/// This is equivalent to calling [`full::transmute_vec()`](../full/fn.transmute_vec.html) where
 /// the target type is `u8`.
 ///
 /// # Errors
