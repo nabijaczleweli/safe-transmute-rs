@@ -122,7 +122,7 @@
 //!
 //! View a byte slice as a single `f64`:
 //!
-//! ```no_run
+//!  ```
 //! # use safe_transmute::transmute_one;
 //! # include!("../tests/test_util/le_to_native.rs");
 //! # fn main() {

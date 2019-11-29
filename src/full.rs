@@ -38,7 +38,7 @@ use alloc::vec::Vec;
 ///
 /// # Examples
 ///
-/// ```no_run
+/// ```
 /// # use safe_transmute::transmute_one;
 /// # include!("../tests/test_util/le_to_native.rs");
 /// # fn main() {
@@ -69,7 +69,7 @@ pub fn transmute_one<T: TriviallyTransmutable>(bytes: &[u8]) -> Result<T, Error<
 ///
 /// # Examples
 ///
-/// ```no_run
+/// ```
 /// # use safe_transmute::transmute_one_pedantic;
 /// # include!("../tests/test_util/le_to_native.rs");
 /// # fn main() {
@@ -98,7 +98,7 @@ pub fn transmute_one_pedantic<T: TriviallyTransmutable>(bytes: &[u8]) -> Result<
 ///
 /// # Examples
 ///
-/// ```no_run
+/// ```
 /// # use safe_transmute::{SingleManyGuard, transmute_many};
 /// # include!("../tests/test_util/le_to_native.rs");
 /// # fn main() {
@@ -126,9 +126,16 @@ pub fn transmute_many<T: TriviallyTransmutable, G: Guard>(bytes: &[u8]) -> Resul
 ///
 /// # Examples
 ///
-/// ```no_run
-/// # use safe_transmute::transmute_many_permissive;
-/// assert_eq!(transmute_many_permissive::<u16>(&[0x00]), Ok([].as_ref()));
+/// ```
+/// # use safe_transmute::{Error, transmute_many_permissive};
+/// # /*
+/// assert_eq!(transmute_many_permissive::<u16>(&[0x00])?, [].as_ref());
+/// # */
+/// # match transmute_many_permissive::<u16>(&[0x00]) {
+/// #   Ok(sl) => assert_eq!(sl, [].as_ref()),
+/// #   Err(Error::Unaligned(_)) => {}
+/// #   Err(e) => panic!("{}", e),
+/// # }
 /// ```
 pub fn transmute_many_permissive<T: TriviallyTransmutable>(bytes: &[u8]) -> Result<&[T], Error<u8, T>> {
     transmute_many::<T, PermissiveGuard>(bytes)
@@ -146,7 +153,7 @@ pub fn transmute_many_permissive<T: TriviallyTransmutable>(bytes: &[u8]) -> Resu
 ///
 /// # Examples
 ///
-/// ```no_run
+/// ```
 /// # use safe_transmute::transmute_many_pedantic;
 /// # include!("../tests/test_util/le_to_native.rs");
 /// # fn main() {
@@ -174,7 +181,7 @@ pub fn transmute_many_pedantic<T: TriviallyTransmutable>(bytes: &[u8]) -> Result
 ///
 /// # Examples
 ///
-/// ```no_run
+/// ```
 /// # use safe_transmute::{SingleManyGuard, transmute_many_mut};
 /// # include!("../tests/test_util/le_to_native.rs");
 /// # fn main() {
@@ -203,9 +210,16 @@ pub fn transmute_many_mut<T: TriviallyTransmutable, G: Guard>(bytes: &mut [u8]) 
 ///
 /// # Examples
 ///
-/// ```no_run
-/// # use safe_transmute::transmute_many_permissive_mut;
-/// assert_eq!(transmute_many_permissive_mut::<u16>(&mut [0x00]), Ok([].as_mut()));
+/// ```
+/// # use safe_transmute::{Error, transmute_many_permissive_mut};
+/// # /*
+/// assert_eq!(transmute_many_permissive_mut::<u16>(&mut [0x00])?, [].as_mut());
+/// # */
+/// # match transmute_many_permissive_mut::<u16>(&mut [0x00]) {
+/// #   Ok(sl) => assert_eq!(sl, [].as_mut()),
+/// #   Err(Error::Unaligned(_)) => {}
+/// #   Err(e) => panic!("{}", e),
+/// # }
 /// ```
 pub fn transmute_many_permissive_mut<T: TriviallyTransmutable>(bytes: &mut [u8]) -> Result<&mut [T], Error<u8, T>> {
     transmute_many_mut::<T, PermissiveGuard>(bytes)
@@ -223,7 +237,7 @@ pub fn transmute_many_permissive_mut<T: TriviallyTransmutable>(bytes: &mut [u8])
 ///
 /// # Examples
 ///
-/// ```no_run
+/// ```
 /// # use safe_transmute::transmute_many_pedantic_mut;
 /// # include!("../tests/test_util/le_to_native.rs");
 /// # fn main() {

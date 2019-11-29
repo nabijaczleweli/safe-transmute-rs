@@ -173,7 +173,7 @@ pub fn align_to_mut<S: TriviallyTransmutable, T: TriviallyTransmutable>(slice: &
 ///
 /// # Examples
 ///
-/// ```no_run
+/// ```
 /// # use safe_transmute::trivial::transmute_trivial;
 /// # include!("../tests/test_util/le_to_native.rs");
 /// # fn main() {
@@ -211,7 +211,7 @@ pub unsafe fn transmute_trivial<T: TriviallyTransmutable>(bytes: &[u8]) -> Resul
 ///
 /// # Examples
 ///
-/// ```no_run
+/// ```
 /// # use safe_transmute::trivial::transmute_trivial_pedantic;
 /// # include!("../tests/test_util/le_to_native.rs");
 /// # fn main() {
@@ -246,7 +246,7 @@ pub unsafe fn transmute_trivial_pedantic<T: TriviallyTransmutable>(bytes: &[u8])
 ///
 /// # Examples
 ///
-/// ```no_run
+/// ```
 /// # use safe_transmute::trivial::transmute_trivial_many;
 /// # use safe_transmute::SingleManyGuard;
 /// # include!("../tests/test_util/le_to_native.rs");
@@ -283,7 +283,7 @@ pub unsafe fn transmute_trivial_many<T: TriviallyTransmutable, G: Guard>(bytes: 
 ///
 /// # Examples
 ///
-/// ```no_run
+/// ```
 /// # use safe_transmute::trivial::transmute_trivial_many;
 /// # use safe_transmute::SingleManyGuard;
 /// # include!("../tests/test_util/le_to_native.rs");

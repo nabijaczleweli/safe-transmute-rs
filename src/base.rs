@@ -35,7 +35,7 @@ use core::slice;
 ///
 /// # Examples
 ///
-/// ```no_run
+/// ```
 /// # use safe_transmute::base::from_bytes;
 /// # include!("../tests/test_util/le_to_native.rs");
 /// # fn main() {
@@ -74,7 +74,7 @@ pub unsafe fn from_bytes<T: Copy>(bytes: &[u8]) -> Result<T, Error<u8, T>> {
 ///
 /// # Examples
 ///
-/// ```no_run
+/// ```
 /// # use safe_transmute::base::from_bytes_pedantic;
 /// # include!("../tests/test_util/le_to_native.rs");
 /// # fn main() {
@@ -118,7 +118,7 @@ pub unsafe fn from_bytes_pedantic<T: Copy>(bytes: &[u8]) -> Result<T, Error<u8, 
 ///
 /// # Examples
 ///
-/// ```no_run
+/// ```
 /// # use safe_transmute::base::transmute_many;
 /// # use safe_transmute::SingleManyGuard;
 /// # include!("../tests/test_util/le_to_native.rs");
@@ -163,7 +163,7 @@ pub unsafe fn transmute_many<T, G: Guard>(bytes: &[u8]) -> Result<&[T], Error<u8
 ///
 /// # Examples
 ///
-/// ```no_run
+/// ```
 /// # use safe_transmute::base::transmute_many_mut;
 /// # use safe_transmute::SingleManyGuard;
 /// # include!("../tests/test_util/le_to_native.rs");
@@ -175,7 +175,7 @@ pub unsafe fn transmute_many<T, G: Guard>(bytes: &[u8]) -> Result<&[T], Error<u8
 ///         transmute_many_mut::<u16, SingleManyGuard>(&mut [0xFF, 0x01, 0x00, 0x02])?,
 /// # */
 /// #   assert_eq!(transmute_many_mut::<u16, SingleManyGuard>(&mut [0xFF, 0x01, 0x00, 0x02].le_to_native::<u16>()).unwrap(),
-///         &mut [0x0100, 0x0200]
+///         &mut [0x01FF, 0x0200]
 ///     );
 /// }
 /// # }
@@ -205,7 +205,7 @@ pub unsafe fn transmute_many_mut<T, G: Guard>(bytes: &mut [u8]) -> Result<&mut [
 ///
 /// # Examples
 ///
-/// ```no_run
+/// ```
 /// # use safe_transmute::base::transmute_many_permissive;
 /// # include!("../tests/test_util/le_to_native.rs");
 /// # fn main() {
