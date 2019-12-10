@@ -461,7 +461,7 @@
 <span class="doccomment">/// Transmute the slice to a slice of another type, ensuring alignment of the types is maintained.</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// This function is equivalent to</span>
-<span class="doccomment">/// [`std::slice::align_to`](https://doc.rust-lang.org/std/primitive.slice.html#method.align_to).</span>
+<span class="doccomment">/// [`std::slice::align_to()`](https://doc.rust-lang.org/std/primitive.slice.html#method.align_to).</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// However, since both source and target types are [trivially transmutable](./trait.TriviallyTransmutable.html),</span>
 <span class="doccomment">/// the operation is always safe.</span>
@@ -479,14 +479,14 @@
 <span class="doccomment">///</span>
 <span class="doccomment">/// assert_eq!(prefix.len() + shorts.len() * 2 + suffix.len(), 7);</span>
 <span class="doccomment">/// ```</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">align_to</span><span class="op">&lt;</span><span class="ident">S</span>: <span class="ident">TriviallyTransmutable</span>, <span class="ident">T</span>: <span class="ident">TriviallyTransmutable</span><span class="op">&gt;</span>(<span class="ident">slice</span>: <span class="kw-2">&amp;</span>[<span class="ident">S</span>]) <span class="op">-&gt;</span> (<span class="kw-2">&amp;</span>[<span class="ident">S</span>], <span class="kw-2">&amp;</span>[<span class="ident">T</span>], <span class="kw-2">&amp;</span>[<span class="ident">S</span>]) {
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">align_to</span><span class="op">&lt;</span><span class="ident">S</span>: <span class="ident">TriviallyTransmutable</span>, <span class="ident">T</span>: <span class="ident">TriviallyTransmutable</span><span class="op">&gt;</span>(<span class="ident">slice</span>: <span class="kw-2">&amp;</span>[<span class="ident">S</span>]) <span class="op">-</span><span class="op">&gt;</span> (<span class="kw-2">&amp;</span>[<span class="ident">S</span>], <span class="kw-2">&amp;</span>[<span class="ident">T</span>], <span class="kw-2">&amp;</span>[<span class="ident">S</span>]) {
     <span class="kw">unsafe</span> { <span class="ident">slice</span>.<span class="ident">align_to</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>() }
 }
 
 <span class="doccomment">/// Transmute the slice to a slice of another type, ensuring alignment of the types is maintained.</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// This function is equivalent to</span>
-<span class="doccomment">/// [`std::slice::align_to_mut`](https://doc.rust-lang.org/std/primitive.slice.html#method.align_to_mut).</span>
+<span class="doccomment">/// [`std::slice::align_to_mut()`](https://doc.rust-lang.org/std/primitive.slice.html#method.align_to_mut).</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// However, since both source and target types are [trivially transmutable](./trait.TriviallyTransmutable.html),</span>
 <span class="doccomment">/// the operation is always safe.</span>
@@ -496,7 +496,7 @@
 <span class="doccomment">/// ```</span>
 <span class="doccomment">/// # use safe_transmute::trivial::align_to_mut;</span>
 <span class="doccomment">/// let mut bytes: [u8; 7] = [1, 2, 3, 4, 5, 6, 7];</span>
-<span class="doccomment">/// let (prefix, shorts, suffix) = align_to_mut ::&lt;_, u16&gt;(&amp;mut bytes);</span>
+<span class="doccomment">/// let (prefix, shorts, suffix) = align_to_mut::&lt;_, u16&gt;(&amp;mut bytes);</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// // less_efficient_algorithm_for_bytes(prefix);</span>
 <span class="doccomment">/// // more_efficient_algorithm_for_aligned_shorts(shorts);</span>
@@ -504,7 +504,7 @@
 <span class="doccomment">///</span>
 <span class="doccomment">/// assert_eq!(prefix.len() + shorts.len() * 2 + suffix.len(), 7);</span>
 <span class="doccomment">/// ```</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">align_to_mut</span><span class="op">&lt;</span><span class="ident">S</span>: <span class="ident">TriviallyTransmutable</span>, <span class="ident">T</span>: <span class="ident">TriviallyTransmutable</span><span class="op">&gt;</span>(<span class="ident">slice</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> [<span class="ident">S</span>]) <span class="op">-&gt;</span> (<span class="kw-2">&amp;</span><span class="kw-2">mut</span> [<span class="ident">S</span>], <span class="kw-2">&amp;</span><span class="kw-2">mut</span> [<span class="ident">T</span>], <span class="kw-2">&amp;</span><span class="kw-2">mut</span> [<span class="ident">S</span>]) {
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">align_to_mut</span><span class="op">&lt;</span><span class="ident">S</span>: <span class="ident">TriviallyTransmutable</span>, <span class="ident">T</span>: <span class="ident">TriviallyTransmutable</span><span class="op">&gt;</span>(<span class="ident">slice</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> [<span class="ident">S</span>]) <span class="op">-</span><span class="op">&gt;</span> (<span class="kw-2">&amp;</span><span class="kw-2">mut</span> [<span class="ident">S</span>], <span class="kw-2">&amp;</span><span class="kw-2">mut</span> [<span class="ident">T</span>], <span class="kw-2">&amp;</span><span class="kw-2">mut</span> [<span class="ident">S</span>]) {
     <span class="kw">unsafe</span> { <span class="ident">slice</span>.<span class="ident">align_to_mut</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>() }
 }
 
@@ -540,7 +540,7 @@
 <span class="doccomment">/// }</span>
 <span class="doccomment">/// # }</span>
 <span class="doccomment">/// ```</span>
-<span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">transmute_trivial</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">TriviallyTransmutable</span><span class="op">&gt;</span>(<span class="ident">bytes</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>]) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">Error</span><span class="op">&lt;</span><span class="ident">u8</span>, <span class="ident">T</span><span class="op">&gt;&gt;</span> {
+<span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">transmute_trivial</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">TriviallyTransmutable</span><span class="op">&gt;</span>(<span class="ident">bytes</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>]) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">Error</span><span class="op">&lt;</span><span class="ident">u8</span>, <span class="ident">T</span><span class="op">&gt;</span><span class="op">&gt;</span> {
     <span class="ident">from_bytes</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(<span class="ident">bytes</span>)
 }
 
@@ -578,7 +578,7 @@
 <span class="doccomment">/// }</span>
 <span class="doccomment">/// # }</span>
 <span class="doccomment">/// ```</span>
-<span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">transmute_trivial_pedantic</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">TriviallyTransmutable</span><span class="op">&gt;</span>(<span class="ident">bytes</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>]) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">Error</span><span class="op">&lt;</span><span class="ident">u8</span>, <span class="ident">T</span><span class="op">&gt;&gt;</span> {
+<span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">transmute_trivial_pedantic</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">TriviallyTransmutable</span><span class="op">&gt;</span>(<span class="ident">bytes</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>]) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">Error</span><span class="op">&lt;</span><span class="ident">u8</span>, <span class="ident">T</span><span class="op">&gt;</span><span class="op">&gt;</span> {
     <span class="ident">PedanticGuard</span>::<span class="ident">check</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(<span class="ident">bytes</span>)<span class="question-mark">?</span>;
     <span class="ident">from_bytes</span>(<span class="ident">bytes</span>)
 }
@@ -615,7 +615,7 @@
 <span class="doccomment">/// }</span>
 <span class="doccomment">/// # }</span>
 <span class="doccomment">/// ```</span>
-<span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">transmute_trivial_many</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">TriviallyTransmutable</span>, <span class="ident">G</span>: <span class="ident">Guard</span><span class="op">&gt;</span>(<span class="ident">bytes</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>]) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="kw-2">&amp;</span>[<span class="ident">T</span>], <span class="ident">Error</span><span class="op">&lt;</span><span class="ident">u8</span>, <span class="ident">T</span><span class="op">&gt;&gt;</span> {
+<span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">transmute_trivial_many</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">TriviallyTransmutable</span>, <span class="ident">G</span>: <span class="ident">Guard</span><span class="op">&gt;</span>(<span class="ident">bytes</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>]) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="kw-2">&amp;</span>[<span class="ident">T</span>], <span class="ident">Error</span><span class="op">&lt;</span><span class="ident">u8</span>, <span class="ident">T</span><span class="op">&gt;</span><span class="op">&gt;</span> {
     <span class="ident">transmute_many</span>::<span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">G</span><span class="op">&gt;</span>(<span class="ident">bytes</span>)
 }
 
@@ -652,7 +652,7 @@
 <span class="doccomment">/// }</span>
 <span class="doccomment">/// # }</span>
 <span class="doccomment">/// ```</span>
-<span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">transmute_trivial_many_mut</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">TriviallyTransmutable</span>, <span class="ident">G</span>: <span class="ident">Guard</span><span class="op">&gt;</span>(<span class="ident">bytes</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> [<span class="ident">u8</span>]) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="kw-2">mut</span> [<span class="ident">T</span>], <span class="ident">Error</span><span class="op">&lt;</span><span class="ident">u8</span>, <span class="ident">T</span><span class="op">&gt;&gt;</span> {
+<span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">transmute_trivial_many_mut</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">TriviallyTransmutable</span>, <span class="ident">G</span>: <span class="ident">Guard</span><span class="op">&gt;</span>(<span class="ident">bytes</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> [<span class="ident">u8</span>]) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="kw-2">mut</span> [<span class="ident">T</span>], <span class="ident">Error</span><span class="op">&lt;</span><span class="ident">u8</span>, <span class="ident">T</span><span class="op">&gt;</span><span class="op">&gt;</span> {
     <span class="ident">transmute_many_mut</span>::<span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">G</span><span class="op">&gt;</span>(<span class="ident">bytes</span>)
 }
 
@@ -660,7 +660,7 @@
 <span class="doccomment">///</span>
 <span class="doccomment">/// The resulting slice will have as many instances of a type as will fit, rounded down.</span>
 <span class="attribute">#[<span class="ident">deprecated</span>(<span class="ident">since</span> <span class="op">=</span> <span class="string">&quot;0.11.0&quot;</span>, <span class="ident">note</span> <span class="op">=</span> <span class="string">&quot;see `trivial::transmute_many()` with `PermissiveGuard` for the equivalent behavior&quot;</span>)]</span>
-<span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">guarded_transmute_pod_many_permissive</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">TriviallyTransmutable</span><span class="op">&gt;</span>(<span class="ident">bytes</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>]) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="kw-2">&amp;</span>[<span class="ident">T</span>], <span class="ident">Error</span><span class="op">&lt;</span><span class="ident">u8</span>, <span class="ident">T</span><span class="op">&gt;&gt;</span> {
+<span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">guarded_transmute_pod_many_permissive</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">TriviallyTransmutable</span><span class="op">&gt;</span>(<span class="ident">bytes</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>]) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="kw-2">&amp;</span>[<span class="ident">T</span>], <span class="ident">Error</span><span class="op">&lt;</span><span class="ident">u8</span>, <span class="ident">T</span><span class="op">&gt;</span><span class="op">&gt;</span> {
     <span class="prelude-val">Ok</span>(<span class="ident">transmute_many</span>::<span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">PermissiveGuard</span><span class="op">&gt;</span>(<span class="ident">bytes</span>)<span class="question-mark">?</span>)
 }
 
@@ -669,7 +669,7 @@
 <span class="doccomment">/// The byte slice must have at least enough bytes to fill a single instance of a type,</span>
 <span class="doccomment">/// and should not have extraneous data.</span>
 <span class="attribute">#[<span class="ident">deprecated</span>(<span class="ident">since</span> <span class="op">=</span> <span class="string">&quot;0.11.0&quot;</span>, <span class="ident">note</span> <span class="op">=</span> <span class="string">&quot;see `trivial::transmute_many()` with `PedanticGuard` for the equivalent behavior&quot;</span>)]</span>
-<span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">guarded_transmute_pod_many_pedantic</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">TriviallyTransmutable</span><span class="op">&gt;</span>(<span class="ident">bytes</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>]) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="kw-2">&amp;</span>[<span class="ident">T</span>], <span class="ident">Error</span><span class="op">&lt;</span><span class="ident">u8</span>, <span class="ident">T</span><span class="op">&gt;&gt;</span> {
+<span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">guarded_transmute_pod_many_pedantic</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">TriviallyTransmutable</span><span class="op">&gt;</span>(<span class="ident">bytes</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>]) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="kw-2">&amp;</span>[<span class="ident">T</span>], <span class="ident">Error</span><span class="op">&lt;</span><span class="ident">u8</span>, <span class="ident">T</span><span class="op">&gt;</span><span class="op">&gt;</span> {
     <span class="ident">transmute_many</span>::<span class="op">&lt;</span><span class="ident">T</span>, <span class="ident">PedanticGuard</span><span class="op">&gt;</span>(<span class="ident">bytes</span>)
 }
 
@@ -682,7 +682,7 @@
 <span class="doccomment">///</span>
 <span class="doccomment">/// Vector transmutations are **exceptionally** dangerous because of</span>
 <span class="doccomment">/// the constraints imposed by</span>
-<span class="doccomment">/// [`Vec::from_raw_parts`](https://doc.rust-lang.org/std/vec/struct.Vec.html#method.from_raw_parts).</span>
+<span class="doccomment">/// [`Vec::from_raw_parts()`](https://doc.rust-lang.org/std/vec/struct.Vec.html#method.from_raw_parts).</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// Unless *all* of the following requirements are fulfilled, this operation</span>
 <span class="doccomment">/// may result in undefined behavior.</span>
@@ -702,7 +702,7 @@
 <span class="doccomment">/// }</span>
 <span class="doccomment">/// ```</span>
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;alloc&quot;</span>)]</span>
-<span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">transmute_trivial_vec</span><span class="op">&lt;</span><span class="ident">S</span>: <span class="ident">TriviallyTransmutable</span>, <span class="ident">T</span>: <span class="ident">TriviallyTransmutable</span><span class="op">&gt;</span>(<span class="ident">vec</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
+<span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">transmute_trivial_vec</span><span class="op">&lt;</span><span class="ident">S</span>: <span class="ident">TriviallyTransmutable</span>, <span class="ident">T</span>: <span class="ident">TriviallyTransmutable</span><span class="op">&gt;</span>(<span class="ident">vec</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
     <span class="ident">transmute_vec</span>::<span class="op">&lt;</span><span class="ident">S</span>, <span class="ident">T</span><span class="op">&gt;</span>(<span class="ident">vec</span>)
 }
 </pre></div>

@@ -6,5 +6,4 @@ implementors["safe_transmute"] = [{text:"impl <a class=\"trait\" href=\"https://
             } else {
                 window.pending_implementors = implementors;
             }
-        
-})()
+        })()

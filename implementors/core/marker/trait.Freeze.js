@@ -6,5 +6,4 @@ implementors["safe_transmute"] = [{text:"impl Freeze for <a class=\"struct\" hre
             } else {
                 window.pending_implementors = implementors;
             }
-        
-})()
+        })()

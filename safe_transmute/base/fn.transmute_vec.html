@@ -3,9 +3,9 @@
 <h1 id="safety" class="section-header"><a href="#safety">Safety</a></h1>
 <p>Vector transmutations are <strong>exceptionally</strong> dangerous because of
 the constraints imposed by
-<a href="https://doc.rust-lang.org/std/vec/struct.Vec.html#method.from_raw_parts"><code>Vec::from_raw_parts</code></a>.</p>
+<a href="https://doc.rust-lang.org/std/vec/struct.Vec.html#method.from_raw_parts"><code>Vec::from_raw_parts()</code></a>.</p>
 <p>Unless <em>all</em> of the following requirements are fulfilled, this operation
-may result in undefined behavior.</p>
+may result in undefined behavior:</p>
 <ul>
 <li>The target type <code>T</code> must have the same size and minimum alignment as the
 type <code>S</code>.</li>

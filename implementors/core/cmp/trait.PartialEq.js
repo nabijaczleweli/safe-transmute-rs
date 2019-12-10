@@ -6,5 +6,4 @@ implementors["safe_transmute"] = [{text:"impl&lt;'a, S:&nbsp;<a class=\"trait\" 
             } else {
                 window.pending_implementors = implementors;
             }
-        
-})()
+        })()

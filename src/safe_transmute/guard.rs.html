@@ -251,7 +251,7 @@
     <span class="doccomment">///</span>
     <span class="doccomment">/// If the slice&#39;s size does not comply with this guard, an error</span>
     <span class="doccomment">/// which specifies the incompatibility is returned.</span>
-    <span class="kw">fn</span> <span class="ident">check</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(<span class="ident">v</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>]) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">GuardError</span><span class="op">&gt;</span>;
+    <span class="kw">fn</span> <span class="ident">check</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(<span class="ident">v</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>]) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">GuardError</span><span class="op">&gt;</span>;
 }
 
 
@@ -260,8 +260,8 @@
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">SingleValueGuard</span>;
 
 <span class="kw">impl</span> <span class="ident">Guard</span> <span class="kw">for</span> <span class="ident">SingleValueGuard</span> {
-    <span class="kw">fn</span> <span class="ident">check</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(<span class="ident">bytes</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>]) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">GuardError</span><span class="op">&gt;</span> {
-        <span class="kw">if</span> <span class="ident">bytes</span>.<span class="ident">len</span>() <span class="op">!=</span> <span class="ident">size_of</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>() {
+    <span class="kw">fn</span> <span class="ident">check</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(<span class="ident">bytes</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>]) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">GuardError</span><span class="op">&gt;</span> {
+        <span class="kw">if</span> <span class="ident">bytes</span>.<span class="ident">len</span>() <span class="op">!</span><span class="op">=</span> <span class="ident">size_of</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>() {
             <span class="prelude-val">Err</span>(<span class="ident">GuardError</span> {
                 <span class="ident">required</span>: <span class="ident">size_of</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(),
                 <span class="ident">actual</span>: <span class="ident">bytes</span>.<span class="ident">len</span>(),
@@ -279,14 +279,14 @@
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">PedanticGuard</span>;
 
 <span class="kw">impl</span> <span class="ident">Guard</span> <span class="kw">for</span> <span class="ident">PedanticGuard</span> {
-    <span class="kw">fn</span> <span class="ident">check</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(<span class="ident">bytes</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>]) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">GuardError</span><span class="op">&gt;</span> {
+    <span class="kw">fn</span> <span class="ident">check</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(<span class="ident">bytes</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>]) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">GuardError</span><span class="op">&gt;</span> {
         <span class="kw">if</span> <span class="ident">bytes</span>.<span class="ident">len</span>() <span class="op">&lt;</span> <span class="ident">size_of</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>() {
             <span class="prelude-val">Err</span>(<span class="ident">GuardError</span> {
                 <span class="ident">required</span>: <span class="ident">size_of</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(),
                 <span class="ident">actual</span>: <span class="ident">bytes</span>.<span class="ident">len</span>(),
                 <span class="ident">reason</span>: <span class="ident">ErrorReason</span>::<span class="ident">NotEnoughBytes</span>,
             })
-        } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">bytes</span>.<span class="ident">len</span>() <span class="op">%</span> <span class="ident">size_of</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>() <span class="op">!=</span> <span class="number">0</span> {
+        } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">bytes</span>.<span class="ident">len</span>() <span class="op">%</span> <span class="ident">size_of</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>() <span class="op">!</span><span class="op">=</span> <span class="number">0</span> {
             <span class="prelude-val">Err</span>(<span class="ident">GuardError</span> {
                 <span class="ident">required</span>: <span class="ident">size_of</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(),
                 <span class="ident">actual</span>: <span class="ident">bytes</span>.<span class="ident">len</span>(),
@@ -304,8 +304,8 @@
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">AllOrNothingGuard</span>;
 
 <span class="kw">impl</span> <span class="ident">Guard</span> <span class="kw">for</span> <span class="ident">AllOrNothingGuard</span> {
-    <span class="kw">fn</span> <span class="ident">check</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(<span class="ident">bytes</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>]) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">GuardError</span><span class="op">&gt;</span> {
-        <span class="kw">if</span> <span class="ident">bytes</span>.<span class="ident">len</span>() <span class="op">%</span> <span class="ident">size_of</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>() <span class="op">!=</span> <span class="number">0</span> {
+    <span class="kw">fn</span> <span class="ident">check</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(<span class="ident">bytes</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>]) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">GuardError</span><span class="op">&gt;</span> {
+        <span class="kw">if</span> <span class="ident">bytes</span>.<span class="ident">len</span>() <span class="op">%</span> <span class="ident">size_of</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>() <span class="op">!</span><span class="op">=</span> <span class="number">0</span> {
             <span class="prelude-val">Err</span>(<span class="ident">GuardError</span> {
                 <span class="ident">required</span>: <span class="ident">size_of</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(),
                 <span class="ident">actual</span>: <span class="ident">bytes</span>.<span class="ident">len</span>(),
@@ -323,7 +323,7 @@
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">SingleManyGuard</span>;
 
 <span class="kw">impl</span> <span class="ident">Guard</span> <span class="kw">for</span> <span class="ident">SingleManyGuard</span> {
-    <span class="kw">fn</span> <span class="ident">check</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(<span class="ident">bytes</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>]) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">GuardError</span><span class="op">&gt;</span> {
+    <span class="kw">fn</span> <span class="ident">check</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(<span class="ident">bytes</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>]) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">GuardError</span><span class="op">&gt;</span> {
         <span class="kw">if</span> <span class="ident">bytes</span>.<span class="ident">len</span>() <span class="op">&lt;</span> <span class="ident">size_of</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>() {
             <span class="prelude-val">Err</span>(<span class="ident">GuardError</span> {
                 <span class="ident">required</span>: <span class="ident">size_of</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(),
@@ -343,7 +343,7 @@
 
 <span class="kw">impl</span> <span class="ident">Guard</span> <span class="kw">for</span> <span class="ident">PermissiveGuard</span> {
     <span class="attribute">#[<span class="ident">inline</span>]</span>
-    <span class="kw">fn</span> <span class="ident">check</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(<span class="kw">_</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>]) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">GuardError</span><span class="op">&gt;</span> {
+    <span class="kw">fn</span> <span class="ident">check</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>(<span class="kw">_</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>]) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">GuardError</span><span class="op">&gt;</span> {
         <span class="prelude-val">Ok</span>(())
     }
 }

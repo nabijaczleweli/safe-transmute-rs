@@ -46,17 +46,17 @@ makes some sense as the target type. If you expect any number of elements of the
               <span class="number">0x00</span>]; <span class="comment">// 1 spare byte</span>
 
 <span class="kw">match</span> <span class="ident">transmute_many_permissive</span>::<span class="op">&lt;</span><span class="ident">u16</span><span class="op">&gt;</span>(<span class="ident">bytes</span>) {
-    <span class="prelude-val">Ok</span>(<span class="ident">words</span>) <span class="op">=&gt;</span> {
+    <span class="prelude-val">Ok</span>(<span class="ident">words</span>) <span class="op">=</span><span class="op">&gt;</span> {
         <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">words</span>,
                    [<span class="ident">u16</span>::<span class="ident">from_be</span>(<span class="number">0x0001</span>), <span class="ident">u16</span>::<span class="ident">from_be</span>(<span class="number">0x1224</span>)]);
     },
-    <span class="prelude-val">Err</span>(<span class="ident">Error</span>::<span class="ident">Unaligned</span>(<span class="ident">e</span>)) <span class="op">=&gt;</span> {
+    <span class="prelude-val">Err</span>(<span class="ident">Error</span>::<span class="ident">Unaligned</span>(<span class="ident">e</span>)) <span class="op">=</span><span class="op">&gt;</span> {
         <span class="comment">// Copy needed, would otherwise trap on some archs</span>
         <span class="kw">let</span> <span class="ident">words</span> <span class="op">=</span> <span class="ident">e</span>.<span class="ident">copy</span>();
         <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="kw-2">*</span><span class="ident">words</span>,
                    [<span class="ident">u16</span>::<span class="ident">from_be</span>(<span class="number">0x0001</span>), <span class="ident">u16</span>::<span class="ident">from_be</span>(<span class="number">0x1224</span>)]);
     },
-    <span class="prelude-val">Err</span>(<span class="ident">e</span>) <span class="op">=&gt;</span> <span class="macro">panic</span><span class="macro">!</span>(<span class="string">&quot;Unexpected error: {}&quot;</span>, <span class="ident">e</span>),
+    <span class="prelude-val">Err</span>(<span class="ident">e</span>) <span class="op">=</span><span class="op">&gt;</span> <span class="macro">panic</span><span class="macro">!</span>(<span class="string">&quot;Unexpected error: {}&quot;</span>, <span class="ident">e</span>),
 }</pre></div>
 <p><code>transmute_many_permissive()</code> is an alias for <code>transmute_many()</code> with <code>PermissiveGuard</code>
 as the guard type parameter. If you expect at least 1 element, use <code>transmute_many()</code> with the
@@ -80,8 +80,8 @@ often be doing transmutations:</p>
 a slice of bytes. Functions from the <code>*_mut()</code> family work with mutable slices. <code>transmute_bool()</code> checks whether all bytes
 make valid boolean values beforehand.</p>
 <h2 id="transmuting-vectors" class="section-header"><a href="#transmuting-vectors">Transmuting vectors</a></h2>
-<p>You might have used safe-transmute's vector transmutation functions. Well, it turns out that they are
-<strong>incredibly unsafe</strong>, and hard to get it right. This will be more complicated to migrate efficiently.
+<p>You might have used <code>safe-transmute</code>'s vector transmutation functions. Well, it turns out that they are
+<strong>incredibly unsafe</strong>, and hard to get right. This will be more complicated to migrate efficiently.
 The new <code>transmute_vec()</code> only works under very restricted conditions: the <code>mem::align_of()</code> and <code>mem::size_of()</code> between
 the source and target element types must match. Otherwise, a full copy of the vector must be made.</p>
 

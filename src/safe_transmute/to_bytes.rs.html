@@ -437,6 +437,11 @@
 <span id="437">437</span>
 <span id="438">438</span>
 <span id="439">439</span>
+<span id="440">440</span>
+<span id="441">441</span>
+<span id="442">442</span>
+<span id="443">443</span>
+<span id="444">444</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! Functions for transmutation *from* a concrete type *to* bytes.</span>
 
@@ -461,6 +466,7 @@
 <span class="doccomment">/// # include!(&quot;../tests/test_util/le_to_native.rs&quot;);</span>
 <span class="doccomment">/// # fn main() {</span>
 <span class="doccomment">/// unsafe {</span>
+<span class="doccomment">///     // Little-endian</span>
 <span class="doccomment">///     assert_eq!(transmute_to_bytes_unchecked(&amp;0x0123_4567),</span>
 <span class="doccomment">/// # /*</span>
 <span class="doccomment">///                &amp;[0x67, 0x45, 0x23, 0x01]);</span>
@@ -488,7 +494,7 @@
 <span class="doccomment">///                &amp;[0x42, 0x69]);</span>
 <span class="doccomment">/// }</span>
 <span class="doccomment">/// ```</span>
-<span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">transmute_to_bytes_unchecked</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span>(<span class="ident">from</span>: <span class="kw-2">&amp;</span><span class="ident">S</span>) <span class="op">-&gt;</span> <span class="kw-2">&amp;</span>[<span class="ident">u8</span>] {
+<span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">transmute_to_bytes_unchecked</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span>(<span class="ident">from</span>: <span class="kw-2">&amp;</span><span class="ident">S</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="kw-2">&amp;</span>[<span class="ident">u8</span>] {
     <span class="ident">slice</span>::<span class="ident">from_raw_parts</span>(<span class="ident">from</span> <span class="kw">as</span> <span class="kw-2">*</span><span class="kw">const</span> <span class="ident">S</span> <span class="kw">as</span> <span class="kw-2">*</span><span class="kw">const</span> <span class="ident">u8</span>, <span class="ident">size_of</span>::<span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span>())
 }
 
@@ -510,6 +516,7 @@
 <span class="doccomment">/// # include!(&quot;../tests/test_util/le_to_native.rs&quot;);</span>
 <span class="doccomment">/// # fn main() {</span>
 <span class="doccomment">/// unsafe {</span>
+<span class="doccomment">///     // Little-endian</span>
 <span class="doccomment">///     assert_eq!(transmute_to_bytes_unchecked_mut(&amp;mut 0x0123_4567),</span>
 <span class="doccomment">/// # /*</span>
 <span class="doccomment">///                &amp;mut [0x67, 0x45, 0x23, 0x01]);</span>
@@ -546,7 +553,7 @@
 <span class="doccomment">///     x2: 0x69,</span>
 <span class="doccomment">/// });</span>
 <span class="doccomment">/// ```</span>
-<span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">transmute_to_bytes_unchecked_mut</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span>(<span class="ident">from</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">S</span>) <span class="op">-&gt;</span> <span class="kw-2">&amp;</span><span class="kw-2">mut</span> [<span class="ident">u8</span>] {
+<span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">transmute_to_bytes_unchecked_mut</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span>(<span class="ident">from</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">S</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="kw-2">&amp;</span><span class="kw-2">mut</span> [<span class="ident">u8</span>] {
     <span class="ident">slice</span>::<span class="ident">from_raw_parts_mut</span>(<span class="ident">from</span> <span class="kw">as</span> <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">S</span> <span class="kw">as</span> <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">u8</span>, <span class="ident">size_of</span>::<span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span>())
 }
 
@@ -557,11 +564,12 @@
 <span class="doccomment">/// Some `u16`s:</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// ```</span>
-<span class="doccomment">/// # use safe_transmute::to_bytes::transmute_to_bytes;</span>
+<span class="doccomment">/// # use safe_transmute::to_bytes::transmute_to_bytes_many_unchecked;</span>
 <span class="doccomment">/// # include!(&quot;../tests/test_util/le_to_native.rs&quot;);</span>
 <span class="doccomment">/// # fn main() {</span>
 <span class="doccomment">/// unsafe {</span>
-<span class="doccomment">///     assert_eq!(transmute_to_bytes(&amp;[0x0123u16, 0x4567u16]),</span>
+<span class="doccomment">///     // Little-endian</span>
+<span class="doccomment">///     assert_eq!(transmute_to_bytes_many_unchecked(&amp;[0x0123u16, 0x4567u16]),</span>
 <span class="doccomment">/// # /*</span>
 <span class="doccomment">///                &amp;[0x23, 0x01, 0x67, 0x45]);</span>
 <span class="doccomment">/// # */</span>
@@ -592,7 +600,7 @@
 <span class="doccomment">///                &amp;[0x42, 0x69, 0x12, 0x48]);</span>
 <span class="doccomment">/// }</span>
 <span class="doccomment">/// ```</span>
-<span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">transmute_to_bytes_many_unchecked</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span>(<span class="ident">from</span>: <span class="kw-2">&amp;</span>[<span class="ident">S</span>]) <span class="op">-&gt;</span> <span class="kw-2">&amp;</span>[<span class="ident">u8</span>] {
+<span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">transmute_to_bytes_many_unchecked</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span>(<span class="ident">from</span>: <span class="kw-2">&amp;</span>[<span class="ident">S</span>]) <span class="op">-</span><span class="op">&gt;</span> <span class="kw-2">&amp;</span>[<span class="ident">u8</span>] {
     <span class="ident">slice</span>::<span class="ident">from_raw_parts</span>(<span class="ident">from</span>.<span class="ident">as_ptr</span>() <span class="kw">as</span> <span class="kw-2">*</span><span class="kw">const</span> <span class="ident">u8</span>, <span class="ident">from</span>.<span class="ident">len</span>() <span class="op">*</span> <span class="ident">size_of</span>::<span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span>())
 }
 
@@ -614,6 +622,7 @@
 <span class="doccomment">/// # include!(&quot;../tests/test_util/le_to_native.rs&quot;);</span>
 <span class="doccomment">/// # fn main() {</span>
 <span class="doccomment">/// unsafe {</span>
+<span class="doccomment">///     // Little-endian</span>
 <span class="doccomment">///     assert_eq!(transmute_to_bytes_mut(&amp;mut [0x0123u16, 0x4567u16]),</span>
 <span class="doccomment">/// # /*</span>
 <span class="doccomment">///                &amp;[0x23, 0x01, 0x67, 0x45]);</span>
@@ -660,7 +669,7 @@
 <span class="doccomment">///                        x2: 0x0B,</span>
 <span class="doccomment">///                    }]);</span>
 <span class="doccomment">/// ```</span>
-<span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">transmute_to_bytes_many_unchecked_mut</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span>(<span class="ident">from</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> [<span class="ident">S</span>]) <span class="op">-&gt;</span> <span class="kw-2">&amp;</span><span class="kw-2">mut</span> [<span class="ident">u8</span>] {
+<span class="kw">pub</span> <span class="kw">unsafe</span> <span class="kw">fn</span> <span class="ident">transmute_to_bytes_many_unchecked_mut</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span>(<span class="ident">from</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> [<span class="ident">S</span>]) <span class="op">-</span><span class="op">&gt;</span> <span class="kw-2">&amp;</span><span class="kw-2">mut</span> [<span class="ident">u8</span>] {
     <span class="ident">slice</span>::<span class="ident">from_raw_parts_mut</span>(<span class="ident">from</span>.<span class="ident">as_mut_ptr</span>() <span class="kw">as</span> <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">u8</span>, <span class="ident">from</span>.<span class="ident">len</span>() <span class="op">*</span> <span class="ident">size_of</span>::<span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span>())
 }
 
@@ -675,6 +684,7 @@
 <span class="doccomment">/// # use safe_transmute::transmute_one_to_bytes;</span>
 <span class="doccomment">/// # include!(&quot;../tests/test_util/le_to_native.rs&quot;);</span>
 <span class="doccomment">/// # fn main() {</span>
+<span class="doccomment">/// // Little-endian</span>
 <span class="doccomment">/// assert_eq!(transmute_one_to_bytes(&amp;0x0123_4567),</span>
 <span class="doccomment">/// # /*</span>
 <span class="doccomment">///            &amp;[0x67, 0x45, 0x23, 0x01]);</span>
@@ -701,7 +711,7 @@
 <span class="doccomment">///            }),</span>
 <span class="doccomment">///            &amp;[0x42, 0x69]);</span>
 <span class="doccomment">/// ```</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">transmute_one_to_bytes</span><span class="op">&lt;</span><span class="ident">S</span>: <span class="ident">TriviallyTransmutable</span><span class="op">&gt;</span>(<span class="ident">from</span>: <span class="kw-2">&amp;</span><span class="ident">S</span>) <span class="op">-&gt;</span> <span class="kw-2">&amp;</span>[<span class="ident">u8</span>] {
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">transmute_one_to_bytes</span><span class="op">&lt;</span><span class="ident">S</span>: <span class="ident">TriviallyTransmutable</span><span class="op">&gt;</span>(<span class="ident">from</span>: <span class="kw-2">&amp;</span><span class="ident">S</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="kw-2">&amp;</span>[<span class="ident">u8</span>] {
     <span class="kw">unsafe</span> { <span class="ident">transmute_to_bytes_unchecked</span>(<span class="ident">from</span>) }
 }
 
@@ -716,6 +726,7 @@
 <span class="doccomment">/// # use safe_transmute::transmute_one_to_bytes_mut;</span>
 <span class="doccomment">/// # include!(&quot;../tests/test_util/le_to_native.rs&quot;);</span>
 <span class="doccomment">/// # fn main() {</span>
+<span class="doccomment">/// // Little-endian</span>
 <span class="doccomment">/// assert_eq!(transmute_one_to_bytes_mut(&amp;mut 0x0123_4567),</span>
 <span class="doccomment">/// # /*</span>
 <span class="doccomment">///            &amp;mut [0x67, 0x45, 0x23, 0x01]);</span>
@@ -752,7 +763,7 @@
 <span class="doccomment">///     x2: 0x69,</span>
 <span class="doccomment">/// });</span>
 <span class="doccomment">/// ```</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">transmute_one_to_bytes_mut</span><span class="op">&lt;</span><span class="ident">S</span>: <span class="ident">TriviallyTransmutable</span><span class="op">&gt;</span>(<span class="ident">from</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">S</span>) <span class="op">-&gt;</span> <span class="kw-2">&amp;</span><span class="kw-2">mut</span> [<span class="ident">u8</span>] {
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">transmute_one_to_bytes_mut</span><span class="op">&lt;</span><span class="ident">S</span>: <span class="ident">TriviallyTransmutable</span><span class="op">&gt;</span>(<span class="ident">from</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">S</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="kw-2">&amp;</span><span class="kw-2">mut</span> [<span class="ident">u8</span>] {
     <span class="kw">unsafe</span> { <span class="ident">transmute_to_bytes_unchecked_mut</span>(<span class="ident">from</span>) }
 }
 
@@ -766,6 +777,7 @@
 <span class="doccomment">/// # use safe_transmute::transmute_to_bytes;</span>
 <span class="doccomment">/// # include!(&quot;../tests/test_util/le_to_native.rs&quot;);</span>
 <span class="doccomment">/// # fn main() {</span>
+<span class="doccomment">/// // Little-endian</span>
 <span class="doccomment">/// assert_eq!(transmute_to_bytes(&amp;[0x0123u16, 0x4567u16]),</span>
 <span class="doccomment">/// # /*</span>
 <span class="doccomment">///            &amp;[0x23, 0x01, 0x67, 0x45]);</span>
@@ -796,7 +808,7 @@
 <span class="doccomment">///                                      }]),</span>
 <span class="doccomment">///            &amp;[0x42, 0x69, 0x12, 0x48]);</span>
 <span class="doccomment">/// ```</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">transmute_to_bytes</span><span class="op">&lt;</span><span class="ident">S</span>: <span class="ident">TriviallyTransmutable</span><span class="op">&gt;</span>(<span class="ident">from</span>: <span class="kw-2">&amp;</span>[<span class="ident">S</span>]) <span class="op">-&gt;</span> <span class="kw-2">&amp;</span>[<span class="ident">u8</span>] {
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">transmute_to_bytes</span><span class="op">&lt;</span><span class="ident">S</span>: <span class="ident">TriviallyTransmutable</span><span class="op">&gt;</span>(<span class="ident">from</span>: <span class="kw-2">&amp;</span>[<span class="ident">S</span>]) <span class="op">-</span><span class="op">&gt;</span> <span class="kw-2">&amp;</span>[<span class="ident">u8</span>] {
     <span class="kw">unsafe</span> { <span class="ident">transmute_to_bytes_many_unchecked</span>(<span class="ident">from</span>) }
 }
 
@@ -804,8 +816,6 @@
 <span class="doccomment">/// slice of its bytes.</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// # Examples</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// Some `u16`s:</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// ```</span>
 <span class="doccomment">/// # use safe_transmute::{TriviallyTransmutable, transmute_to_bytes_mut};</span>
@@ -843,20 +853,20 @@
 <span class="doccomment">///                        x2: 0x0B,</span>
 <span class="doccomment">///                    }]);</span>
 <span class="doccomment">/// ```</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">transmute_to_bytes_mut</span><span class="op">&lt;</span><span class="ident">S</span>: <span class="ident">TriviallyTransmutable</span><span class="op">&gt;</span>(<span class="ident">from</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> [<span class="ident">S</span>]) <span class="op">-&gt;</span> <span class="kw-2">&amp;</span><span class="kw-2">mut</span> [<span class="ident">u8</span>] {
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">transmute_to_bytes_mut</span><span class="op">&lt;</span><span class="ident">S</span>: <span class="ident">TriviallyTransmutable</span><span class="op">&gt;</span>(<span class="ident">from</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> [<span class="ident">S</span>]) <span class="op">-</span><span class="op">&gt;</span> <span class="kw-2">&amp;</span><span class="kw-2">mut</span> [<span class="ident">u8</span>] {
     <span class="kw">unsafe</span> { <span class="ident">transmute_to_bytes_many_unchecked_mut</span>(<span class="ident">from</span>) }
 }
 
 <span class="doccomment">/// Transmute a slice of arbitrary types into a slice of their bytes.</span>
 <span class="attribute">#[<span class="ident">deprecated</span>(<span class="ident">since</span> <span class="op">=</span> <span class="string">&quot;0.11.0&quot;</span>, <span class="ident">note</span> <span class="op">=</span> <span class="string">&quot;use `transmute_to_bytes()` instead&quot;</span>)]</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">guarded_transmute_to_bytes_pod_many</span><span class="op">&lt;</span><span class="ident">S</span>: <span class="ident">TriviallyTransmutable</span><span class="op">&gt;</span>(<span class="ident">from</span>: <span class="kw-2">&amp;</span>[<span class="ident">S</span>]) <span class="op">-&gt;</span> <span class="kw-2">&amp;</span>[<span class="ident">u8</span>] {
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">guarded_transmute_to_bytes_pod_many</span><span class="op">&lt;</span><span class="ident">S</span>: <span class="ident">TriviallyTransmutable</span><span class="op">&gt;</span>(<span class="ident">from</span>: <span class="kw-2">&amp;</span>[<span class="ident">S</span>]) <span class="op">-</span><span class="op">&gt;</span> <span class="kw-2">&amp;</span>[<span class="ident">u8</span>] {
     <span class="ident">transmute_to_bytes</span>(<span class="ident">from</span>)
 }
 
 <span class="doccomment">/// Transmute a vector of elements of an arbitrary type into a vector of their</span>
 <span class="doccomment">/// bytes, using the same memory buffer as the former.</span>
 <span class="doccomment">///</span>
-<span class="doccomment">/// This is equivalent to calling [`full::transmute_vec`](../full/fn.transmute_vec.html) where</span>
+<span class="doccomment">/// This is equivalent to calling [`full::transmute_vec()`](../full/fn.transmute_vec.html) where</span>
 <span class="doccomment">/// the target type is `u8`.</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// # Errors</span>
@@ -874,7 +884,7 @@
 <span class="doccomment">/// view of the vector or make a copy anyway.</span>
 <span class="doccomment">///</span>
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;alloc&quot;</span>)]</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">transmute_to_bytes_vec</span><span class="op">&lt;</span><span class="ident">S</span>: <span class="ident">TriviallyTransmutable</span><span class="op">&gt;</span>(<span class="ident">from</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>, <span class="ident">Error</span><span class="op">&lt;</span><span class="lifetime">&#39;static</span>, <span class="ident">S</span>, <span class="ident">u8</span><span class="op">&gt;&gt;</span> {
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">transmute_to_bytes_vec</span><span class="op">&lt;</span><span class="ident">S</span>: <span class="ident">TriviallyTransmutable</span><span class="op">&gt;</span>(<span class="ident">from</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">S</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>, <span class="ident">Error</span><span class="op">&lt;</span><span class="lifetime">&#39;static</span>, <span class="ident">S</span>, <span class="ident">u8</span><span class="op">&gt;</span><span class="op">&gt;</span> {
     <span class="kw">super</span>::<span class="ident">full</span>::<span class="ident">transmute_vec</span>::<span class="op">&lt;</span><span class="ident">S</span>, <span class="ident">u8</span><span class="op">&gt;</span>(<span class="ident">from</span>)
 }
 </pre></div>

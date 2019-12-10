@@ -6,5 +6,4 @@ implementors["safe_transmute"] = [];
             } else {
                 window.pending_implementors = implementors;
             }
-        
-})()
+        })()
