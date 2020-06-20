@@ -8,8 +8,8 @@ keywords = ["safe", "transmute", "checked"]
 categories = ["rust-patterns", "memory-management", "no-std"]
 license = "MIT"
 # Remember to also update in appveyor.yml
-version = "0.11.0-rc.2"
-authors = ["nabijaczleweli <nabijaczleweli@gmail.com>",
+version = "0.11.0"
+authors = ["наб <nabijaczleweli@gmail.com>",
            "Eduardo Pinho <enet4mikeenet@gmail.com>",
            "Lukas Kalbertodt <lukas.kalbertodt@gmail.com>"]
 exclude = ["*.enc"]
