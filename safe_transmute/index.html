@@ -31,7 +31,7 @@ making some use cases work.</li>
 <p>This crate can be used in a no-<code>std</code> environment by disabling the <code>std</code>
 feature through specifying <code>default-features = false</code> on import.
 However, <code>std</code> is only used for integration with <code>std::error::Error</code>.</p>
-<p>Note, though, that funxions operating on items from <code>alloc</code> will also be disabled by this.
+<p>Note, though, that functions operating on items from <code>alloc</code> will also be disabled by this.
 If your no-<code>std</code> environment has an <code>alloc</code> implementation, you will have to reenable them by using <code>features = [&quot;alloc&quot;]</code>.</p>
 <h1 id="migrating" class="section-header"><a href="#migrating">Migrating</a></h1>
 <p>If you've used <code>safe-transmute</code> before v0.11,
@@ -115,4 +115,4 @@ copying the data if it could not be safely performed due to memory alignment con
 </td></tr><tr class='module-item'><td><a class="fn" href="fn.transmute_one.html" title='safe_transmute::transmute_one fn'>transmute_one</a></td><td class='docblock-short'><p>Transmute a byte slice into a single instance of a trivially transmutable type.</p>
 </td></tr><tr class='module-item'><td><a class="fn" href="fn.transmute_one_pedantic.html" title='safe_transmute::transmute_one_pedantic fn'>transmute_one_pedantic</a></td><td class='docblock-short'><p>Transmute a byte slice into a single instance of a trivially transmutable type.</p>
 </td></tr><tr class='module-item'><td><a class="fn" href="fn.transmute_vec.html" title='safe_transmute::transmute_vec fn'>transmute_vec</a></td><td class='docblock-short'><p>Transform a vector into a vector of values with the given target type.</p>
-</td></tr></table></section><section id="search" class="content hidden"></section><section class="footer"></section><script>window.rootPath = "../";window.currentCrate = "safe_transmute";</script><script src="../aliases.js"></script><script src="../main.js"></script><script defer src="../search-index.js"></script></body></html>
+</td></tr></table></section><section id="search" class="content hidden"></section><section class="footer"></section><script>window.rootPath = "../";window.currentCrate = "safe_transmute";</script><script src="../main.js"></script><script defer src="../search-index.js"></script></body></html>
