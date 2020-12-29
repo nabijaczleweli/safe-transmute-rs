@@ -1,6 +1,8 @@
 use safe_transmute::{transmute_many_permissive, transmute_to_bytes};
 use safe_transmute::error::{UnalignedError, Error};
 #[cfg(feature = "alloc")]
+use core::mem::align_of;
+#[cfg(feature = "alloc")]
 use alloc::vec::Vec;
 
 
@@ -66,6 +68,10 @@ fn unaligned_slicing_integers() {
 
 #[cfg(feature = "alloc")]
 fn unaligned_slicing_integers_with_try_copy<'a>(bytes: &'a [u8]) -> Result<(), Error<'a, u8, u64>> {
+    if align_of::<u64>() != 8 {  // i686
+        return Ok(());
+    }
+
     for i in 4..8 {
         // transmute unaligned content by copying
         let outcome = transmute_many_permissive::<u64>(&bytes[i..]);
