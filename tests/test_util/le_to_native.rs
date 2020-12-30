@@ -1,3 +1,6 @@
+extern crate core as le_to_native_core;
+
+
 /// Verify: http://play.integer32.com/?gist=4cd795d6f45898c876a754cd3f3c2aaa&version=stable
 trait LeToNative {
     fn le_to_native<T: Sized>(self) -> Self;
@@ -11,7 +14,7 @@ impl<'a> LeToNative for &'a mut [u8] {
 
     #[cfg(target_endian = "big")]
     fn le_to_native<T: Sized>(self) -> Self {
-        use core::mem::size_of;
+        use le_to_native_core::mem::size_of;
 
         for elem in self.chunks_mut(size_of::<T>()) {
             elem.reverse();
