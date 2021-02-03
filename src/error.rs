@@ -108,6 +108,7 @@ impl<'a, S, T> fmt::Debug for Error<'a, S, T> {
 }
 
 #[cfg(feature = "std")]
+#[allow(deprecated)]
 impl<'a, S, T> StdError for Error<'a, S, T> {
     fn description(&self) -> &str {
         match self {
