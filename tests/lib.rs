@@ -12,6 +12,7 @@ extern crate alloc;
 extern crate safe_transmute;
 
 
+mod guard;
 mod error;
 mod base;
 mod bool;

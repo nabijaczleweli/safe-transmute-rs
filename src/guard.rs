@@ -111,7 +111,7 @@ impl Guard for PedanticGuard {
                 actual: bytes.len(),
                 reason: ErrorReason::NotEnoughBytes,
             })
-        } else if bytes.len() % size_of::<T>() != 0 {
+        } else if (size_of::<T>() == 0 && bytes.len() != 0) || (size_of::<T>() != 0 && bytes.len() % size_of::<T>() != 0) {
             Err(GuardError {
                 required: size_of::<T>(),
                 actual: bytes.len(),
@@ -130,7 +130,7 @@ pub struct AllOrNothingGuard;
 
 impl Guard for AllOrNothingGuard {
     fn check<T>(bytes: &[u8]) -> Result<(), GuardError> {
-        if bytes.len() % size_of::<T>() != 0 {
+        if (size_of::<T>() == 0 && bytes.len() != 0) || (size_of::<T>() != 0 && bytes.len() % size_of::<T>() != 0) {
             Err(GuardError {
                 required: size_of::<T>(),
                 actual: bytes.len(),
