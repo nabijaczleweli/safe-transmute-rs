@@ -70,39 +70,45 @@ unsafe impl TriviallyTransmutable for u128 {}
 #[cfg(i128_type)]
 unsafe impl TriviallyTransmutable for i128 {}
 
-unsafe impl<T: TriviallyTransmutable> TriviallyTransmutable for [T; 1] {}
-unsafe impl<T: TriviallyTransmutable> TriviallyTransmutable for [T; 2] {}
-unsafe impl<T: TriviallyTransmutable> TriviallyTransmutable for [T; 3] {}
-unsafe impl<T: TriviallyTransmutable> TriviallyTransmutable for [T; 4] {}
-unsafe impl<T: TriviallyTransmutable> TriviallyTransmutable for [T; 5] {}
-unsafe impl<T: TriviallyTransmutable> TriviallyTransmutable for [T; 6] {}
-unsafe impl<T: TriviallyTransmutable> TriviallyTransmutable for [T; 7] {}
-unsafe impl<T: TriviallyTransmutable> TriviallyTransmutable for [T; 8] {}
-unsafe impl<T: TriviallyTransmutable> TriviallyTransmutable for [T; 9] {}
-unsafe impl<T: TriviallyTransmutable> TriviallyTransmutable for [T; 10] {}
-unsafe impl<T: TriviallyTransmutable> TriviallyTransmutable for [T; 11] {}
-unsafe impl<T: TriviallyTransmutable> TriviallyTransmutable for [T; 12] {}
-unsafe impl<T: TriviallyTransmutable> TriviallyTransmutable for [T; 13] {}
-unsafe impl<T: TriviallyTransmutable> TriviallyTransmutable for [T; 14] {}
-unsafe impl<T: TriviallyTransmutable> TriviallyTransmutable for [T; 15] {}
-unsafe impl<T: TriviallyTransmutable> TriviallyTransmutable for [T; 16] {}
-unsafe impl<T: TriviallyTransmutable> TriviallyTransmutable for [T; 17] {}
-unsafe impl<T: TriviallyTransmutable> TriviallyTransmutable for [T; 18] {}
-unsafe impl<T: TriviallyTransmutable> TriviallyTransmutable for [T; 19] {}
-unsafe impl<T: TriviallyTransmutable> TriviallyTransmutable for [T; 20] {}
-unsafe impl<T: TriviallyTransmutable> TriviallyTransmutable for [T; 21] {}
-unsafe impl<T: TriviallyTransmutable> TriviallyTransmutable for [T; 22] {}
-unsafe impl<T: TriviallyTransmutable> TriviallyTransmutable for [T; 23] {}
-unsafe impl<T: TriviallyTransmutable> TriviallyTransmutable for [T; 24] {}
-unsafe impl<T: TriviallyTransmutable> TriviallyTransmutable for [T; 25] {}
-unsafe impl<T: TriviallyTransmutable> TriviallyTransmutable for [T; 26] {}
-unsafe impl<T: TriviallyTransmutable> TriviallyTransmutable for [T; 27] {}
-unsafe impl<T: TriviallyTransmutable> TriviallyTransmutable for [T; 28] {}
-unsafe impl<T: TriviallyTransmutable> TriviallyTransmutable for [T; 29] {}
-unsafe impl<T: TriviallyTransmutable> TriviallyTransmutable for [T; 30] {}
-unsafe impl<T: TriviallyTransmutable> TriviallyTransmutable for [T; 31] {}
-unsafe impl<T: TriviallyTransmutable> TriviallyTransmutable for [T; 32] {}
+#[cfg(not(feature = "const_generics"))]
+mod trivially_transmutable_arrays {
+    use super::TriviallyTransmutable;
+    unsafe impl<T: TriviallyTransmutable> TriviallyTransmutable for [T; 1] {}
+    unsafe impl<T: TriviallyTransmutable> TriviallyTransmutable for [T; 2] {}
+    unsafe impl<T: TriviallyTransmutable> TriviallyTransmutable for [T; 3] {}
+    unsafe impl<T: TriviallyTransmutable> TriviallyTransmutable for [T; 4] {}
+    unsafe impl<T: TriviallyTransmutable> TriviallyTransmutable for [T; 5] {}
+    unsafe impl<T: TriviallyTransmutable> TriviallyTransmutable for [T; 6] {}
+    unsafe impl<T: TriviallyTransmutable> TriviallyTransmutable for [T; 7] {}
+    unsafe impl<T: TriviallyTransmutable> TriviallyTransmutable for [T; 8] {}
+    unsafe impl<T: TriviallyTransmutable> TriviallyTransmutable for [T; 9] {}
+    unsafe impl<T: TriviallyTransmutable> TriviallyTransmutable for [T; 10] {}
+    unsafe impl<T: TriviallyTransmutable> TriviallyTransmutable for [T; 11] {}
+    unsafe impl<T: TriviallyTransmutable> TriviallyTransmutable for [T; 12] {}
+    unsafe impl<T: TriviallyTransmutable> TriviallyTransmutable for [T; 13] {}
+    unsafe impl<T: TriviallyTransmutable> TriviallyTransmutable for [T; 14] {}
+    unsafe impl<T: TriviallyTransmutable> TriviallyTransmutable for [T; 15] {}
+    unsafe impl<T: TriviallyTransmutable> TriviallyTransmutable for [T; 16] {}
+    unsafe impl<T: TriviallyTransmutable> TriviallyTransmutable for [T; 17] {}
+    unsafe impl<T: TriviallyTransmutable> TriviallyTransmutable for [T; 18] {}
+    unsafe impl<T: TriviallyTransmutable> TriviallyTransmutable for [T; 19] {}
+    unsafe impl<T: TriviallyTransmutable> TriviallyTransmutable for [T; 20] {}
+    unsafe impl<T: TriviallyTransmutable> TriviallyTransmutable for [T; 21] {}
+    unsafe impl<T: TriviallyTransmutable> TriviallyTransmutable for [T; 22] {}
+    unsafe impl<T: TriviallyTransmutable> TriviallyTransmutable for [T; 23] {}
+    unsafe impl<T: TriviallyTransmutable> TriviallyTransmutable for [T; 24] {}
+    unsafe impl<T: TriviallyTransmutable> TriviallyTransmutable for [T; 25] {}
+    unsafe impl<T: TriviallyTransmutable> TriviallyTransmutable for [T; 26] {}
+    unsafe impl<T: TriviallyTransmutable> TriviallyTransmutable for [T; 27] {}
+    unsafe impl<T: TriviallyTransmutable> TriviallyTransmutable for [T; 28] {}
+    unsafe impl<T: TriviallyTransmutable> TriviallyTransmutable for [T; 29] {}
+    unsafe impl<T: TriviallyTransmutable> TriviallyTransmutable for [T; 30] {}
+    unsafe impl<T: TriviallyTransmutable> TriviallyTransmutable for [T; 31] {}
+    unsafe impl<T: TriviallyTransmutable> TriviallyTransmutable for [T; 32] {}
+}
 
+#[cfg(feature = "const_generics")]
+unsafe impl<T: TriviallyTransmutable, const N: usize> TriviallyTransmutable for [T; N] {}
 
 /// Transmute the slice to a slice of another type, ensuring alignment of the types is maintained.
 ///

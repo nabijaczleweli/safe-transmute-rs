@@ -19,3 +19,5 @@ exclude = ["*.enc"]
 default = ["std"]
 "std" = ["alloc"]
 "alloc" = []
+# Use const generics for array trait implementations
+"const_generics" = []
