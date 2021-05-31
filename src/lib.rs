@@ -127,11 +127,12 @@
 //! # include!("../tests/test_util/le_to_native.rs");
 //! # fn main() {
 //! assert_eq!(transmute_one::<f64>(
-//!     &[0x00, 0x00, 0x00, 0x00,
 //! # /*
+//!     &[0x00, 0x00, 0x00, 0x00,
 //!       0x00, 0x00, 0x00, 0x40])?,
 //! # */
-//! #     0x00, 0x00, 0x00, 0x40].le_to_native::<f64>()).unwrap(),
+//! #   &Le2NAl8([0x00, 0x00, 0x00, 0x00,
+//! #             0x00, 0x00, 0x00, 0x40]).0.le_to_native::<f64>()).unwrap(),
 //!     2.0);
 //! # }
 //! ```

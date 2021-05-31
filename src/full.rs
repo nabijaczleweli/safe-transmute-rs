@@ -46,7 +46,7 @@ use alloc::vec::Vec;
 /// # /*
 /// assert_eq!(transmute_one::<u32>(&[0x00, 0x00, 0x00, 0x01])?, 0x0100_0000);
 /// # */
-/// # assert_eq!(transmute_one::<u32>(&[0x00, 0x00, 0x00, 0x01].le_to_native::<u32>()).unwrap(), 0x0100_0000);
+/// # assert_eq!(transmute_one::<u32>(&Le2NAl4([0x00, 0x00, 0x00, 0x01]).0.le_to_native::<u32>()).unwrap(), 0x0100_0000);
 /// # }
 /// ```
 pub fn transmute_one<T: TriviallyTransmutable>(bytes: &[u8]) -> Result<T, Error<u8, T>> {
@@ -77,7 +77,7 @@ pub fn transmute_one<T: TriviallyTransmutable>(bytes: &[u8]) -> Result<T, Error<
 /// # /*
 /// assert_eq!(transmute_one_pedantic::<u16>(&[0x0F, 0x0E])?, 0x0E0F);
 /// # */
-/// # assert_eq!(transmute_one_pedantic::<u16>(&[0x0F, 0x0E].le_to_native::<u16>()).unwrap(), 0x0E0F);
+/// # assert_eq!(transmute_one_pedantic::<u16>(&Le2NAl2([0x0F, 0x0E]).0.le_to_native::<u16>()).unwrap(), 0x0E0F);
 /// # }
 /// ```
 pub fn transmute_one_pedantic<T: TriviallyTransmutable>(bytes: &[u8]) -> Result<T, Error<u8, T>> {
@@ -106,7 +106,7 @@ pub fn transmute_one_pedantic<T: TriviallyTransmutable>(bytes: &[u8]) -> Result<
 /// # /*
 /// assert_eq!(transmute_many::<u16, SingleManyGuard>(&[0x00, 0x01, 0x00, 0x02])?,
 /// # */
-/// # assert_eq!(transmute_many::<u16, SingleManyGuard>(&[0x00, 0x01, 0x00, 0x02].le_to_native::<u16>()).unwrap(),
+/// # assert_eq!(transmute_many::<u16, SingleManyGuard>(&Le2NAl4([0x00, 0x01, 0x00, 0x02]).0.le_to_native::<u16>()).unwrap(),
 ///            &[0x0100, 0x0200]);
 /// # }
 /// ```
@@ -161,7 +161,7 @@ pub fn transmute_many_permissive<T: TriviallyTransmutable>(bytes: &[u8]) -> Resu
 /// # /*
 /// assert_eq!(transmute_many_pedantic::<u16>(&[0x0F, 0x0E, 0x0A, 0x0B])?,
 /// # */
-/// # assert_eq!(transmute_many_pedantic::<u16>(&[0x0F, 0x0E, 0x0A, 0x0B].le_to_native::<u16>()).unwrap(),
+/// # assert_eq!(transmute_many_pedantic::<u16>(&Le2NAl4([0x0F, 0x0E, 0x0A, 0x0B]).0.le_to_native::<u16>()).unwrap(),
 ///            &[0x0E0F, 0x0B0A]);
 /// # }
 /// ```

@@ -1,6 +1,18 @@
 extern crate core as le_to_native_core;
 
 
+/// Test aids: rustc has started placing static byte arrays at odd offsets
+#[repr(align(64))]
+#[allow(dead_code)]
+struct Le2NAl2([u8; 2]);
+#[repr(align(64))]
+#[allow(dead_code)]
+struct Le2NAl4([u8; 4]);
+#[repr(align(64))]
+#[allow(dead_code)]
+struct Le2NAl8([u8; 8]);
+
+
 /// Verify: http://play.integer32.com/?gist=4cd795d6f45898c876a754cd3f3c2aaa&version=stable
 trait LeToNative {
     fn le_to_native<T: Sized>(self) -> Self;
