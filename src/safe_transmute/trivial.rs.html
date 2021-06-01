@@ -360,6 +360,10 @@
 <span id="357">357</span>
 <span id="358">358</span>
 <span id="359">359</span>
+<span id="360">360</span>
+<span id="361">361</span>
+<span id="362">362</span>
+<span id="363">363</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">//! Transmutation of trivial objects</span>
 <span class="doccomment">//!</span>
@@ -396,6 +400,10 @@
 <span class="doccomment">/// [*trivially copyable class*](http://eel.is/c++draft/class#6).</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// This serves as a marker trait for all functions in this module.</span>
+<span class="doccomment">///</span>
+<span class="doccomment">/// Enable the `const_generics` feature to implement this for arbitrary `[T: TriviallyTransmutable, N]` arrays,</span>
+<span class="doccomment">/// instead of just 1-32.</span>
+<span class="doccomment">/// This, of course, requires a sufficiently fresh rustc (at least 1.51).</span>
 <span class="doccomment">///</span>
 <span class="doccomment">/// *Warning*: if you transmute into a floating-point type you will have a chance to create a signaling NaN,</span>
 <span class="doccomment">/// which, while not illegal, can be unwieldy. Check out [`util::designalise_f{32,64}()`](util/index.html)</span>
@@ -435,7 +443,7 @@
 
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">not</span>(<span class="ident">feature</span> <span class="op">=</span> <span class="string">&quot;const_generics&quot;</span>))]</span>
 <span class="kw">mod</span> <span class="ident">trivially_transmutable_arrays</span> {
-    <span class="kw">use</span> <span class="kw">super</span>::<span class="ident">TriviallyTransmutable</span>;
+    <span class="kw">use</span> <span class="self">self</span>::<span class="kw">super</span>::<span class="ident">TriviallyTransmutable</span>;
     <span class="kw">unsafe</span> <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">TriviallyTransmutable</span><span class="op">&gt;</span> <span class="ident">TriviallyTransmutable</span> <span class="kw">for</span> [<span class="ident">T</span>; <span class="number">1</span>] {}
     <span class="kw">unsafe</span> <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">TriviallyTransmutable</span><span class="op">&gt;</span> <span class="ident">TriviallyTransmutable</span> <span class="kw">for</span> [<span class="ident">T</span>; <span class="number">2</span>] {}
     <span class="kw">unsafe</span> <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">TriviallyTransmutable</span><span class="op">&gt;</span> <span class="ident">TriviallyTransmutable</span> <span class="kw">for</span> [<span class="ident">T</span>; <span class="number">3</span>] {}
