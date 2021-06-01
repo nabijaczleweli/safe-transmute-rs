@@ -34,6 +34,10 @@ use alloc::vec::Vec;
 ///
 /// This serves as a marker trait for all functions in this module.
 ///
+/// Enable the `const_generics` feature to implement this for arbitrary `[T: TriviallyTransmutable, N]` arrays,
+/// instead of just 1-32.
+/// This, of course, requires a sufficiently fresh rustc (at least 1.51).
+///
 /// *Warning*: if you transmute into a floating-point type you will have a chance to create a signaling NaN,
 /// which, while not illegal, can be unwieldy. Check out [`util::designalise_f{32,64}()`](util/index.html)
 /// for a remedy.
@@ -72,7 +76,7 @@ unsafe impl TriviallyTransmutable for i128 {}
 
 #[cfg(not(feature = "const_generics"))]
 mod trivially_transmutable_arrays {
-    use super::TriviallyTransmutable;
+    use self::super::TriviallyTransmutable;
     unsafe impl<T: TriviallyTransmutable> TriviallyTransmutable for [T; 1] {}
     unsafe impl<T: TriviallyTransmutable> TriviallyTransmutable for [T; 2] {}
     unsafe impl<T: TriviallyTransmutable> TriviallyTransmutable for [T; 3] {}
