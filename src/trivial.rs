@@ -192,7 +192,7 @@ pub fn align_to_mut<S: TriviallyTransmutable, T: TriviallyTransmutable>(slice: &
 /// # /*
 ///     assert_eq!(transmute_trivial::<u32>(&[0x00, 0x00, 0x00, 0x01])?, 0x0100_0000);
 /// # */
-/// #   assert_eq!(transmute_trivial::<u32>(&[0x00, 0x00, 0x00, 0x01].le_to_native::<u32>()).unwrap(), 0x0100_0000);
+/// #   assert_eq!(transmute_trivial::<u32>(&Le2NAl4([0x00, 0x00, 0x00, 0x01]).le_to_native::<u32>()).unwrap(), 0x0100_0000);
 /// }
 /// # }
 /// ```
@@ -230,7 +230,7 @@ pub unsafe fn transmute_trivial<T: TriviallyTransmutable>(bytes: &[u8]) -> Resul
 /// # /*
 ///     assert_eq!(transmute_trivial_pedantic::<u16>(&[0x0F, 0x0E])?, 0x0E0F);
 /// # */
-/// #   assert_eq!(transmute_trivial_pedantic::<u16>(&[0x0F, 0x0E].le_to_native::<u16>()).unwrap(), 0x0E0F);
+/// #   assert_eq!(transmute_trivial_pedantic::<u16>(&Le2NAl2([0x0F, 0x0E]).le_to_native::<u16>()).unwrap(), 0x0E0F);
 /// }
 /// # }
 /// ```
@@ -266,7 +266,7 @@ pub unsafe fn transmute_trivial_pedantic<T: TriviallyTransmutable>(bytes: &[u8])
 /// # /*
 ///     assert_eq!(transmute_trivial_many::<u16, SingleManyGuard>(&[0x00, 0x01, 0x00, 0x02])?,
 /// # */
-/// #   assert_eq!(transmute_trivial_many::<u16, SingleManyGuard>(&[0x00, 0x01, 0x00, 0x02].le_to_native::<u16>()).unwrap(),
+/// #   assert_eq!(transmute_trivial_many::<u16, SingleManyGuard>(&Le2NAl4([0x00, 0x01, 0x00, 0x02]).le_to_native::<u16>()).unwrap(),
 ///                &[0x0100, 0x0200]);
 /// }
 /// # }
@@ -303,7 +303,7 @@ pub unsafe fn transmute_trivial_many<T: TriviallyTransmutable, G: Guard>(bytes: 
 /// # /*
 ///     assert_eq!(transmute_trivial_many::<u16, SingleManyGuard>(&[0x00, 0x01, 0x00, 0x02])?,
 /// # */
-/// #   assert_eq!(transmute_trivial_many::<u16, SingleManyGuard>(&[0x00, 0x01, 0x00, 0x02].le_to_native::<u16>()).unwrap(),
+/// #   assert_eq!(transmute_trivial_many::<u16, SingleManyGuard>(&Le2NAl4([0x00, 0x01, 0x00, 0x02]).le_to_native::<u16>()).unwrap(),
 ///                &[0x0100, 0x0200]);
 /// }
 /// # }

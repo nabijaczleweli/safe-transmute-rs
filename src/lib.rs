@@ -105,7 +105,7 @@
 //! # include!("../tests/test_util/le_to_native.rs");
 //! # #[cfg(feature = "std")]
 //! # fn main() -> Result<(), Box<std::error::Error>> {
-//! # let bytes = &Le2NAl4([0x00, 0x01, 0x12, 0x34]).0.le_to_native::<u16>();
+//! # let bytes = &Le2NAl4([0x00, 0x01, 0x12, 0x34]).le_to_native::<u16>();
 //! # let words = try_copy!(transmute_many_pedantic::<u16>(bytes).map_err(Error::without_src));
 //! # /*
 //! // Assuming little-endian
@@ -131,8 +131,8 @@
 //!     &[0x00, 0x00, 0x00, 0x00,
 //!       0x00, 0x00, 0x00, 0x40])?,
 //! # */
-//! #   &Le2NAl8([0x00, 0x00, 0x00, 0x00,
-//! #             0x00, 0x00, 0x00, 0x40]).0.le_to_native::<f64>()).unwrap(),
+//! #   &*Le2NAl8([0x00, 0x00, 0x00, 0x00,
+//! #              0x00, 0x00, 0x00, 0x40]).le_to_native::<f64>()).unwrap(),
 //!     2.0);
 //! # }
 //! ```
@@ -148,7 +148,7 @@
 //! # /*
 //!            &[0x01, 0x00, 0x34, 0x12]);
 //! # */
-//! #          &[0x01, 0x00, 0x34, 0x12].le_to_native::<u16>());
+//! #          &*Le2NAl4([0x01, 0x00, 0x34, 0x12]).le_to_native::<u16>());
 //! # }
 //! ```
 

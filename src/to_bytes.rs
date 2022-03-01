@@ -76,7 +76,7 @@ pub unsafe fn transmute_to_bytes_unchecked<S>(from: &S) -> &[u8] {
 /// # /*
 ///                &mut [0x67, 0x45, 0x23, 0x01]);
 /// # */
-/// #              &mut [0x67, 0x45, 0x23, 0x01].le_to_native::<u32>());
+/// #              (&mut [0x67, 0x45, 0x23, 0x01]).le_to_native::<u32>());
 /// }
 /// # }
 /// ```
@@ -286,7 +286,7 @@ pub fn transmute_one_to_bytes<S: TriviallyTransmutable>(from: &S) -> &[u8] {
 /// # /*
 ///            &mut [0x67, 0x45, 0x23, 0x01]);
 /// # */
-/// #          &mut [0x67, 0x45, 0x23, 0x01].le_to_native::<u32>());
+/// #          (&mut [0x67, 0x45, 0x23, 0x01]).le_to_native::<u32>());
 /// # }
 /// ```
 ///

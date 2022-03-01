@@ -1,18 +1,6 @@
 extern crate core as le_to_native_core;
 
 
-/// Test aids: rustc has started placing static byte arrays at odd offsets
-#[repr(align(64))]
-#[allow(dead_code)]
-struct Le2NAl2([u8; 2]);
-#[repr(align(64))]
-#[allow(dead_code)]
-struct Le2NAl4([u8; 4]);
-#[repr(align(64))]
-#[allow(dead_code)]
-struct Le2NAl8([u8; 8]);
-
-
 /// Verify: http://play.integer32.com/?gist=4cd795d6f45898c876a754cd3f3c2aaa&version=stable
 trait LeToNative {
     fn le_to_native<T: Sized>(self) -> Self;
@@ -49,9 +37,40 @@ impl LeToNative for Vec<u8> {
     }
 }
 
-macro_rules! impl_le_to_native_array_u8 {
-    ($n:expr) => {
-        impl LeToNative for [u8; $n] {
+/// Test aids: rustc has started placing static byte arrays at odd offsets
+macro_rules! impl_le_to_native_Le2NAl {
+    ($nm:ident, $n:expr) => {
+        #[repr(align(64))]
+        #[allow(dead_code)]
+        struct $nm([u8; $n]);
+
+        impl le_to_native_core::borrow::Borrow<[u8]> for $nm {
+            fn borrow(&self) -> &[u8] {
+                &self.0
+            }
+        }
+
+        impl le_to_native_core::borrow::BorrowMut<[u8]> for $nm {
+            fn borrow_mut(&mut self) -> &mut [u8] {
+                &mut self.0
+            }
+        }
+
+        impl le_to_native_core::ops::Deref for $nm {
+            type Target = [u8];
+
+            fn deref(&self) -> &[u8] {
+                &self.0
+            }
+        }
+
+        impl le_to_native_core::ops::DerefMut for $nm {
+            fn deref_mut(&mut self) -> &mut [u8] {
+                &mut self.0
+            }
+        }
+
+        impl LeToNative for $nm {
             #[cfg(target_endian = "little")]
             fn le_to_native<T: Sized>(self) -> Self {
                 self
@@ -59,42 +78,13 @@ macro_rules! impl_le_to_native_array_u8 {
 
             #[cfg(target_endian = "big")]
             fn le_to_native<T: Sized>(mut self) -> Self {
-                (&mut self[..]).le_to_native::<T>();
+                (&mut self.0[..]).le_to_native::<T>();
                 self
             }
         }
     }
 }
 
-impl_le_to_native_array_u8!(1);
-impl_le_to_native_array_u8!(2);
-impl_le_to_native_array_u8!(3);
-impl_le_to_native_array_u8!(4);
-impl_le_to_native_array_u8!(5);
-impl_le_to_native_array_u8!(6);
-impl_le_to_native_array_u8!(7);
-impl_le_to_native_array_u8!(8);
-impl_le_to_native_array_u8!(9);
-impl_le_to_native_array_u8!(10);
-impl_le_to_native_array_u8!(11);
-impl_le_to_native_array_u8!(12);
-impl_le_to_native_array_u8!(13);
-impl_le_to_native_array_u8!(14);
-impl_le_to_native_array_u8!(15);
-impl_le_to_native_array_u8!(16);
-impl_le_to_native_array_u8!(17);
-impl_le_to_native_array_u8!(18);
-impl_le_to_native_array_u8!(19);
-impl_le_to_native_array_u8!(20);
-impl_le_to_native_array_u8!(21);
-impl_le_to_native_array_u8!(22);
-impl_le_to_native_array_u8!(23);
-impl_le_to_native_array_u8!(24);
-impl_le_to_native_array_u8!(25);
-impl_le_to_native_array_u8!(26);
-impl_le_to_native_array_u8!(27);
-impl_le_to_native_array_u8!(28);
-impl_le_to_native_array_u8!(29);
-impl_le_to_native_array_u8!(30);
-impl_le_to_native_array_u8!(31);
-impl_le_to_native_array_u8!(32);
+impl_le_to_native_Le2NAl!(Le2NAl2, 2);
+impl_le_to_native_Le2NAl!(Le2NAl4, 4);
+impl_le_to_native_Le2NAl!(Le2NAl8, 8);
