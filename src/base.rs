@@ -44,7 +44,7 @@ use core::slice;
 /// # /*
 ///     assert_eq!(from_bytes::<u32>(&[0x00, 0x00, 0x00, 0x01])?, 0x0100_0000);
 /// # */
-/// #   assert_eq!(from_bytes::<u32>(&[0x00, 0x00, 0x00, 0x01].le_to_native::<u32>()).unwrap(), 0x0100_0000);
+/// #   assert_eq!(from_bytes::<u32>(&Le2NAl4([0x00, 0x00, 0x00, 0x01]).0.le_to_native::<u32>()).unwrap(), 0x0100_0000);
 /// }
 /// # }
 /// ```
@@ -84,7 +84,7 @@ pub unsafe fn from_bytes<T: Copy>(bytes: &[u8]) -> Result<T, Error<u8, T>> {
 ///     assert_eq!(from_bytes_pedantic::<u32>(&[0x00, 0x00, 0x00, 0x01])?, 0x0100_0000);
 /// # */
 /// #   assert_eq!(
-/// #       from_bytes_pedantic::<u32>(&[0x00, 0x00, 0x00, 0x01].le_to_native::<u32>()).unwrap(),
+/// #       from_bytes_pedantic::<u32>(&Le2NAl4([0x00, 0x00, 0x00, 0x01]).0.le_to_native::<u32>()).unwrap(),
 /// #       0x0100_0000
 /// #   );
 /// }
@@ -129,7 +129,7 @@ pub unsafe fn from_bytes_pedantic<T: Copy>(bytes: &[u8]) -> Result<T, Error<u8, 
 ///     assert_eq!(
 ///         transmute_many::<u16, SingleManyGuard>(&[0x00, 0x01, 0x00, 0x02])?,
 /// # */
-/// #   assert_eq!(transmute_many::<u16, SingleManyGuard>(&[0x00, 0x01, 0x00, 0x02].le_to_native::<u16>()).unwrap(),
+/// #   assert_eq!(transmute_many::<u16, SingleManyGuard>(&Le2NAl4([0x00, 0x01, 0x00, 0x02]).0.le_to_native::<u16>()).unwrap(),
 ///         &[0x0100, 0x0200]
 ///     );
 /// }
@@ -174,7 +174,7 @@ pub unsafe fn transmute_many<T, G: Guard>(bytes: &[u8]) -> Result<&[T], Error<u8
 ///     assert_eq!(
 ///         transmute_many_mut::<u16, SingleManyGuard>(&mut [0xFF, 0x01, 0x00, 0x02])?,
 /// # */
-/// #   assert_eq!(transmute_many_mut::<u16, SingleManyGuard>(&mut [0xFF, 0x01, 0x00, 0x02].le_to_native::<u16>()).unwrap(),
+/// #   assert_eq!(transmute_many_mut::<u16, SingleManyGuard>(&mut Le2NAl4([0xFF, 0x01, 0x00, 0x02]).0.le_to_native::<u16>()).unwrap(),
 ///         &mut [0x01FF, 0x0200]
 ///     );
 /// }
@@ -215,7 +215,7 @@ pub unsafe fn transmute_many_mut<T, G: Guard>(bytes: &mut [u8]) -> Result<&mut [
 ///     assert_eq!(
 ///         transmute_many_permissive::<u16>(&[0x00, 0x01, 0x00, 0x02]),
 /// # */
-/// #   assert_eq!(transmute_many_permissive::<u16>(&[0x00, 0x01, 0x00, 0x02].le_to_native::<u16>()),
+/// #   assert_eq!(transmute_many_permissive::<u16>(&Le2NAl4([0x00, 0x01, 0x00, 0x02]).0.le_to_native::<u16>()),
 ///         &[0x0100, 0x0200]
 ///     );
 /// }

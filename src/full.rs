@@ -189,7 +189,7 @@ pub fn transmute_many_pedantic<T: TriviallyTransmutable>(bytes: &[u8]) -> Result
 /// # /*
 /// assert_eq!(transmute_many_mut::<u16, SingleManyGuard>(&mut [0x00, 0x01, 0x00, 0x02])?,
 /// # */
-/// # assert_eq!(transmute_many_mut::<u16, SingleManyGuard>(&mut [0x00, 0x01, 0x00, 0x02].le_to_native::<u16>()).unwrap(),
+/// # assert_eq!(transmute_many_mut::<u16, SingleManyGuard>(&mut Le2NAl4([0x00, 0x01, 0x00, 0x02]).0.le_to_native::<u16>()).unwrap(),
 ///            &mut [0x0100, 0x0200]);
 /// # }
 /// ```
@@ -245,7 +245,7 @@ pub fn transmute_many_permissive_mut<T: TriviallyTransmutable>(bytes: &mut [u8])
 /// # /*
 /// assert_eq!(transmute_many_pedantic_mut::<u16>(&mut [0x0F, 0x0E, 0x0A, 0x0B])?,
 /// # */
-/// # assert_eq!(transmute_many_pedantic_mut::<u16>(&mut [0x0F, 0x0E, 0x0A, 0x0B].le_to_native::<u16>()).unwrap(),
+/// # assert_eq!(transmute_many_pedantic_mut::<u16>(&mut Le2NAl4([0x0F, 0x0E, 0x0A, 0x0B]).0.le_to_native::<u16>()).unwrap(),
 ///            &mut [0x0E0F, 0x0B0A]);
 /// # }
 /// ```
