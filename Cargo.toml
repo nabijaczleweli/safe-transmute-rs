@@ -14,7 +14,12 @@ authors = ["наб <nabijaczleweli@gmail.com>",
            "Lukas Kalbertodt <lukas.kalbertodt@gmail.com>",
            "Philipp Tessenow <philipp@tessenow.org>",
            "Marijn Suijten <marijn@traverseresearch.nl>"]
-exclude = ["*.enc"]
+exclude = [
+    "*.enc",
+    "/appveyor.yml",
+    "/rustfmt.toml",
+    "/safe-transmute-rs.sublime-project",
+]
 
 [features]
 default = ["std"]
