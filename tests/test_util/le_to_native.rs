@@ -2,6 +2,7 @@ extern crate core as le_to_native_core;
 
 
 /// Verify: http://play.integer32.com/?gist=4cd795d6f45898c876a754cd3f3c2aaa&version=stable
+#[allow(dead_code)]
 trait LeToNative {
     fn le_to_native<T: Sized>(self) -> Self;
 }
